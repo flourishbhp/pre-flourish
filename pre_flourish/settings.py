@@ -25,6 +25,12 @@ SECRET_KEY = '1mge7y#g2-f^qv0vvhdkw*2km%_3r%lt6*$e3ks6ujq9ts)u&y'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+APP_NAME = 'pre_flourish'
+
+ETC_DIR = '/etc'
+
+SITE_ID = 40
+
 ALLOWED_HOSTS = []
 
 
@@ -37,12 +43,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crypto_fields.apps.AppConfig',
+    'django.contrib.sites',
+    'pre_flourish.apps.AppConfig',
+    'edc_appointment.apps.AppConfig',
+    'edc_base.apps.AppConfig',
+    'edc_timepoint.apps.AppConfig',
+    'edc_protocol.apps.AppConfig'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -118,3 +132,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+DASHBOARD_URL_NAMES = {
+    'subject_listboard_url': 'flourish_dashboard:subject_listboard_url',
+    'data_manager_listboard_url': 'edc_data_manager:data_manager_listboard_url',
+    'maternal_screening_listboard_url': 'flourish_dashboard:maternal_screening_listboard_url',
+    'maternal_dataset_listboard_url': 'flourish_dashboard:maternal_dataset_listboard_url',
+    'flourish_follow_listboard_url': 'flourish_follow:flourish_follow_listboard_url',
+    'subject_dashboard_url': 'flourish_dashboard:subject_dashboard_url'
+}
