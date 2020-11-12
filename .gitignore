@@ -19,7 +19,6 @@ tags
 .project
 .settings/
 *migrations
-*crypto_fields
 #tshilo_dikotla/apps/*/migrations/
 db.sqlite3
 .DS_Store
