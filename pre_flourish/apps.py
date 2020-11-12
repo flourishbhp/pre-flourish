@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.apps import AppConfig as DjangoAppConfig
 from django.conf import settings
 
@@ -8,6 +9,9 @@ class AppConfig(DjangoAppConfig):
     name = 'pre_flourish'
     verbose_name = 'Pre Flourish'
     admin_site_name = 'pre_flourish_admin'
+
+    def ready(self):
+        from .models.caregiver import pre_flourish_consent_on_post_save
     
 
 if settings.APP_NAME == 'pre_flourish':
@@ -15,12 +19,18 @@ if settings.APP_NAME == 'pre_flourish':
     from edc_appointment.appointment_config import AppointmentConfig
     from edc_appointment.apps import AppConfig as BaseEdcAppointmentAppConfig
     from edc_appointment.constants import COMPLETE_APPT
+    from edc_base.apps import AppConfig as BaseEdcBaseAppConfig
     from edc_facility.apps import AppConfig as BaseEdcFacilityAppConfig
-    from edc_protocol.apps import AppConfig as BaseEdcProtocolAppConfigs
+    from edc_protocol.apps import AppConfig as BaseEdcProtocolAppConfig
     from edc_timepoint.apps import AppConfig as BaseEdcTimepointAppConfig
     from edc_timepoint.timepoint import Timepoint
     from edc_timepoint.timepoint_collection import TimepointCollection
     from edc_visit_tracking.apps import AppConfig as BaseEdcVisitTrackingAppConfig
+
+
+    class EdcBaseAppConfig(BaseEdcBaseAppConfig):
+        project_name = 'Pre-Flourish'
+        institution = 'Botswana-Harvard AIDS Institute'
 
 
     class EdcAppointmentAppConfig(BaseEdcAppointmentAppConfig):
@@ -61,3 +71,14 @@ if settings.APP_NAME == 'pre_flourish':
                                  slots=[100, 100, 100, 100, 100, 100, 100]),
             '5-day clinic': dict(days=[MO, TU, WE, TH, FR],
                                  slots=[100, 100, 100, 100, 100])}
+
+
+    class EdcProtocolAppConfig(BaseEdcProtocolAppConfig):
+        protocol = 'BHP035'
+        protocol_name = 'Flourish'
+        protocol_number = '035'
+        protocol_title = ''
+        study_open_datetime = datetime(
+            2020, 9, 16, 0, 0, 0, tzinfo=gettz('UTC'))
+        study_close_datetime = datetime(
+            2023, 12, 31, 23, 59, 59, tzinfo=gettz('UTC'))

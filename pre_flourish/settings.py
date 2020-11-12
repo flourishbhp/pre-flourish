@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,11 +28,15 @@ DEBUG = True
 
 APP_NAME = 'pre_flourish'
 
+LOGIN_REDIRECT_URL = 'home_url'
+
 ETC_DIR = '/etc'
 
 SITE_ID = 40
 
 ALLOWED_HOSTS = []
+
+INDEX_PAGE = 'pre_flourish.bhp.org.bw'
 
 
 # Application definition
@@ -45,11 +50,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_crypto_fields.apps.AppConfig',
     'django.contrib.sites',
-    'pre_flourish.apps.AppConfig',
     'edc_appointment.apps.AppConfig',
-    'edc_base.apps.AppConfig',
+
+    'edc_navbar.apps.AppConfig',
     'edc_timepoint.apps.AppConfig',
-    'edc_protocol.apps.AppConfig'
+    'edc_dashboard.apps.AppConfig',
+    'edc_device.apps.AppConfig',
+    'edc_identifier.apps.AppConfig',
+    'pre_flourish.apps.EdcBaseAppConfig',
+    'pre_flourish.apps.EdcProtocolAppConfig',
+    'pre_flourish.apps.AppConfig',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +71,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'edc_dashboard.middleware.DashboardMiddleware',
+    'edc_subject_dashboard.middleware.DashboardMiddleware',
 ]
 
 ROOT_URLCONF = 'pre_flourish.urls'
@@ -128,16 +140,21 @@ USE_L10N = True
 USE_TZ = True
 
 
+DASHBOARD_URL_NAMES = {
+    'pre_flourish_screening_listboard_url': 'pre_flourish_screening_listboard_url',
+    'pre_flourish_consent_listboard_url': 'pre_flourish_consent_listboard_url',
+}
+
+DASHBOARD_BASE_TEMPLATES = {
+    'listboard_base_template': 'pre_flourish/base.html',
+    'dashboard_base_template': 'pre_flourish/base.html',
+    'screening_listboard_template': 'pre_flourish/caregiver/listboard.html',
+    'subject_listboard_template': 'pre_flourish/caregiver/subject_listboard.html',
+    }
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
-
-DASHBOARD_URL_NAMES = {
-    'subject_listboard_url': 'flourish_dashboard:subject_listboard_url',
-    'data_manager_listboard_url': 'edc_data_manager:data_manager_listboard_url',
-    'maternal_screening_listboard_url': 'flourish_dashboard:maternal_screening_listboard_url',
-    'maternal_dataset_listboard_url': 'flourish_dashboard:maternal_dataset_listboard_url',
-    'flourish_follow_listboard_url': 'flourish_follow:flourish_follow_listboard_url',
-    'subject_dashboard_url': 'flourish_dashboard:subject_dashboard_url'
-}
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')

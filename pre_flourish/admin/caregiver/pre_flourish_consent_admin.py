@@ -121,7 +121,7 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
 
         super_actions = super().get_actions(request)
 
-        if ('flourish_caregiver.change_preflourishconsent'
+        if ('pre_flourish.change_preflourishconsent'
                 in request.user.get_group_permissions()):
 
             consent_actions = [

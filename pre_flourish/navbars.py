@@ -9,22 +9,20 @@ pre_flourish_dashboard = Navbar(name='pre_flourish_dashboard')
 
 pre_flourish_dashboard.append_item(
     NavbarItem(
-        name='pre_flourish__screening',
+        name='pre_flourish_screening',
         title='Pre Flourish Screening',
         label='pre flourish screening',
         fa_icon='far fa-user-circle',
-        url_name=settings.DASHBOARD_URL_NAMES[
-            'pre_flourish_screening_listboard_url'],
-        no_url_namespace=no_url_namespace))
+        url_name='pre_flourish_screening_listboard_url',
+        no_url_namespace=False))
 
 pre_flourish_dashboard.append_item(
     NavbarItem(
-        name='consented_subject',
-        title='Caregiver Subjects',
-        label='Caregiver subjects',
+        name='pre_flourish_consent',
+        title='Pre Flourish Consent',
+        label='pre flourish consent',
         fa_icon='far fa-user-circle',
-        url_name=settings.DASHBOARD_URL_NAMES[
-            'pre_flourish_subject_listboard_url'],
-        no_url_namespace=no_url_namespace))
+        url_name='pre_flourish_consent_listboard_url',
+        no_url_namespace=False))
 
 site_navbars.register(pre_flourish_dashboard)

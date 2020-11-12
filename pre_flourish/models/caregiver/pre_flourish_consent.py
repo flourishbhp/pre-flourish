@@ -33,7 +33,7 @@ class PreFlourishConsent(
         ReviewFieldsMixin, PersonalFieldsMixin, CitizenFieldsMixin,
         VulnerabilityFieldsMixin, SearchSlugModelMixin, BaseUuidModel):
 
-    subject_screening_model = 'flourish_caregiver.subjectscreening'
+    subject_screening_model = 'pre_flourish.subjectscreening'
 
     screening_identifier = models.CharField(
         verbose_name='Screening identifier',
