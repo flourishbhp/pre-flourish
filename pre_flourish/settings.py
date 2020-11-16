@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'django_crypto_fields.apps.AppConfig',
     'django.contrib.sites',
     'edc_appointment.apps.AppConfig',
-
+    'edc_consent.apps.AppConfig',
     'edc_navbar.apps.AppConfig',
     'edc_timepoint.apps.AppConfig',
     'edc_dashboard.apps.AppConfig',

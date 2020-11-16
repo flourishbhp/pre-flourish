@@ -67,6 +67,7 @@ urlpatterns = [
          name='pre_flourish_models_url'),
 
     path('edc_base/', include('edc_base.urls')),
+    path('edc_consent/', include('edc_consent.urls')),
     path('edc_device/', include('edc_device.urls')),
     path('edc_identifier/', include('edc_identifier.urls')),
     path('edc_protocol/', include('edc_protocol.urls')),

@@ -27,7 +27,7 @@ def edit_screening_button(model_wrapper):
 def consent_button(model_wrapper):
     title = ['Consent subject to participate.']
     return dict(
-        subject_identifier=model_wrapper.consent.object.subject_identifier,
+        subject_identifier=model_wrapper.consent.object.pre_flourish_identifier,
         subject_screening_obj=model_wrapper.object,
         add_consent_href=model_wrapper.consent.href,
 #         consent_version=model_wrapper.consent_version,
