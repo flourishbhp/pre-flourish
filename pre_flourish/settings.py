@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'edc_dashboard.apps.AppConfig',
     'edc_device.apps.AppConfig',
     'edc_identifier.apps.AppConfig',
+    'edc_visit_schedule.apps.AppConfig',
     'pre_flourish.apps.EdcBaseAppConfig',
     'pre_flourish.apps.EdcProtocolAppConfig',
     'pre_flourish.apps.AppConfig',
@@ -143,11 +144,13 @@ USE_TZ = True
 DASHBOARD_URL_NAMES = {
     'pre_flourish_screening_listboard_url': 'pre_flourish_screening_listboard_url',
     'pre_flourish_consent_listboard_url': 'pre_flourish_consent_listboard_url',
+    'child_listboard_url': 'child_listboard_url',
 }
 
 DASHBOARD_BASE_TEMPLATES = {
     'listboard_base_template': 'pre_flourish/base.html',
     'dashboard_base_template': 'pre_flourish/base.html',
+    'child_listboard_template': 'pre_flourish/child/child_listboard.html',
     'screening_listboard_template': 'pre_flourish/caregiver/listboard.html',
     'subject_listboard_template': 'pre_flourish/caregiver/subject_listboard.html',
     }

@@ -60,8 +60,6 @@ if settings.APP_NAME == 'pre_flourish':
     class EdcVisitTrackingAppConfig(BaseEdcVisitTrackingAppConfig):
         visit_models = {
             'pre_flourish': (
-                'caregiver_visit', 'pre_flourish.caregivervisit'),
-            'pre_flourish': (
                 'child_visit', 'pre_flourish.childvisit'), }
 
     class EdcFacilityAppConfig(BaseEdcFacilityAppConfig):
