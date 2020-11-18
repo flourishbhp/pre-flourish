@@ -19,10 +19,20 @@ pre_flourish_dashboard.append_item(
 pre_flourish_dashboard.append_item(
     NavbarItem(
         name='pre_flourish_consent',
-        title='Pre Flourish Consent',
-        label='pre flourish consent',
+        title='Caregiver Subjects',
+        label='caregiver subjects',
         fa_icon='far fa-user-circle',
         url_name='pre_flourish_consent_listboard_url',
         no_url_namespace=False))
+
+pre_flourish_dashboard.append_item(
+    NavbarItem(
+        name='child_subjects',
+        title='Child Subjects',
+        label='child subjects',
+        fa_icon='far fa-user-circle',
+        url_name='child_listboard_url',
+        no_url_namespace=False))
+
 
 site_navbars.register(pre_flourish_dashboard)
