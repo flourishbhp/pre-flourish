@@ -32,11 +32,19 @@ from .views import HomeView, AdministrationView
 from edc_dashboard import UrlConfig
 
 from .patterns import subject_identifier, screening_identifier
-from .views import ScreeningListBoardView, SubjectListboardView
+from .views import (ChildListboardView, ScreeningListBoardView,
+                    SubjectListboardView)
 
 
 app_name = 'pre_flourish'
 app_config = django_apps.get_app_config(app_name)
+
+child_listboard_url_config = UrlConfig(
+    url_name='child_listboard_url',
+    view_class=ChildListboardView,
+    label='child_listboard',
+    identifier_label='subject_identifier',
+    identifier_pattern=subject_identifier)
 
 pre_flourish_screening_listboard_url_config = UrlConfig(
     url_name='pre_flourish_screening_listboard_url',
@@ -71,6 +79,7 @@ urlpatterns = [
     path('edc_device/', include('edc_device.urls')),
     path('edc_identifier/', include('edc_identifier.urls')),
     path('edc_protocol/', include('edc_protocol.urls')),
+    path('edc_visit_schedule/', include('edc_visit_schedule.urls')),
 
     path('switch_sites/', LogoutView.as_view(next_page=settings.INDEX_PAGE),
          name='switch_sites_url'),
@@ -79,5 +88,6 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += child_listboard_url_config.listboard_urls
 urlpatterns += pre_flourish_screening_listboard_url_config.listboard_urls
 urlpatterns += pre_flourish_consent_listboard_url_config.listboard_urls
