@@ -52,11 +52,13 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'edc_appointment.apps.AppConfig',
     'edc_consent.apps.AppConfig',
+    'edc_lab.apps.AppConfig',
     'edc_navbar.apps.AppConfig',
     'edc_timepoint.apps.AppConfig',
     'edc_dashboard.apps.AppConfig',
     'edc_device.apps.AppConfig',
     'edc_identifier.apps.AppConfig',
+    'edc_registration.apps.AppConfig',
     'edc_visit_schedule.apps.AppConfig',
     'pre_flourish.apps.EdcBaseAppConfig',
     'pre_flourish.apps.EdcProtocolAppConfig',
@@ -145,12 +147,14 @@ DASHBOARD_URL_NAMES = {
     'pre_flourish_screening_listboard_url': 'pre_flourish_screening_listboard_url',
     'pre_flourish_consent_listboard_url': 'pre_flourish_consent_listboard_url',
     'child_listboard_url': 'child_listboard_url',
+    'subject_dashboard_url': 'subject_dashboard_url',
 }
 
 DASHBOARD_BASE_TEMPLATES = {
     'listboard_base_template': 'pre_flourish/base.html',
     'dashboard_base_template': 'pre_flourish/base.html',
     'child_listboard_template': 'pre_flourish/child/child_listboard.html',
+    'subject_dashboard_template': 'pre_flourish/caregiver/dashboard/dashboard.html',
     'screening_listboard_template': 'pre_flourish/caregiver/listboard.html',
     'subject_listboard_template': 'pre_flourish/caregiver/subject_listboard.html',
     }

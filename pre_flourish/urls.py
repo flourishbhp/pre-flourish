@@ -16,7 +16,6 @@ Including another URLconf
 
 from django.apps import apps as django_apps
 from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.urls import path, include
@@ -29,36 +28,9 @@ from .admin_site import pre_flourish_admin
 from .views import HomeView, AdministrationView
 
 
-from edc_dashboard import UrlConfig
-
-from .patterns import subject_identifier, screening_identifier
-from .views import (ChildListboardView, ScreeningListBoardView,
-                    SubjectListboardView)
-
-
 app_name = 'pre_flourish'
 app_config = django_apps.get_app_config(app_name)
 
-child_listboard_url_config = UrlConfig(
-    url_name='child_listboard_url',
-    view_class=ChildListboardView,
-    label='child_listboard',
-    identifier_label='subject_identifier',
-    identifier_pattern=subject_identifier)
-
-pre_flourish_screening_listboard_url_config = UrlConfig(
-    url_name='pre_flourish_screening_listboard_url',
-    view_class=ScreeningListBoardView,
-    label='pre_flourish_screening_listboard',
-    identifier_label='screening_identifier',
-    identifier_pattern=screening_identifier)
-
-pre_flourish_consent_listboard_url_config = UrlConfig(
-    url_name='pre_flourish_consent_listboard_url',
-    view_class=SubjectListboardView,
-    label='pre_flourish_consent_listboard',
-    identifier_label='subject_identifier',
-    identifier_pattern=subject_identifier)
 
 urlpatterns = [
     path('accounts/', include('edc_base.auth.urls')),
@@ -74,11 +46,13 @@ urlpatterns = [
          RedirectView.as_view(url='admin/pre_flourish/'),
          name='pre_flourish_models_url'),
 
+    path('subject/', include('pre_flourish.dashboard_urls')),
     path('edc_base/', include('edc_base.urls')),
     path('edc_consent/', include('edc_consent.urls')),
     path('edc_device/', include('edc_device.urls')),
     path('edc_identifier/', include('edc_identifier.urls')),
     path('edc_protocol/', include('edc_protocol.urls')),
+    path('edc_subject_dashboard/', include('edc_subject_dashboard.urls')),
     path('edc_visit_schedule/', include('edc_visit_schedule.urls')),
 
     path('switch_sites/', LogoutView.as_view(next_page=settings.INDEX_PAGE),
@@ -86,8 +60,3 @@ urlpatterns = [
     path('home/', HomeView.as_view(), name='home_url'),
     path('', HomeView.as_view(), name='home_url'),
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += child_listboard_url_config.listboard_urls
-urlpatterns += pre_flourish_screening_listboard_url_config.listboard_urls
-urlpatterns += pre_flourish_consent_listboard_url_config.listboard_urls

@@ -25,6 +25,16 @@ pre_flourish_dashboard.append_item(
         url_name='pre_flourish_consent_listboard_url',
         no_url_namespace=False))
 
+# flourish_dashboard.append_item(
+#     NavbarItem(
+#         name='consented_subject',
+#         title='Maternal Subjects',
+#         label='maternal subjects',
+#         fa_icon='far fa-user-circle',
+#         url_name=settings.DASHBOARD_URL_NAMES[
+#             'subject_listboard_url'],
+#         no_url_namespace=no_url_namespace))
+
 pre_flourish_dashboard.append_item(
     NavbarItem(
         name='child_subjects',
