@@ -22,6 +22,7 @@ from django.urls import path, include
 
 from django.views.generic.base import RedirectView
 
+from edc_action_item.admin_site import edc_action_item_admin
 from edc_identifier.admin_site import edc_identifier_admin
 from .admin_site import pre_flourish_admin
 
@@ -38,7 +39,9 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('admin/', pre_flourish_admin.urls),
+
     path('admin/', edc_identifier_admin.urls),
+    path('admin/', edc_action_item_admin.urls),
 
     path('administration/', AdministrationView.as_view(),
          name='administration_url'),
@@ -47,6 +50,7 @@ urlpatterns = [
          name='pre_flourish_models_url'),
 
     path('subject/', include('pre_flourish.dashboard_urls')),
+    path('edc_action_item/', include('edc_action_item.urls')),
     path('edc_base/', include('edc_base.urls')),
     path('edc_consent/', include('edc_consent.urls')),
     path('edc_device/', include('edc_device.urls')),
