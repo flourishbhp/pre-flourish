@@ -10,8 +10,8 @@ class AppConfig(DjangoAppConfig):
     verbose_name = 'Pre Flourish'
     admin_site_name = 'pre_flourish_admin'
 
-    # def ready(self):
-        # from .models.caregiver import pre_flourish_consent_on_post_save
+    def ready(self):
+        from .models.caregiver import subject_consent_on_post_save
     
 
 if settings.APP_NAME == 'pre_flourish':

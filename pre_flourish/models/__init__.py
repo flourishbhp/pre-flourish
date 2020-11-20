@@ -1,3 +1,4 @@
+from .caregiver import CaregiverLocator
 from .caregiver import CaregiverVisit
 from .caregiver import CyhuuPreEnrollment
 from .caregiver import PreFlourishConsent

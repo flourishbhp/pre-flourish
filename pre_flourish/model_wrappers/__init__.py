@@ -1,4 +1,5 @@
 from .caregiver import AppointmentModelWrapper
+from .caregiver import CaregiverLocatorModelWrapper
 from .caregiver import MaternalScreeningModelWrapper
 from .caregiver import MaternalVisitModelWrapper
 from .caregiver import SubjectConsentModelWrapper

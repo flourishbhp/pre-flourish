@@ -1,3 +1,4 @@
+from .caregiver import CaregiverLocatorForm
 from .caregiver import CaregiverVisitForm
 from .caregiver import CyhuuPreEnrollmentForm
 from .caregiver import PreFlourishConsentForm

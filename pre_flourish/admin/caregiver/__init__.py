@@ -1,4 +1,5 @@
 from .caregiver_visit_admin import CaregiverVisitAdmin
+from .caregiver_locator_admin import CaregiverLocatorAdmin
 from .cyhuu_pre_enrollment_admin import CyhuuPreEnrollmentAdmin
 from .pre_flourish_consent_admin import PreFlourishConsentAdmin
 from .subject_consent_admin import SubjectConsentAdmin
