@@ -9,14 +9,14 @@ from .pre_flourish_consent import PreFlourishConsent
 
 
 @receiver(post_save, weak=False, sender=PreFlourishConsent,
-          dispatch_uid='pre_flourish_consent_on_post_save')
-def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
+          dispatch_uid='subject_consent_on_post_save')
+def subject_consent_on_post_save(sender, instance, raw, created, **kwargs):
     """Update subject on cohort c schedule.
     """
     if not raw:
         put_on_schedule('pre_flourish',
                         instance=instance,
-                        subject_identifier=instance.pre_flourish_identifier)
+                        subject_identifier=instance.subject_identifier)
 
 
 def put_on_schedule(cohort, instance=None, subject_identifier=None):
@@ -24,7 +24,7 @@ def put_on_schedule(cohort, instance=None, subject_identifier=None):
         subject_identifier = subject_identifier or instance.subject_identifier
 
         cohort_label_lower = ''.join(cohort.split('_'))
-        onschedule_model = 'flourish_caregiver.onschedule' + cohort_label_lower
+        onschedule_model = 'pre_flourish.onschedule' + cohort_label_lower
 
         _, schedule = site_visit_schedules.get_by_onschedule_model(
             onschedule_model)

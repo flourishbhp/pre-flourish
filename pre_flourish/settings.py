@@ -50,16 +50,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_crypto_fields.apps.AppConfig',
     'django.contrib.sites',
-    'edc_appointment.apps.AppConfig',
+    'edc_action_item.apps.AppConfig',
     'edc_consent.apps.AppConfig',
     'edc_lab.apps.AppConfig',
+    'edc_locator.apps.AppConfig',
     'edc_navbar.apps.AppConfig',
     'edc_timepoint.apps.AppConfig',
     'edc_dashboard.apps.AppConfig',
     'edc_device.apps.AppConfig',
     'edc_identifier.apps.AppConfig',
+    'edc_prn.apps.AppConfig',
     'edc_registration.apps.AppConfig',
+    'edc_subject_dashboard.apps.AppConfig',
     'edc_visit_schedule.apps.AppConfig',
+    'pre_flourish.apps.EdcAppointmentAppConfig',
     'pre_flourish.apps.EdcBaseAppConfig',
     'pre_flourish.apps.EdcProtocolAppConfig',
     'pre_flourish.apps.AppConfig',
@@ -154,7 +158,7 @@ DASHBOARD_BASE_TEMPLATES = {
     'listboard_base_template': 'pre_flourish/base.html',
     'dashboard_base_template': 'pre_flourish/base.html',
     'child_listboard_template': 'pre_flourish/child/child_listboard.html',
-    'subject_dashboard_template': 'pre_flourish/caregiver/dashboard/dashboard.html',
+    'subject_dashboard_template': 'pre_flourish/caregiver/dashboard.html',
     'screening_listboard_template': 'pre_flourish/caregiver/listboard.html',
     'subject_listboard_template': 'pre_flourish/caregiver/subject_listboard.html',
     }
@@ -165,3 +169,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+PARENT_REFERENCE_MODEL1 = ''
+PARENT_REFERENCE_MODEL2 = ''
