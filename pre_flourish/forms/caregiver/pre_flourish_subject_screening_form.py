@@ -2,10 +2,10 @@ from django import forms
 from edc_base.sites import SiteModelFormMixin
 from edc_form_validators import FormValidatorMixin
 
-from ...models import SubjectScreening
+from ...models import PreFlourishSubjectScreening
 
 
-class SubjectScreeningForm(SiteModelFormMixin, FormValidatorMixin,
+class PreFlourishSubjectScreeningForm(SiteModelFormMixin, FormValidatorMixin,
                            forms.ModelForm):
     screening_identifier = forms.CharField(
         required=False,
@@ -13,5 +13,5 @@ class SubjectScreeningForm(SiteModelFormMixin, FormValidatorMixin,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
     class Meta:
-        model = SubjectScreening
+        model = PreFlourishSubjectScreening
         fields = '__all__'

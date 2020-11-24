@@ -1,15 +1,15 @@
 from django.contrib import admin
 
 from ...admin_site import pre_flourish_admin
-from ...forms import SubjectScreeningForm
-from ...models import SubjectScreening
+from ...forms import PreFlourishSubjectScreeningForm
+from ...models import PreFlourishSubjectScreening
 from .modeladmin_mixins import ModelAdminMixin
 
 
-@admin.register(SubjectScreening, site=pre_flourish_admin)
-class SubjectScreeningAdmin(ModelAdminMixin, admin.ModelAdmin):
+@admin.register(PreFlourishSubjectScreening, site=pre_flourish_admin)
+class PreFlourishSubjectScreeningAdmin(ModelAdminMixin, admin.ModelAdmin):
 
-    form = SubjectScreeningForm
+    form = PreFlourishSubjectScreeningForm
     search_fields = ['subject_identifier']
 
     fields = ('screening_identifier',

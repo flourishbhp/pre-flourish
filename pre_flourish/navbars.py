@@ -31,7 +31,7 @@ pre_flourish_dashboard.append_item(
         title='Child Subjects',
         label='child subjects',
         fa_icon='far fa-user-circle',
-        url_name='child_listboard_url',
+        url_name='pre_flourish_child_listboard_url',
         no_url_namespace=False))
 
 

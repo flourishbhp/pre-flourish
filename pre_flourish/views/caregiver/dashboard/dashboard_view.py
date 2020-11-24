@@ -4,25 +4,22 @@ from edc_navbar import NavbarViewMixin
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
 
-from ....model_wrappers import (AppointmentModelWrapper,
-                                SubjectConsentModelWrapper)
-from ....model_wrappers import MaternalVisitModelWrapper, \
-    CaregiverLocatorModelWrapper
+from ....model_wrappers import (
+    AppointmentModelWrapper, PreFlourishSubjectConsentModelWrapper)
+from ....model_wrappers import MaternalVisitModelWrapper
 
 
 class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
                     NavbarViewMixin, BaseDashboardView):
 
-    dashboard_url = 'subject_dashboard_url'
-    dashboard_template = 'subject_dashboard_template'
+    dashboard_url = 'pre_flourish_subject_dashboard_url'
+    dashboard_template = 'pre_flourish_subject_dashboard_template'
     appointment_model = 'edc_appointment.appointment'
     appointment_model_wrapper_cls = AppointmentModelWrapper
-    consent_model = 'pre_flourish.subjectconsent'
-    consent_model_wrapper_cls = SubjectConsentModelWrapper
+    consent_model = 'pre_flourish.preflourishconsent'
+    consent_model_wrapper_cls = PreFlourishSubjectConsentModelWrapper
     navbar_name = 'pre_flourish_dashboard'
     navbar_selected_item = 'pre_flourish_consent'
-    subject_locator_model = 'pre_flourish.caregiverlocator'
-    subject_locator_model_wrapper_cls = CaregiverLocatorModelWrapper
     visit_model_wrapper_cls = MaternalVisitModelWrapper
     special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
 

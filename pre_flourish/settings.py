@@ -150,17 +150,17 @@ USE_TZ = True
 DASHBOARD_URL_NAMES = {
     'pre_flourish_screening_listboard_url': 'pre_flourish_screening_listboard_url',
     'pre_flourish_consent_listboard_url': 'pre_flourish_consent_listboard_url',
-    'child_listboard_url': 'child_listboard_url',
-    'subject_dashboard_url': 'subject_dashboard_url',
+    'pre_flourish_child_listboard_url': 'child_listboard_url',
+    'pre_flourish_subject_dashboard_url': 'subject_dashboard_url',
 }
 
 DASHBOARD_BASE_TEMPLATES = {
     'listboard_base_template': 'pre_flourish/base.html',
     'dashboard_base_template': 'pre_flourish/base.html',
-    'child_listboard_template': 'pre_flourish/child/child_listboard.html',
-    'subject_dashboard_template': 'pre_flourish/caregiver/dashboard.html',
-    'screening_listboard_template': 'pre_flourish/caregiver/listboard.html',
-    'subject_listboard_template': 'pre_flourish/caregiver/subject_listboard.html',
+    'pre_flourish_child_listboard_template': 'pre_flourish/child/child_listboard.html',
+    'pre_flourish_subject_dashboard_template': 'pre_flourish/caregiver/dashboard.html',
+    'pre_flourish_screening_listboard_template': 'pre_flourish/caregiver/listboard.html',
+    'pre_flourish_subject_listboard_template': 'pre_flourish/caregiver/subject_listboard.html',
     }
 
 # Static files (CSS, JavaScript, Images)

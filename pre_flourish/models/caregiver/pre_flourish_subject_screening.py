@@ -14,13 +14,13 @@ from .eligibility import Eligibility
 from .model_mixins import SearchSlugModelMixin
 
 
-class SubjectScreeningManager(SearchSlugManager, models.Manager):
+class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):
 
     def get_by_natural_key(self, eligibility_identifier):
         return self.get(screening_identifier=eligibility_identifier)
 
 
-class SubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin,
+class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin,
                        SearchSlugModelMixin, BaseUuidModel):
     """ A model completed by the user to test and capture the result of
     the pre-consent eligibility checks.
@@ -89,7 +89,7 @@ class SubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin,
         self.ineligibility = eligibility_criteria.error_message
         if not self.screening_identifier:
             self.screening_identifier = self.identifier_cls().identifier
-        super(SubjectScreening, self).save(*args, **kwargs)
+        super(PreFlourishSubjectScreening, self).save(*args, **kwargs)
 
     def natural_key(self):
         return self.screening_identifier

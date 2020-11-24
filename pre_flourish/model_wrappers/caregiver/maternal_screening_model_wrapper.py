@@ -5,14 +5,14 @@ from edc_model_wrapper import ModelWrapper
 from edc_base.utils import get_uuid
 from edc_consent import ConsentModelWrapperMixin
 
-from .subject_consent_model_wrapper import SubjectConsentModelWrapper
+from .pre_flourish_subject_consent_model_wrapper import PreFlourishSubjectConsentModelWrapper
 
 
-class MaternalScreeningModelWrapper(ConsentModelWrapperMixin,
+class PreFlourishMaternalScreeningModelWrapper(ConsentModelWrapperMixin,
                                     ModelWrapper):
 
-    consent_model_wrapper_cls = SubjectConsentModelWrapper
-    model = 'pre_flourish.subjectscreening'
+    consent_model_wrapper_cls = PreFlourishSubjectConsentModelWrapper
+    model = 'pre_flourish.preflourishsubjectscreening'
     querystring_attrs = ['screening_identifier']
     next_url_attrs = ['screening_identifier']
     next_url_name = settings.DASHBOARD_URL_NAMES.get(

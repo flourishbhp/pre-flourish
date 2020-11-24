@@ -7,9 +7,9 @@ from .views import (ChildListboardView, ScreeningListBoardView,
                     SubjectListboardView, DashboardView)
 
 child_listboard_url_config = UrlConfig(
-    url_name='child_listboard_url',
+    url_name='pre_flourish_child_listboard_url',
     view_class=ChildListboardView,
-    label='child_listboard',
+    label='pre_flourish_child_listboard',
     identifier_label='subject_identifier',
     identifier_pattern=subject_identifier)
 
@@ -28,7 +28,7 @@ pre_flourish_consent_listboard_url_config = UrlConfig(
     identifier_pattern=subject_identifier)
 
 subject_dashboard_url_config = UrlConfig(
-    url_name='subject_dashboard_url',
+    url_name='pre_flourish_subject_dashboard_url',
     view_class=DashboardView,
     label='subject_dashboard',
     identifier_label='subject_identifier',

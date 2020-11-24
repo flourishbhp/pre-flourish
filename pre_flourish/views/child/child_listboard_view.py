@@ -13,8 +13,8 @@ class ChildListboardView(EdcBaseViewMixin, NavbarViewMixin,
                          ListboardFilterViewMixin, SearchFormViewMixin,
                          ListboardView):
 
-    listboard_template = 'child_listboard_template'
-    listboard_url = 'child_listboard_url'
+    listboard_template = 'pre_flourish_child_listboard_template'
+    listboard_url = 'pre_flourish_child_listboard_url'
     listboard_panel_style = 'success'
     listboard_fa_icon = "far fa-user-circle"
 

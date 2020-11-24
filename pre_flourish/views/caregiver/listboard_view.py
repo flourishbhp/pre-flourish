@@ -8,7 +8,7 @@ from edc_dashboard.view_mixins import ListboardFilterViewMixin, SearchFormViewMi
 from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
 
-from ...model_wrappers import MaternalScreeningModelWrapper
+from ...model_wrappers import PreFlourishMaternalScreeningModelWrapper
 # from .filters import ListboardViewFilters
 
 
@@ -16,14 +16,14 @@ class ScreeningListBoardView(NavbarViewMixin, EdcBaseViewMixin,
                              ListboardFilterViewMixin, SearchFormViewMixin,
                              ListboardView):
 
-    listboard_template = 'screening_listboard_template'
+    listboard_template = 'pre_flourish_screening_listboard_template'
     listboard_url = 'pre_flourish_screening_listboard_url'
     listboard_panel_style = 'info'
     listboard_fa_icon = "fa-user-plus"
 
     # listboard_view_filters = ListboardViewFilters()
-    model = 'pre_flourish.subjectscreening'
-    model_wrapper_cls = MaternalScreeningModelWrapper
+    model = 'pre_flourish.preflourishsubjectscreening'
+    model_wrapper_cls = PreFlourishMaternalScreeningModelWrapper
     navbar_name = 'pre_flourish_dashboard'
     navbar_selected_item = 'pre_flourish_screening'
     ordering = '-modified'

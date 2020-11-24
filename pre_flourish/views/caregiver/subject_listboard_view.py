@@ -7,20 +7,20 @@ from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
 
 
-from ...model_wrappers import SubjectConsentModelWrapper
+from ...model_wrappers import PreFlourishSubjectConsentModelWrapper
 
 
 class SubjectListboardView(EdcBaseViewMixin, NavbarViewMixin,
                     ListboardFilterViewMixin, SearchFormViewMixin,
                     ListboardView):
 
-    listboard_template = 'subject_listboard_template'
+    listboard_template = 'pre_flourish_subject_listboard_template'
     listboard_url = 'pre_flourish_consent_listboard_url'
     listboard_panel_style = 'success'
     listboard_fa_icon = "far fa-user-circle"
 
-    model = 'pre_flourish.subjectconsent'
-    model_wrapper_cls = SubjectConsentModelWrapper
+    model = 'pre_flourish.preflourishconsent'
+    model_wrapper_cls = PreFlourishSubjectConsentModelWrapper
     navbar_name = 'pre_flourish_dashboard'
     navbar_selected_item = 'pre_flourish_consent'
     search_form_url = 'pre_flourish_consent_listboard_url'
