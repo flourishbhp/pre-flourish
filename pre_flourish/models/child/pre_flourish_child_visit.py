@@ -14,7 +14,7 @@ from ...child_choices import ALIVE_DEAD_UNKNOWN, VISIT_INFO_SOURCE
 from ...child_choices import VISIT_STUDY_STATUS, VISIT_REASON, INFO_PROVIDER
 
 
-class ChildVisit(
+class PreFlourishChildVisit(
         VisitModelMixin, CreatesMetadataModelMixin,
         ReferenceModelMixin, RequiresConsentFieldsModelMixin,
         CaretakerFieldsMixin, SiteModelMixin, BaseUuidModel):

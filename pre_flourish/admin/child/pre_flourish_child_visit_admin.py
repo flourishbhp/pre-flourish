@@ -14,8 +14,9 @@ from edc_model_admin import audit_fieldset_tuple
 from edc_visit_tracking.modeladmin_mixins import VisitModelAdminMixin
 
 from ...admin_site import pre_flourish_admin
-from ...forms import CaregiverVisitForm
-from ...models import CaregiverVisit
+from ...constants import INFANT
+from ...forms import PreFlourishChildVisitForm
+from ...models import PreFlourishChildVisit
 from .exportaction_mixin import ExportActionMixin
 
 
@@ -46,12 +47,12 @@ class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormAutoNumberMi
         return redirect_url
 
 
-@admin.register(CaregiverVisit, site=pre_flourish_admin)
-class CaregiverVisitAdmin(
+@admin.register(PreFlourishChildVisit, site=pre_flourish_admin)
+class PreFlourishChildVisitAdmin(
         ModelAdminMixin, VisitModelAdminMixin, admin.ModelAdmin):
 
-    form = CaregiverVisitForm
-
+    form = PreFlourishChildVisitForm
+    dashboard_type = INFANT
     fieldsets = (
         (None, {
             'fields': [
@@ -60,8 +61,11 @@ class CaregiverVisitAdmin(
                 'reason',
                 'reason_missed',
                 'study_status',
+                'require_crfs',
                 'info_source',
                 'info_source_other',
+                'information_provider',
+                'information_provider_other',
                 'is_present',
                 'survival_status',
                 'last_alive_date',
@@ -74,6 +78,9 @@ class CaregiverVisitAdmin(
     radio_fields = {
         'reason': admin.VERTICAL,
         'study_status': admin.VERTICAL,
+        'require_crfs': admin.VERTICAL,
         'info_source': admin.VERTICAL,
+        'information_provider': admin.VERTICAL,
         'is_present': admin.VERTICAL,
-        'survival_status': admin.VERTICAL}
+        'survival_status': admin.VERTICAL
+    }

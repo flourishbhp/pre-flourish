@@ -1,2 +1,2 @@
-from .child_visit_admin import ChildVisitAdmin
+from .pre_flourish_child_visit_admin import PreFlourishChildVisitAdmin
 from .huu_pre_enrollment_admin import HuuPreEnrollmentAdmin

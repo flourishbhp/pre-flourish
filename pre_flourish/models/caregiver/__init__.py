@@ -1,4 +1,4 @@
-from .caregiver_visit import CaregiverVisit
+from .pre_flourish_caregiver_visit import PreFlourishCaregiverVisit
 from .cyhuu_pre_enrollment import CyhuuPreEnrollment
 from .pre_flourish_consent import PreFlourishConsent
 from .signals import subject_consent_on_post_save

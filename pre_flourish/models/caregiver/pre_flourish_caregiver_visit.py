@@ -23,7 +23,7 @@ class CurrentSiteManager(VisitModelManager, BaseCurrentSiteManager):
     pass
 
 
-class CaregiverVisit(VisitModelMixin, CreatesMetadataModelMixin,
+class PreFlourishCaregiverVisit(VisitModelMixin, CreatesMetadataModelMixin,
                     ReferenceModelMixin, RequiresConsentFieldsModelMixin,
                     CaretakerFieldsMixin, SiteModelMixin, BaseUuidModel):
 
