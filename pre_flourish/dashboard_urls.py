@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from edc_dashboard import UrlConfig
 
-from .patterns import subject_identifier, screening_identifier
+from .patterns import pre_flourish_identifier, screening_identifier
 from .views import (ChildListboardView, ScreeningListBoardView,
                     SubjectListboardView, DashboardView)
 
@@ -10,8 +10,8 @@ child_listboard_url_config = UrlConfig(
     url_name='pre_flourish_child_listboard_url',
     view_class=ChildListboardView,
     label='pre_flourish_child_listboard',
-    identifier_label='subject_identifier',
-    identifier_pattern=subject_identifier)
+    identifier_label='pre_flourish_identifier',
+    identifier_pattern=pre_flourish_identifier)
 
 pre_flourish_screening_listboard_url_config = UrlConfig(
     url_name='pre_flourish_screening_listboard_url',
@@ -24,15 +24,15 @@ pre_flourish_consent_listboard_url_config = UrlConfig(
     url_name='pre_flourish_consent_listboard_url',
     view_class=SubjectListboardView,
     label='pre_flourish_consent_listboard',
-    identifier_label='subject_identifier',
-    identifier_pattern=subject_identifier)
+    identifier_label='pre_flourish_identifier',
+    identifier_pattern=pre_flourish_identifier)
 
 subject_dashboard_url_config = UrlConfig(
     url_name='pre_flourish_subject_dashboard_url',
     view_class=DashboardView,
     label='subject_dashboard',
-    identifier_label='subject_identifier',
-    identifier_pattern=subject_identifier)
+    identifier_label='pre_flourish_identifier',
+    identifier_pattern=pre_flourish_identifier)
 
 urlpatterns = []
 

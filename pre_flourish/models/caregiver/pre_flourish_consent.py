@@ -33,7 +33,7 @@ class PreFlourishConsent(
         ReviewFieldsMixin, PersonalFieldsMixin, CitizenFieldsMixin,
         VulnerabilityFieldsMixin, SearchSlugModelMixin, BaseUuidModel):
 
-    subject_screening_model = 'pre_flourish.subjectscreening'
+    subject_screening_model = 'pre_flourish.preflourishsubjectscreening'
 
     screening_identifier = models.CharField(
         verbose_name='Screening identifier',
@@ -41,6 +41,8 @@ class PreFlourishConsent(
 
     pre_flourish_identifier = models.CharField(
         verbose_name="Pre-Flourish Identifier",
+        null=True,
+        blank=True,
         max_length=50)
 
     identity_type = models.CharField(
