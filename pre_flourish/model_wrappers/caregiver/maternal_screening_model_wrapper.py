@@ -23,9 +23,9 @@ class PreFlourishMaternalScreeningModelWrapper(ConsentModelWrapperMixin,
         return '1'
 
     @property
-    def subject_identifier(self):
+    def pre_flourish_identifier(self):
         if self.consent_model_obj:
-            return self.consent_model_obj.subject_identifier
+            return self.consent_model_obj.pre_flourish_identifier
         return None
 
     @property
@@ -39,7 +39,7 @@ class PreFlourishMaternalScreeningModelWrapper(ConsentModelWrapperMixin,
 
     @property
     def subject_consent_cls(self):
-        return django_apps.get_model('pre_flourish.subjectconsent')
+        return django_apps.get_model('pre_flourish.preflourishconsent')
 
     @property
     def create_consent_options(self):
