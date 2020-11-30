@@ -22,7 +22,7 @@ class ChildListboardView(EdcBaseViewMixin, NavbarViewMixin,
     model_wrapper_cls = HuuPreEnrollmentModelWrapper
     navbar_name = 'pre_flourish_dashboard'
     navbar_selected_item = 'child_subjects'
-    search_form_url = 'child_listboard_url'
+    search_form_url = 'pre_flourish_child_listboard_url'
 
     def get_queryset_filter_options(self, request, *args, **kwargs):
         options = super().get_queryset_filter_options(request, *args, **kwargs)

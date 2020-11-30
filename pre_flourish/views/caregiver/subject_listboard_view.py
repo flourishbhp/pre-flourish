@@ -27,9 +27,9 @@ class SubjectListboardView(EdcBaseViewMixin, NavbarViewMixin,
 
     def get_queryset_filter_options(self, request, *args, **kwargs):
         options = super().get_queryset_filter_options(request, *args, **kwargs)
-        if kwargs.get('subject_identifier'):
+        if kwargs.get('pre_flourish_identifier'):
             options.update(
-                {'subject_identifier': kwargs.get('subject_identifier')})
+                {'pre_flourish_identifier': kwargs.get('pre_flourish_identifier')})
         return options
 
     def extra_search_options(self, search_term):

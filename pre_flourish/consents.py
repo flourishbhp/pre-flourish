@@ -6,7 +6,7 @@ from edc_constants.constants import MALE, FEMALE
 edc_protocol = django_apps.get_app_config('edc_protocol')
 
 v1 = Consent(
-    'pre_flourish.subjectconsent',
+    'pre_flourish.preflourishconsent',
     version='1',
     start=edc_protocol.study_open_datetime,
     end=edc_protocol.study_close_datetime,

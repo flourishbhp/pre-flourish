@@ -16,12 +16,12 @@ def subject_consent_on_post_save(sender, instance, raw, created, **kwargs):
     if not raw:
         put_on_schedule('pre_flourish',
                         instance=instance,
-                        subject_identifier=instance.subject_identifier)
+                        subject_identifier=instance.pre_flourish_identifier)
 
 
-def put_on_schedule(cohort, instance=None, subject_identifier=None):
+def put_on_schedule(cohort, instance=None, pre_flourish_identifier=None):
     if instance:
-        subject_identifier = subject_identifier or instance.subject_identifier
+        pre_flourish_identifier = pre_flourish_identifier or instance.pre_flourish_identifier
 
         cohort_label_lower = ''.join(cohort.split('_'))
         onschedule_model = 'pre_flourish.onschedule' + cohort_label_lower
@@ -35,13 +35,13 @@ def put_on_schedule(cohort, instance=None, subject_identifier=None):
 
         try:
             onschedule_model_cls.objects.get(
-                subject_identifier=instance.subject_identifier,
+                subject_identifier=instance.pre_flourish_identifier,
                 schedule_name=schedule_name)
         except onschedule_model_cls.DoesNotExist:
             schedule.put_on_schedule(
-                subject_identifier=instance.subject_identifier,
+                subject_identifier=instance.pre_flourish_identifier,
                 onschedule_datetime=instance.created,
                 schedule_name=schedule_name)
         else:
             schedule.refresh_schedule(
-                subject_identifier=instance.subject_identifier)
+                subject_identifier=instance.pre_flourish_identifier)
