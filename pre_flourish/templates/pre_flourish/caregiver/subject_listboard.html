@@ -23,7 +23,7 @@
 
     result: model_wrapper, usually the SubjectConsentModelWrapper
         Required attributes:
-            pre_flourish_identifier
+            subject_identifier
             version: (consent version)
             href: (model_wrapper.href)
 
@@ -37,8 +37,8 @@
     </a>
     {% if result.id %}
 
-         <a id="btn-subject-dashboard-{{result.pre_flourish_identifier}}" class="btn btn-primary btn-sm" role="button"
-        title="Go to subject's dashboard" href="{% url subject_dashboard_url result.pre_flourish_identifier %}">
+         <a id="btn-subject-dashboard-{{result.subject_identifier}}" class="btn btn-primary btn-sm" role="button"
+        title="Go to subject's dashboard" href="{% url subject_dashboard_url result.subject_identifier %}">
         <i class="far fa-user-circle fa-sm"></i> Dashboard  <i class="fa fa-share"></i></a>
     {% endif %}
     </div>
@@ -51,7 +51,7 @@
 	
 	
 
-    <td>{{ result.pre_flourish_identifier }}
+    <td>{{ result.subject_identifier }}
     </td>
     <td>
        {% if result.gender == MALE %}

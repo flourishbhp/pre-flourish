@@ -1,14 +1,13 @@
 from django.db import models
-from edc_base.model_mixins import BaseUuidModel
 from edc_base.model_validators import datetime_not_future
-from edc_base.sites.site_model_mixin import SiteModelMixin
 from edc_base.utils import get_utcnow
 from edc_constants.choices import YES_NO
 
+from .model_mixins import CrfModelMixin
 from ...caregiver_choices import POS_NEG_IND
 
 
-class CyhuuPreEnrollment(SiteModelMixin, BaseUuidModel):
+class CyhuuPreEnrollment(CrfModelMixin):
 
     report_datetime = models.DateTimeField(
         verbose_name='Report Time and Date',
@@ -41,5 +40,5 @@ class CyhuuPreEnrollment(SiteModelMixin, BaseUuidModel):
 
     class Meta:
         app_label = 'pre_flourish'
-        verbose_name = 'CYHUU Pre-Enrollment'
-        verbose_name_plural = 'CYHUU Pre-Enrollment'
+        verbose_name = 'CYHUU Pre-Flourish'
+        verbose_name_plural = 'CYHUU Pre-Flourish'

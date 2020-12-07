@@ -12,7 +12,7 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
         label='Screening Identifier',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
-    pre_flourish_identifier = forms.CharField(
+    subject_identifier = forms.CharField(
         label='Pre Flourish Identifier',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
         required=False)

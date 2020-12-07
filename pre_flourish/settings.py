@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'edc_lab.apps.AppConfig',
     'edc_locator.apps.AppConfig',
     'edc_navbar.apps.AppConfig',
-    'edc_timepoint.apps.AppConfig',
     'edc_dashboard.apps.AppConfig',
     'edc_device.apps.AppConfig',
     'edc_identifier.apps.AppConfig',
@@ -65,7 +64,10 @@ INSTALLED_APPS = [
     'edc_visit_schedule.apps.AppConfig',
     'pre_flourish.apps.EdcAppointmentAppConfig',
     'pre_flourish.apps.EdcBaseAppConfig',
+    'pre_flourish.apps.EdcFacilityAppConfig',
     'pre_flourish.apps.EdcProtocolAppConfig',
+    'pre_flourish.apps.EdcTimepointAppConfig',
+    'pre_flourish.apps.EdcVisitTrackingAppConfig',
     'pre_flourish.apps.AppConfig',
 ]
 
@@ -146,12 +148,16 @@ USE_L10N = True
 
 USE_TZ = True
 
+DEFAULT_APPOINTMENT_MODEL = 'pre_flourish.appointment'
+
+COUNTRY = 'botswana'
+HOLIDAY_FILE = os.path.join(BASE_DIR, 'holidays.csv')
 
 DASHBOARD_URL_NAMES = {
     'pre_flourish_screening_listboard_url': 'pre_flourish_screening_listboard_url',
     'pre_flourish_consent_listboard_url': 'pre_flourish_consent_listboard_url',
-    'pre_flourish_child_listboard_url': 'child_listboard_url',
-    'pre_flourish_subject_dashboard_url': 'subject_dashboard_url',
+    'pre_flourish_child_listboard_url': 'pre_flourish_child_listboard_url',
+    'subject_dashboard_url': 'subject_dashboard_url',
 }
 
 DASHBOARD_BASE_TEMPLATES = {

@@ -1,3 +1,7 @@
+from .caregiver import AppointmentAdmin
+from .caregiver import DeathReportAdmin
+from .caregiver import OffStudyAdmin
+from .caregiver import PreFlourishCaregiverLocatorAdmin
 from .caregiver import PreFlourishCaregiverVisitAdmin
 from .caregiver import CyhuuPreEnrollmentAdmin
 from .caregiver import PreFlourishConsentAdmin

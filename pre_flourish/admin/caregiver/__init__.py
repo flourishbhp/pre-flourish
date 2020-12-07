@@ -1,3 +1,7 @@
+from .appointment_admin import AppointmentAdmin
+from .death_report_admin import DeathReportAdmin
+from .off_study_admin import OffStudyAdmin
+from .pre_flourish_caregiver_locator_admin import PreFlourishCaregiverLocatorAdmin
 from .pre_flourish_caregiver_visit_admin import PreFlourishCaregiverVisitAdmin
 from .cyhuu_pre_enrollment_admin import CyhuuPreEnrollmentAdmin
 from .pre_flourish_consent_admin import PreFlourishConsentAdmin

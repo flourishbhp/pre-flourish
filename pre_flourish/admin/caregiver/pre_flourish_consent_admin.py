@@ -53,7 +53,7 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
         (None, {
             'fields': (
                 'screening_identifier',
-                'pre_flourish_identifier',
+                'subject_identifier',
                 'first_name',
                 'last_name',
                 'initials',
@@ -96,7 +96,7 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
         'recruitment_clinic': admin.VERTICAL,
         'study_questions': admin.VERTICAL}
 
-    list_display = ('pre_flourish_identifier',
+    list_display = ('subject_identifier',
                     'verified_by',
                     'is_verified',
                     'is_verified_datetime',
@@ -115,7 +115,7 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
                    'is_verified',
                    'is_literate',
                    'identity_type')
-    search_fields = ('pre_flourish_identifier', 'dob',)
+    search_fields = ('subject_identifier', 'dob',)
 
     def get_actions(self, request):
 

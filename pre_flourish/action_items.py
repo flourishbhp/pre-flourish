@@ -1,7 +1,9 @@
-from edc_action_item import Action, HIGH_PRIORITY
+from edc_action_item import Action, site_action_items, HIGH_PRIORITY
+
+from edc_locator.action_items import SubjectLocatorAction
 
 MATERNALOFF_STUDY_ACTION = 'submit-caregiver-study'
-CAREGIVER_LOCATOR_ACTION = 'submit-caregiver-locator'
+PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION = 'pre-flourish-submit-caregiver-locator'
 
 
 class MaternalOffStudyAction(Action):
@@ -12,3 +14,12 @@ class MaternalOffStudyAction(Action):
     priority = HIGH_PRIORITY
     singleton = True
 
+
+class PreFlourishCaregiverLocatorAction(SubjectLocatorAction):
+    name = PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
+    display_name = 'Submit Pre Flourish Caregiver Locator'
+    reference_model = 'pre_flourish.preflourishcaregiverlocator'
+    admin_site_name = 'pre_flourish_admin'
+
+
+site_action_items.register(PreFlourishCaregiverLocatorAction)

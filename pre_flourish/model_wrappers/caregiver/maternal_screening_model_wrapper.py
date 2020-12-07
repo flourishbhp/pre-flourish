@@ -23,9 +23,9 @@ class PreFlourishMaternalScreeningModelWrapper(ConsentModelWrapperMixin,
         return '1'
 
     @property
-    def pre_flourish_identifier(self):
+    def subject_identifier(self):
         if self.consent_model_obj:
-            return self.consent_model_obj.pre_flourish_identifier
+            return self.consent_model_obj.subject_identifier
         return None
 
     @property
