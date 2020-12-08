@@ -11,9 +11,8 @@ from edc_visit_schedule.model_mixins import OffScheduleModelMixin
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
 
-
-class OffStudy(OffScheduleModelMixin,
-                       ActionModelMixin, BaseUuidModel):
+class PreFlourishOffStudy(OffScheduleModelMixin,
+                          ActionModelMixin, BaseUuidModel):
 
     tracking_identifier_prefix = 'MO'
     report_datetime = models.DateTimeField(
@@ -36,8 +35,7 @@ class OffStudy(OffScheduleModelMixin,
 
     def take_off_schedule(self):
         pass
-    
-    
+
     class Meta:
         app_label = 'pre_flourish'
         verbose_name = 'Off Study'

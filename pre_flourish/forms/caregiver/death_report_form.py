@@ -1,11 +1,10 @@
 from django import forms
 from edc_form_validators import FormValidatorMixin
 
-from ...models import DeathReport
+from ...models import PreFlourishDeathReport
 
 
-class DeathReportForm(FormValidatorMixin, forms.ModelForm):
-
+class PreFlourishDeathReportForm(FormValidatorMixin, forms.ModelForm):
 
     def clean(self):
         self.subject_identifier = self.cleaned_data.get(
@@ -15,5 +14,5 @@ class DeathReportForm(FormValidatorMixin, forms.ModelForm):
         super().clean()
 
     class Meta:
-        model = DeathReport
+        model = PreFlourishDeathReport
         fields = '__all__'

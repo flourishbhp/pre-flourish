@@ -12,8 +12,8 @@ from edc_model_admin import audit_fieldset_tuple
 from edc_subject_dashboard import ModelAdminSubjectDashboardMixin
 
 from ...admin_site import pre_flourish_admin
-from ...forms import OffStudyForm
-from ...models import OffStudy
+from ...forms import PreFlourishOffStudyForm
+from ...models import PreFlourishOffStudy
 from .exportaction_mixin import ExportActionMixin
 
 
@@ -39,10 +39,10 @@ class ModelAdminMixin(ModelAdminNextUrlRedirectMixin,
         return dict(subject_identifier=obj.subject_identifier)
 
 
-@admin.register(OffStudy, site=pre_flourish_admin)
-class OffStudyAdmin(ModelAdminMixin, admin.ModelAdmin):
+@admin.register(PreFlourishOffStudy, site=pre_flourish_admin)
+class PreFlourishOffStudyAdmin(ModelAdminMixin, admin.ModelAdmin):
 
-    form = OffStudyForm
+    form = PreFlourishOffStudyForm
 
     search_fields = ('subject_identifier',)
 

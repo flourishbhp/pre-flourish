@@ -7,8 +7,8 @@ from edc_search.model_mixins import SearchSlugModelMixin
 from edc_action_item.model_mixins.action_model_mixin import ActionModelMixin
 
 
-class DeathReport(ActionModelMixin,
-                          SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
+class PreFlourishDeathReport(ActionModelMixin, SiteModelMixin,
+                             SearchSlugModelMixin, BaseUuidModel):
 
     objects = SubjectIdentifierManager()
 

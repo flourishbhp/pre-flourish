@@ -1,11 +1,10 @@
 from django import forms
 from edc_form_validators import FormValidatorMixin
 
-from ...models import OffStudy
+from ...models import PreFlourishOffStudy
 
 
-class OffStudyForm(FormValidatorMixin, forms.ModelForm):
-
+class PreFlourishOffStudyForm(FormValidatorMixin, forms.ModelForm):
 
     def clean(self):
         self.subject_identifier = self.cleaned_data.get('subject_identifier')
@@ -15,5 +14,5 @@ class OffStudyForm(FormValidatorMixin, forms.ModelForm):
             self.cleaned_data.get('report_datetime'))
 
     class Meta:
-        model = OffStudy
+        model = PreFlourishOffStudy
         fields = '__all__'
