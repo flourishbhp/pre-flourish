@@ -148,7 +148,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-DEFAULT_APPOINTMENT_MODEL = 'pre_flourish.appointment'
+DEFAULT_APPOINTMENT_MODEL = 'edc_appointment.appointment'
 
 COUNTRY = 'botswana'
 HOLIDAY_FILE = os.path.join(BASE_DIR, 'holidays.csv')
