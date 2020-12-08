@@ -9,9 +9,9 @@ pre_flourish_schedule = Schedule(
     name='pre_flourish_schedule',
     verbose_name='Pre Flourish Schedule',
     onschedule_model='pre_flourish.onschedulepreflourish',
-    offschedule_model='pre_flourish.offstudy',
+    offschedule_model='pre_flourish.preflourishoffstudy',
     consent_model='pre_flourish.preflourishconsent',
-    appointment_model='pre_flourish.appointment')
+    appointment_model='edc_appointment.appointment')
 
 visit0 = Visit(
     code='1000',
