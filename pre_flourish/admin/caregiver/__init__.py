@@ -1,4 +1,3 @@
-from .appointment_admin import AppointmentAdmin
 from .pre_flourish_death_report_admin import PreFlourishDeathReportAdmin
 from .pre_flourish_off_study_admin import PreFlourishOffStudyAdmin
 from .pre_flourish_caregiver_locator_admin import PreFlourishCaregiverLocatorAdmin

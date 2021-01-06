@@ -18,10 +18,10 @@ def consent_button(model_wrapper):
 
 @register.inclusion_tag('pre_flourish/buttons/dashboard_button.html')
 def dashboard_button(model_wrapper):
-    subject_dashboard_url = settings.DASHBOARD_URL_NAMES.get(
-        'subject_dashboard_url')
+    pre_flourish_subject_dashboard_url = settings.DASHBOARD_URL_NAMES.get(
+        'pre_flourish_subject_dashboard_url')
     return dict(
-        subject_dashboard_url=subject_dashboard_url,
+        pre_flourish_subject_dashboard_url=pre_flourish_subject_dashboard_url,
         subject_identifier=model_wrapper.subject_identifier)
 
 

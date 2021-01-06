@@ -1,4 +1,3 @@
-from .caregiver import AppointmentForm
 from .caregiver import PreFlourishDeathReportForm
 from .caregiver import PreFlourishOffStudyForm
 from .caregiver import PreFlourishCaregiverLocatorForm

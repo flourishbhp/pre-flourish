@@ -17,7 +17,7 @@ from ....model_wrappers import (MaternalVisitModelWrapper,
 class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
                     NavbarViewMixin, BaseDashboardView):
 
-    dashboard_url = 'subject_dashboard_url'
+    dashboard_url = 'pre_flourish_subject_dashboard_url'
     dashboard_template = 'pre_flourish_subject_dashboard_template'
     appointment_model = 'edc_appointment.appointment'
     appointment_model_wrapper_cls = AppointmentModelWrapper

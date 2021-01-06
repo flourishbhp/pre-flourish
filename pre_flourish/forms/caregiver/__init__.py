@@ -1,4 +1,3 @@
-from .appointment_form import AppointmentForm
 from .pre_flourish_death_report_form import PreFlourishDeathReportForm
 from .pre_flourish_off_study_form import PreFlourishOffStudyForm
 from .pre_flourish_caregiver_locator_form import PreFlourishCaregiverLocatorForm

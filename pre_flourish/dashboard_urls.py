@@ -28,7 +28,7 @@ pre_flourish_consent_listboard_url_config = UrlConfig(
     identifier_pattern=subject_identifier)
 
 pre_flourish_subject_dashboard_url_config = UrlConfig(
-    url_name='subject_dashboard_url',
+    url_name='pre_flourish_subject_dashboard_url',
     view_class=DashboardView,
     label='pre_flourish_subject_dashboard',
     identifier_label='subject_identifier',

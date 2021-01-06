@@ -38,7 +38,7 @@ class CyhuuPreEnrollment(CrfModelMixin):
         choices=POS_NEG_IND,
         max_length=14)
 
-    class Meta:
+    class Meta(CrfModelMixin.Meta):
         app_label = 'pre_flourish'
         verbose_name = 'CYHUU Pre-Flourish'
         verbose_name_plural = 'CYHUU Pre-Flourish'

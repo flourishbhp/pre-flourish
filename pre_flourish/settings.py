@@ -52,12 +52,13 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'edc_action_item.apps.AppConfig',
     'edc_consent.apps.AppConfig',
-    'edc_lab.apps.AppConfig',
-    'edc_locator.apps.AppConfig',
-    'edc_navbar.apps.AppConfig',
     'edc_dashboard.apps.AppConfig',
     'edc_device.apps.AppConfig',
     'edc_identifier.apps.AppConfig',
+    'edc_lab.apps.AppConfig',
+    'edc_locator.apps.AppConfig',
+    'edc_model_admin.apps.AppConfig',
+    'edc_navbar.apps.AppConfig',
     'edc_prn.apps.AppConfig',
     'edc_registration.apps.AppConfig',
     'edc_subject_dashboard.apps.AppConfig',
@@ -157,7 +158,7 @@ DASHBOARD_URL_NAMES = {
     'pre_flourish_screening_listboard_url': 'pre_flourish_screening_listboard_url',
     'pre_flourish_consent_listboard_url': 'pre_flourish_consent_listboard_url',
     'pre_flourish_child_listboard_url': 'pre_flourish_child_listboard_url',
-    'subject_dashboard_url': 'subject_dashboard_url',
+    'pre_flourish_subject_dashboard_url': 'pre_flourish_subject_dashboard_url',
 }
 
 DASHBOARD_BASE_TEMPLATES = {

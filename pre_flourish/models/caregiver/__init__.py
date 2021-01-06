@@ -1,4 +1,3 @@
-from .appointment import Appointment
 from .pre_flourish_caregiver_visit import PreFlourishCaregiverVisit
 from .cyhuu_pre_enrollment import CyhuuPreEnrollment
 from .pre_flourish_death_report import PreFlourishDeathReport

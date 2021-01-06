@@ -30,10 +30,10 @@ class ModelAdminMixin(ModelAdminNextUrlRedirectMixin,
     date_hierarchy = 'modified'
     empty_value_display = '-'
     next_form_getter_cls = NextFormGetter
-    subject_dashboard_url = 'subject_dashboard_url'
+    pre_flourish_subject_dashboard_url = 'pre_flourish_subject_dashboard_url'
 
     post_url_on_delete_name = settings.DASHBOARD_URL_NAMES.get(
-        subject_dashboard_url)
+        pre_flourish_subject_dashboard_url)
 
     def post_url_on_delete_kwargs(self, request, obj):
         return dict(subject_identifier=obj.subject_identifier)

@@ -21,7 +21,6 @@ class CrfModelMixin(BaseCrfModelMixin, SubjectScheduleCrfModelMixin,
 
     """ Base model for all scheduled models
     """
-
     offschedule_compare_dates_as_datetimes = True
     maternal_visit = models.OneToOneField(PreFlourishCaregiverVisit, on_delete=PROTECT)
     crf_date_validator_cls = None

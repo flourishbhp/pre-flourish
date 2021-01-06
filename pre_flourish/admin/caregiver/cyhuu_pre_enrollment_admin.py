@@ -16,6 +16,7 @@ class CyhuuPreEnrollmentAdmin(CrfModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': [
+                'maternal_visit',
                 'report_datetime',
                 'biological_mother',
                 'child_dob',
