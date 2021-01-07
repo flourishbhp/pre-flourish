@@ -1,16 +1,15 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from edc_base.model_mixins import BaseUuidModel
 from edc_base.model_validators import datetime_not_future
-from edc_base.sites.site_model_mixin import SiteModelMixin
 from edc_base.utils import get_utcnow
 from edc_constants.choices import YES_NO, GENDER
 
+from .child_crf_model_mixin import ChildCrfModelMixin
 from ...choices import POS_NEG_IND, YES_NO_UNCERTAIN, YES_NO_UNKNOWN,\
                       UNCERTAIN_GEST_AGE
 
 
-class HuuPreEnrollment(SiteModelMixin, BaseUuidModel):
+class HuuPreEnrollment(ChildCrfModelMixin):
 
     report_datetime = models.DateTimeField(
         verbose_name='Report Time and Date',
