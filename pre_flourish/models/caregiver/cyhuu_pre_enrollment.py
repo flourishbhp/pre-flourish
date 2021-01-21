@@ -36,7 +36,9 @@ class CyhuuPreEnrollment(CrfModelMixin):
     hiv_test_result = models.CharField(
         verbose_name='HIV test result',
         choices=POS_NEG_IND,
-        max_length=14)
+        max_length=14,
+        blank=True,
+        null=True)
 
     class Meta(CrfModelMixin.Meta):
         app_label = 'pre_flourish'
