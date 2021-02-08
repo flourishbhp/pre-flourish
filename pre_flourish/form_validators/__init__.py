@@ -1,1 +1,2 @@
 from .cyhuu_pre_enrollment_form_validator import CyhuuPreEnrollmentFormValidator
+from .huu_pre_enrollment_form_validator import HuuPreEnrollmentFormValidator
