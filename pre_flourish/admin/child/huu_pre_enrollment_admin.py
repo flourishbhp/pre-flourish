@@ -16,16 +16,17 @@ class HuuPreEnrollmentAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': [
+                'infant_visit',
                 'report_datetime',
                 'child_dob',
                 'child_hiv_docs',
                 'child_hiv_result',
+                'child_test_date',
                 'weight',
                 'height',
                 'sex',
                 'knows_gest_age',
                 'gestational_age',
-                'uncertain_gest_age',
                 'premature_at_birth',
                 'breastfed',
                 'months_breastfeed',
@@ -36,7 +37,6 @@ class HuuPreEnrollmentAdmin(ModelAdminMixin, admin.ModelAdmin):
                     'child_hiv_result': admin.VERTICAL,
                     'sex': admin.VERTICAL,
                     'knows_gest_age': admin.VERTICAL,
-                    'uncertain_gest_age': admin.VERTICAL,
                     'premature_at_birth': admin.VERTICAL,
                     'breastfed': admin.VERTICAL}
 
