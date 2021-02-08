@@ -30,26 +30,7 @@ class ChildCrfModelMixin(
     def natural_key(self):
         return self.infant_visit.natural_key()
 
-    natural_key.dependencies = [
-        'td_infant.infantvisit',
-        'sites.Site',
-        'edc_appointment.appointment']
-
-    def save(self, *args, **kwargs):
-        self.consent_version = self.get_consent_version()
-        super(ChildCrfModelMixin, self).save(*args, **kwargs)
-
-    def get_consent_version(self):
-        subject_consent_cls = django_apps.get_model(
-            'td_infant.infantdummysubjectconsent')
-        subject_consent_objs = subject_consent_cls.objects.filter(
-            subject_identifier=self.infant_visit.subject_identifier).order_by(
-                '-consent_datetime')
-        if subject_consent_objs:
-            return subject_consent_objs.first().version
-        else:
-            raise ValidationError(
-                'Missing Infant Dummy Consent form. Cannot proceed.')
+    natural_key.dependencies = ['flourish_child.infantvisit',]
 
     class Meta:
         abstract = True
