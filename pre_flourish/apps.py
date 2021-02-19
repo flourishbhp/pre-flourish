@@ -11,7 +11,7 @@ class AppConfig(DjangoAppConfig):
     admin_site_name = 'pre_flourish_admin'
 
     def ready(self):
-        from .models.caregiver import pre_flourish_consent_on_post_save
+        from .models.caregiver import caregiver_child_consent_on_post_save
 
 if settings.APP_NAME == 'pre_flourish':
     from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
@@ -38,8 +38,8 @@ if settings.APP_NAME == 'pre_flourish':
                 model='edc_appointment.appointment',
                 related_visit_model='pre_flourish.preflourishcaregivervisit',
                 appt_type='clinic')]
-    
-    
+
+
     class EdcTimepointAppConfig(BaseEdcTimepointAppConfig):
         timepoints = TimepointCollection(
             timepoints=[

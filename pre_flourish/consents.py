@@ -10,8 +10,8 @@ v1 = Consent(
     version='1',
     start=edc_protocol.study_open_datetime,
     end=edc_protocol.study_close_datetime,
-    age_min=30,
-    age_is_adult=30,
+    age_min=18,
+    age_is_adult=18,
     age_max=110,
     gender=[MALE, FEMALE])
 

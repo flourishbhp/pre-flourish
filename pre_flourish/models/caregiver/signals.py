@@ -1,14 +1,15 @@
+from django.apps import apps as django_apps
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
-from .pre_flourish_consent import PreFlourishConsent
+from .caregiver_child_screening_consent import CaregiverChildScreeningConsent
 
 
-@receiver(post_save, weak=False, sender=PreFlourishConsent,
-          dispatch_uid='pre_flourish_consent_on_post_save')
-def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
+@receiver(post_save, weak=False, sender=CaregiverChildScreeningConsent,
+          dispatch_uid='caregiver_child_consent_on_post_save')
+def caregiver_child_consent_on_post_save(sender, instance, raw, created, **kwargs):
     """Creates an onschedule instance for this enrolled subject, if
     it does not exist.
     """
