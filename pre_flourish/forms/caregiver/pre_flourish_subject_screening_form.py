@@ -11,7 +11,7 @@ class PreFlourishSubjectScreeningForm(SiteModelFormMixin, FormValidatorMixin,
     def clean(self):
         cleaned_data = super().clean()
         age_in_years = cleaned_data.get('age_in_years')
-        if age_in_years < 18:
+        if age_in_years and age_in_years < 18:
             message = {'age_in_years':
                        'Participant is less than 18 years, age derived '
                        f'from the DOB is {age_in_years}'}
