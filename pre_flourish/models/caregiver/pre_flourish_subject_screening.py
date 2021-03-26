@@ -21,7 +21,7 @@ class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):
 
 
 class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin,
-                       SearchSlugModelMixin, BaseUuidModel):
+                                  SearchSlugModelMixin, BaseUuidModel):
     """ A model completed by the user to test and capture the result of
     the pre-consent eligibility checks.
 
@@ -51,7 +51,7 @@ class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteMode
         verbose_name="Do you have an OMANG?",
         max_length=3,
         choices=YES_NO)
-    
+
     has_child = models.CharField(
         verbose_name="Do you have a child who is 10 years or older?",
         max_length=3,
@@ -84,7 +84,7 @@ class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteMode
         verbose_name_plural = "Caregiver Eligibility"
 
     def save(self, *args, **kwargs):
-        eligibility_criteria = Eligibility(self.age_in_years, self.has_omang)
+        eligibility_criteria = Eligibility(self.age_in_years, self.has_omang, self.has_child)
         self.is_eligible = eligibility_criteria.is_eligible
         self.ineligibility = eligibility_criteria.error_message
         if not self.screening_identifier:

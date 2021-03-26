@@ -18,6 +18,7 @@ from edc_consent.model_mixins import ConsentModelMixin
 from ...choices import IDENTITY_TYPE
 from ...subject_identifier import SubjectIdentifier
 from ...caregiver_choices import RECRUIT_SOURCE, RECRUIT_CLINIC
+from .eligibility import ConsentEligibility
 from .model_mixins import SearchSlugModelMixin
 
 
@@ -77,6 +78,15 @@ class PreFlourishConsent(
 
     def __str__(self):
         return f'{self.subject_identifier} V{self.version}'
+
+    def save(self, *args, **kwargs):
+        eligibility_criteria = ConsentEligibility(
+            self.consent_reviewed, self.study_questions, self.assessment_score,
+            self.consent_signature, self.consent_copy)
+        self.is_eligible = eligibility_criteria.is_eligible
+        self.ineligibility = eligibility_criteria.error_message
+        self.version = '1'
+        super().save(*args, **kwargs)
 
     def natural_key(self):
         return (self.subject_identifier, self.version)

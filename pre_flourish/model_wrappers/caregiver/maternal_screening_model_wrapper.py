@@ -4,12 +4,13 @@ from django.core.exceptions import ObjectDoesNotExist
 from edc_model_wrapper import ModelWrapper
 from edc_base.utils import get_uuid
 from edc_consent import ConsentModelWrapperMixin
-
+from .maternal_screening_model_wrapper_mixin import MaternalScreeningModelWrapperMixin
 from .pre_flourish_subject_consent_model_wrapper import PreFlourishSubjectConsentModelWrapper
 
 
 class PreFlourishMaternalScreeningModelWrapper(ConsentModelWrapperMixin,
-                                    ModelWrapper):
+                                               MaternalScreeningModelWrapperMixin,
+                                               ModelWrapper):
 
     consent_model_wrapper_cls = PreFlourishSubjectConsentModelWrapper
     model = 'pre_flourish.preflourishsubjectscreening'

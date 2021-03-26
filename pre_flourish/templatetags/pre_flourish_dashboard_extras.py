@@ -1,7 +1,6 @@
 from django import template
 from django.conf import settings
 
-
 register = template.Library()
 
 
@@ -40,3 +39,16 @@ def edit_screening_button(model_wrapper):
         screening_identifier=model_wrapper.object.screening_identifier,
         href=model_wrapper.href,
         title=' '.join(title))
+
+
+@register.inclusion_tag('pre_flourish/buttons/eligibility_button.html')
+def eligibility_button(model_wrapper):
+    comment = []
+    obj = model_wrapper.object
+    tooltip = None
+    if obj.ineligibility:
+        comment = obj.ineligibility[1:-1].split(',')
+        comment = list(set(comment))
+        comment.sort()
+    return dict(eligible=obj.is_eligible, comment=comment,
+                tooltip=tooltip, obj=obj)

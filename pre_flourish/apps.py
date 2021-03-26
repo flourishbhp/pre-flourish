@@ -11,7 +11,8 @@ class AppConfig(DjangoAppConfig):
     admin_site_name = 'pre_flourish_admin'
 
     def ready(self):
-        from .models.caregiver import caregiver_child_consent_on_post_save
+        from .models.caregiver import pre_flourish_consent_on_post_save
+
 
 if settings.APP_NAME == 'pre_flourish':
     from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
@@ -26,11 +27,9 @@ if settings.APP_NAME == 'pre_flourish':
     from edc_timepoint.timepoint_collection import TimepointCollection
     from edc_visit_tracking.apps import AppConfig as BaseEdcVisitTrackingAppConfig
 
-
     class EdcBaseAppConfig(BaseEdcBaseAppConfig):
         project_name = 'Pre-Flourish'
         institution = 'Botswana-Harvard AIDS Institute'
-
 
     class EdcAppointmentAppConfig(BaseEdcAppointmentAppConfig):
         configurations = [
@@ -38,7 +37,6 @@ if settings.APP_NAME == 'pre_flourish':
                 model='edc_appointment.appointment',
                 related_visit_model='pre_flourish.preflourishcaregivervisit',
                 appt_type='clinic')]
-
 
     class EdcTimepointAppConfig(BaseEdcTimepointAppConfig):
         timepoints = TimepointCollection(
@@ -55,7 +53,6 @@ if settings.APP_NAME == 'pre_flourish':
                     closed_status=COMPLETE_APPT),
             ])
 
-
     class EdcVisitTrackingAppConfig(BaseEdcVisitTrackingAppConfig):
         visit_models = {
             'pre_flourish': (
@@ -68,7 +65,6 @@ if settings.APP_NAME == 'pre_flourish':
                                  slots=[100, 100, 100, 100, 100, 100, 100]),
             '5-day clinic': dict(days=[MO, TU, WE, TH, FR],
                                  slots=[100, 100, 100, 100, 100])}
-
 
     class EdcProtocolAppConfig(BaseEdcProtocolAppConfig):
         protocol = 'BHP035'

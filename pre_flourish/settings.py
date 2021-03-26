@@ -11,12 +11,20 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+import sys
+import configparser
+
+from django.core.management.color import color_style
 from pathlib import Path
+
+style = color_style()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+APP_NAME = 'pre_flourish'
 
+ETC_DIR = os.path.join('/etc/', APP_NAME)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -26,18 +34,24 @@ SECRET_KEY = '1mge7y#g2-f^qv0vvhdkw*2km%_3r%lt6*$e3ks6ujq9ts)u&y'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# KEY_PATH = os.path.join(ETC_DIR, 'crypto_fields')
+
 APP_NAME = 'pre_flourish'
 
 LOGIN_REDIRECT_URL = 'home_url'
 
-ETC_DIR = '/etc'
-
 SITE_ID = 40
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'pre_flourish.bhp.org.bw']
 
 INDEX_PAGE = 'pre_flourish.bhp.org.bw'
 
+CONFIG_FILE = f'{APP_NAME}.ini'
+
+CONFIG_PATH = os.path.join(ETC_DIR, CONFIG_FILE)
+sys.stdout.write(style.SUCCESS(f'  * Reading config from {CONFIG_FILE}\n'))
+config = configparser.ConfigParser()
+config.read(CONFIG_PATH)
 
 # Application definition
 
@@ -105,17 +119,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'pre_flourish.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+mysql_config = configparser.ConfigParser()
+mysql_config.read(os.path.join(ETC_DIR, 'mysql.conf'))
+
+HOST = mysql_config['mysql']['host']
+DB_USER = mysql_config['mysql']['user']
+DB_PASSWORD = mysql_config['mysql']['password']
+DB_NAME = mysql_config['mysql']['database']
+PORT = mysql_config['mysql']['port']
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+   'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': HOST,  # Or an IP Address that your DB is hosted on
+        'PORT': PORT,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -134,7 +158,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -179,3 +202,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 PARENT_REFERENCE_MODEL1 = ''
 PARENT_REFERENCE_MODEL2 = ''
+
+if 'test' in sys.argv:
+
+    class DisableMigrations:
+
+        def __contains__(self, item):
+            return True
+
+        def __getitem__(self, item):
+            return None
+
+    MIGRATION_MODULES = DisableMigrations()
+    PASSWORD_HASHERS = ('django.contrib.auth.hashers.MD5PasswordHasher',)
+    DEFAULT_FILE_STORAGE = 'inmemorystorage.InMemoryStorage'

@@ -1,18 +1,8 @@
 from django.apps import apps as django_apps
 from django.core.exceptions import ObjectDoesNotExist
 
-from .maternal_screening_model_wrapper import PreFlourishMaternalScreeningModelWrapper
-
 
 class MaternalScreeningModelWrapperMixin:
-    
-    screening_model_wrapper_cls = PreFlourishMaternalScreeningModelWrapper
-    
-    @property
-    def screening_identifier(self):
-        if self.screening_model_obj:
-            return self.screening_model_obj.screening_identifier
-        return None
 
     @property
     def screening_model_obj(self):
@@ -23,19 +13,18 @@ class MaternalScreeningModelWrapperMixin:
                 **self.maternal_screening_options)
         except ObjectDoesNotExist:
             return None
-        
+
     @property
     def maternal_screening(self):
         """"Returns a wrapped saved or unsaved maternal screening
         """
         model_obj = self.screening_model_obj or self.maternal_screening_cls(
             **self.maternal_screening_options)
-        return self.screening_model_wrapper_cls(model_obj=model_obj)
-
+        return self.__cls__(model_obj=model_obj)
 
     @property
     def maternal_screening_cls(self):
-        return django_apps.get_model('pre_flourish.subjectscreening')
+        return django_apps.get_model('pre_flourish.preflourishsubjectscreening')
 
     @property
     def create_maternal_screening_options(self):

@@ -9,7 +9,6 @@
             <i class="fa fa-plus fa-sm"></i>Add Pre Flourish Screening
     </a>
 {% endblock listboard_panel %}
-
 {% block listboard_table_header %}
     <!-- begin results header -->
     <th>#</th>
@@ -28,9 +27,13 @@
     <td style="white-space: nowrap;">
     <div class="btn-group">
     {% edit_screening_button result %}
-    {% consent_button result %}
-    {% if result.consent %}
-    	{% dashboard_button result %}
+    {% if result.screening_model_obj.is_eligible %}
+	    {% consent_button result %}
+	    {% if result.consent %}
+	    	{% dashboard_button result %}
+		{% endif %}
+	{% else %}
+		{% eligibility_button result %}
 	{% endif %}
     </div>
     </td>

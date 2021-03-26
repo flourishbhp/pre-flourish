@@ -1,1 +1,1 @@
-from .visit_schedule import pre_flourish_visit_schedule, pre_flourish_schedule
+from .visit_schedule import pre_flourish_visit_schedule, pre_flourish_child_visit_schedule

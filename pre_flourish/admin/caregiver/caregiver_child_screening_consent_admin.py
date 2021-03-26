@@ -42,7 +42,7 @@ class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormAutoNumberMi
 
 @admin.register(CaregiverChildScreeningConsent, site=pre_flourish_admin)
 class CaregiverChildScreeningConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
-                                              SimpleHistoryAdmin, admin.ModelAdmin):
+                                          SimpleHistoryAdmin, admin.ModelAdmin):
 
     form = CaregiverChildScreeningConsentForm
 

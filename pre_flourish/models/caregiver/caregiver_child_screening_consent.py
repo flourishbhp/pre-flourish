@@ -13,8 +13,8 @@ from edc_consent.field_mixins import (PersonalFieldsMixin, ReviewFieldsMixin,
                                       VulnerabilityFieldsMixin)
 from edc_consent.managers import ConsentManager
 from edc_consent.model_mixins import ConsentModelMixin
+from .eligibility import ConsentEligibility
 from .model_mixins import SearchSlugModelMixin
-
 
 
 class CaregiverChildScreeningConsentManager(SearchSlugManager, models.Manager):
@@ -45,6 +45,15 @@ class CaregiverChildScreeningConsent(
     def __str__(self):
         return f'{self.subject_identifier} V{self.version}'
 
+    def save(self, *args, **kwargs):
+        eligibility_criteria = ConsentEligibility(
+            self.consent_reviewed, self.study_questions, self.assessment_score,
+            self.consent_signature, self.consent_copy)
+        self.is_eligible = eligibility_criteria.is_eligible
+        self.ineligibility = eligibility_criteria.error_message
+        self.version = '1'
+        super().save(*args, **kwargs)
+
     def natural_key(self):
         return (self.subject_identifier, self.version)
 
@@ -56,8 +65,8 @@ class CaregiverChildScreeningConsent(
 
     class Meta(ConsentModelMixin.Meta):
         app_label = 'pre_flourish'
-        verbose_name = ' Consent of Caregiver for Child/Adolescent Screening Participation'
-        verbose_name_plural = ' Consent of Caregiver for Child/Adolescent Screening Participation'
+        verbose_name = 'Consent of Caregiver for Child/Adolescent Screening Participation'
+        verbose_name_plural = 'Consent of Caregiver for Child/Adolescent Screening Participation'
         unique_together = (('subject_identifier', 'version'),
                            ('subject_identifier', 'screening_identifier', 'version'),
                            ('first_name', 'dob', 'initials', 'version'))
