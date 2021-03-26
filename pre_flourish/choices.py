@@ -14,6 +14,26 @@ POS_NEG_IND = (
   (IND, 'Indeterminate')
 )
 
+RECRUIT_SOURCE = (
+    ('ANC clinic staff', 'ANC clinic staff'),
+    ('BHP recruiter/clinician', 'BHP recruiter/clinician'),
+    (OTHER, 'Other, specify'),
+)
+
+RECRUIT_CLINIC = (
+    ('Prior', 'Prior BHP Study'),
+    ('PMH', 'Gaborone(PMH)'),
+    ('G.West Clinic', 'G.West Clinic'),
+    ('BH3 Clinic', 'BH3 Clinic'),
+    ('Ext2', 'Extension 2 Clinic'),
+    ('Nkoyaphiri', 'Nkoyaphiri Clinic'),
+    ('Lesirane', 'Lesirane Clinic'),
+    ('Old Naledi', 'Old Naledi'),
+    ('Mafitlhakgosi', 'Mafitlhakgosi'),
+    ('Schools', 'Schools'),
+    (OTHER, 'Other health facilities not associated with study site'),
+)
+
 UNCERTAIN_GEST_AGE = (
     ('born_on_time', 'This child was born on time'),
     ('born_early', 'This child was born early'),

@@ -4,6 +4,8 @@ from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.sites.site_model_mixin import SiteModelMixin
 from edc_identifier.model_mixins import NonUniqueSubjectIdentifierModelMixin
+from edc_registration.model_mixins.updates_or_creates_registered_subject_model_mixin import (
+    UpdatesOrCreatesRegistrationModelError)
 from edc_registration.model_mixins import (
     UpdatesOrCreatesRegistrationModelMixin)
 from edc_search.model_mixins import SearchSlugManager
@@ -11,18 +13,18 @@ from edc_search.model_mixins import SearchSlugManager
 from edc_consent.field_mixins import (
     CitizenFieldsMixin, VulnerabilityFieldsMixin)
 from edc_consent.field_mixins import IdentityFieldsMixin
-from edc_consent.field_mixins import ReviewFieldsMixin, PersonalFieldsMixin
+from edc_consent.field_mixins import PersonalFieldsMixin
 from edc_consent.managers import ConsentManager
 from edc_consent.model_mixins import ConsentModelMixin
+from edc_constants.choices import YES_NO, GENDER, YES_NO_NA
 
-from ...choices import IDENTITY_TYPE
+from ...choices import IDENTITY_TYPE, RECRUIT_SOURCE, RECRUIT_CLINIC
 from ...subject_identifier import SubjectIdentifier
-from ...caregiver_choices import RECRUIT_SOURCE, RECRUIT_CLINIC
 from .eligibility import ConsentEligibility
-from .model_mixins import SearchSlugModelMixin
+from .model_mixins import ReviewFieldsMixin, SearchSlugModelMixin
 
 
-class PreFlourishConsentManager(SearchSlugManager, models.Manager):
+class SubjectConsentManager(SearchSlugManager, models.Manager):
 
     def get_by_natural_key(self, subject_identifier, version):
         return self.get(
@@ -36,11 +38,23 @@ class PreFlourishConsent(
         ReviewFieldsMixin, PersonalFieldsMixin, CitizenFieldsMixin,
         VulnerabilityFieldsMixin, SearchSlugModelMixin, BaseUuidModel):
 
-    subject_screening_model = 'pre_flourish.preflourishsubjectscreening'
+    """ A model completed by the user on the mother's consent. """
+
+    subject_screening_model = 'flourish_caregiver.subjectscreening'
+
+    subject_identifier = models.CharField(
+        verbose_name="Subject Identifier",
+        max_length=50,
+        null=True)
 
     screening_identifier = models.CharField(
         verbose_name='Screening identifier',
         max_length=50)
+
+    gender = models.CharField(
+        verbose_name='Gender',
+        choices=GENDER,
+        max_length=1,)
 
     identity_type = models.CharField(
         verbose_name='What type of identity number is this?',
@@ -66,11 +80,55 @@ class PreFlourishConsent(
 
     recruitment_clinic_other = models.CharField(
         max_length=100,
-        verbose_name="if other recruitment clinic, specify...",
+        verbose_name="if other recruitment, specify...",
         blank=True,
         null=True,)
 
-    objects = PreFlourishConsentManager()
+    remain_in_study = models.CharField(
+        max_length=3,
+        verbose_name='Are you willing to remain in the study area until 2025?',
+        choices=YES_NO,
+        help_text='If no, participant is not eligible.')
+
+    hiv_testing = models.CharField(
+        max_length=3,
+        verbose_name=('If HIV status not known, are you willing to undergo HIV'
+                      ' testing and counseling?'),
+        choices=YES_NO,
+        blank=True,
+        null=True,
+        help_text='If ‘No’ ineligible for study participation')
+
+    breastfeed_intent = models.CharField(
+        max_length=3,
+        verbose_name='Do you intend on breast feeding your infant?',
+        choices=YES_NO,
+        blank=True,
+        null=True,
+        help_text='If ‘No’ ineligible for study participation')
+
+    future_contact = models.CharField(
+        max_length=3,
+        verbose_name='Do you give us permission to be contacted for future studies?',
+        choices=YES_NO)
+
+    child_consent = models.CharField(
+        max_length=3,
+        verbose_name='Are you willing to consent for your child’s participation in FLOURISH?',
+        choices=YES_NO_NA,
+        help_text='If ‘No’ ineligible for study participation')
+
+    ineligibility = models.TextField(
+        verbose_name="Reason not eligible",
+        max_length=150,
+        null=True,
+        editable=False)
+
+    is_eligible = models.BooleanField(
+        default=False,
+        editable=False)
+
+    objects = SubjectConsentManager()
 
     consent = ConsentManager()
 
@@ -81,11 +139,15 @@ class PreFlourishConsent(
 
     def save(self, *args, **kwargs):
         eligibility_criteria = ConsentEligibility(
+            self.remain_in_study, self.hiv_testing, self.breastfeed_intent,
             self.consent_reviewed, self.study_questions, self.assessment_score,
-            self.consent_signature, self.consent_copy)
+            self.consent_signature, self.consent_copy, self.child_consent)
         self.is_eligible = eligibility_criteria.is_eligible
         self.ineligibility = eligibility_criteria.error_message
         self.version = '1'
+        if self.is_eligible:
+            if self.created and not self.subject_identifier:
+                self.subject_identifier = self.update_subject_identifier_on_save()
         super().save(*args, **kwargs)
 
     def natural_key(self):
@@ -96,6 +158,8 @@ class PreFlourishConsent(
 
         Override this if needed.
         """
+        if not self.is_eligible:
+            return None
         subject_identifier = SubjectIdentifier(
             identifier_type='subject',
             requesting_model=self._meta.label_lower,
@@ -105,6 +169,15 @@ class PreFlourishConsent(
     @property
     def consent_version(self):
         return self.version
+
+    def registration_update_or_create(self):
+        """Creates or Updates the registration model with attributes
+        from this instance.
+
+        Called from the signal
+        """
+        if self.is_eligible:
+            return super().registration_update_or_create()
 
     class Meta(ConsentModelMixin.Meta):
         app_label = 'pre_flourish'
