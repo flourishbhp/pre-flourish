@@ -1,14 +1,16 @@
 from django.db import models
+from edc_base.model_fields.custom_fields import OtherCharField
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.model_validators.date import datetime_not_future
 from edc_base.utils import get_utcnow
+from edc_base.model_validators import date_not_future
+from edc_protocol.validators import date_not_before_study_start
 from edc_identifier.managers import SubjectIdentifierManager
 from edc_protocol.validators import datetime_not_before_study_start
 
 from edc_action_item.model_mixins import ActionModelMixin
 from edc_visit_schedule.model_mixins import OffScheduleModelMixin
-from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
 
 class PreFlourishOffStudy(OffScheduleModelMixin,
@@ -28,6 +30,20 @@ class PreFlourishOffStudy(OffScheduleModelMixin,
         verbose_name=('Please code the primary reason participant taken'
                       ' off-study'),
         max_length=115)
+
+    offstudy_date = models.DateField(
+        verbose_name="Off-study Date",
+        validators=[
+            date_not_before_study_start,
+            date_not_future])
+
+    reason_other = OtherCharField()
+
+    comment = models.TextField(
+        max_length=250,
+        verbose_name="Comment",
+        blank=True,
+        null=True)
 
     objects = SubjectIdentifierManager()
 

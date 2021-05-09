@@ -1,8 +1,30 @@
 {% extends 'edc_subject_dashboard/dashboard.html' %}
-
 {% load static %}
+{% load edc_visit_schedule_extras %}
+{% load edc_subject_dashboard_extras %}
+{% load pre_flourish_dashboard_extras %}
 
 {% block locator_information %}{% endblock locator_information %}
+
+{% block visit_schedules_panel %}
+
+	{% if  visit_schedules|length > 1 and child_names %}
+	  <ul class="nav nav-tabs">
+	  	 {% for visit_schedule in visit_schedules.values %}
+	       <li  {% if forloop.counter == 1 %} class="active" {% endif %}><a data-toggle="tab" href="#id_{{visit_schedule}}">{{child_names|get_item:visit_schedule.name }}</a></li>
+	  	 {% endfor %}
+	  </ul>
+	  {% endif %}
+
+	<div class="tab-content">
+	 {% for visit_schedule in visit_schedules.values %}
+		<div id="id_{{visit_schedule}}" class="tab-pane fade  {% if forloop.counter == 1 %} in active {% endif %}">
+	   		{% include "pre_flourish/caregiver/dashboard/schedules.html" %}
+	   	</div>
+	 {% endfor %}
+	</div>
+
+{% endblock visit_schedules_panel %}
 
 {% block top_bar %}
 

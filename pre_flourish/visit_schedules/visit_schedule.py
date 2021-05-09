@@ -7,7 +7,7 @@ pre_flourish_visit_schedule = VisitSchedule(
     name='visit_schedule1',
     verbose_name='Pre Flourish Visit Schedule',
     offstudy_model='pre_flourish.preflourishoffstudy',
-    locator_model='pre_flourish.preflourishcaregiverlocator',
+    locator_model='',
     death_report_model='pre_flourish.preflourishdeathreport',
     previous_visit_schedule=None)
 
@@ -21,7 +21,7 @@ pre_flourish_child_visit_schedule = VisitSchedule(
     name='child_visit_schedule1',
     verbose_name='Pre Flourish Child Visit Schedule',
     offstudy_model='pre_flourish.preflourishoffstudy',
-    locator_model='pre_flourish.preflourishcaregiverlocator',
+    locator_model='',
     death_report_model='pre_flourish.preflourishdeathreport',
     previous_visit_schedule=None)
 
