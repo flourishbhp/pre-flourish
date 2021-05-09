@@ -1,8 +1,7 @@
 from edc_visit_schedule import VisitSchedule, site_visit_schedules
 
 from .schedules import pre_flourish_schedule1, pre_flourish_schedule2, pre_flourish_schedule3
-from .schedules import pre_flourish_child_schedule1, pre_flourish_child_schedule2
-from .schedules import pre_flourish_child_schedule3
+from .schedules import pre_flourish_child_schedule1
 
 pre_flourish_visit_schedule = VisitSchedule(
     name='visit_schedule1',
@@ -27,7 +26,5 @@ pre_flourish_child_visit_schedule = VisitSchedule(
     previous_visit_schedule=None)
 
 pre_flourish_child_visit_schedule.add_schedule(pre_flourish_child_schedule1)
-pre_flourish_child_visit_schedule.add_schedule(pre_flourish_child_schedule2)
-pre_flourish_child_visit_schedule.add_schedule(pre_flourish_child_schedule3)
 
 site_visit_schedules.register(pre_flourish_child_visit_schedule)

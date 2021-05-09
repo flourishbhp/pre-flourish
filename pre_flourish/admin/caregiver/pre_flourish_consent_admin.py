@@ -71,6 +71,10 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
                 'identity',
                 'identity_type',
                 'confirm_identity',
+                'biological_caregiver',
+                'remain_in_study',
+                'future_contact',
+                'child_consent',
                 'comment')}),
         ('Review Questions', {
             'fields': (
@@ -84,6 +88,10 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
 
     radio_fields = {
         'assessment_score': admin.VERTICAL,
+        'biological_caregiver': admin.VERTICAL,
+        'remain_in_study': admin.VERTICAL,
+        'future_contact': admin.VERTICAL,
+        'child_consent': admin.VERTICAL,
         'citizen': admin.VERTICAL,
         'consent_copy': admin.VERTICAL,
         'consent_reviewed': admin.VERTICAL,

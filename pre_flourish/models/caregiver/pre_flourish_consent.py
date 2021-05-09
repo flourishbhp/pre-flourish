@@ -4,8 +4,6 @@ from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.sites.site_model_mixin import SiteModelMixin
 from edc_identifier.model_mixins import NonUniqueSubjectIdentifierModelMixin
-from edc_registration.model_mixins.updates_or_creates_registered_subject_model_mixin import (
-    UpdatesOrCreatesRegistrationModelError)
 from edc_registration.model_mixins import (
     UpdatesOrCreatesRegistrationModelMixin)
 from edc_search.model_mixins import SearchSlugManager
@@ -84,28 +82,16 @@ class PreFlourishConsent(
         blank=True,
         null=True,)
 
+    biological_caregiver = models.CharField(
+        max_length=3,
+        verbose_name='Are you the biological mother to the child or children?',
+        choices=YES_NO)
+
     remain_in_study = models.CharField(
         max_length=3,
         verbose_name='Are you willing to remain in the study area until 2025?',
         choices=YES_NO,
         help_text='If no, participant is not eligible.')
-
-    hiv_testing = models.CharField(
-        max_length=3,
-        verbose_name=('If HIV status not known, are you willing to undergo HIV'
-                      ' testing and counseling?'),
-        choices=YES_NO,
-        blank=True,
-        null=True,
-        help_text='If ‘No’ ineligible for study participation')
-
-    breastfeed_intent = models.CharField(
-        max_length=3,
-        verbose_name='Do you intend on breast feeding your infant?',
-        choices=YES_NO,
-        blank=True,
-        null=True,
-        help_text='If ‘No’ ineligible for study participation')
 
     future_contact = models.CharField(
         max_length=3,
@@ -139,7 +125,7 @@ class PreFlourishConsent(
 
     def save(self, *args, **kwargs):
         eligibility_criteria = ConsentEligibility(
-            self.remain_in_study, self.hiv_testing, self.breastfeed_intent,
+            self.remain_in_study,
             self.consent_reviewed, self.study_questions, self.assessment_score,
             self.consent_signature, self.consent_copy, self.child_consent)
         self.is_eligible = eligibility_criteria.is_eligible
@@ -153,6 +139,16 @@ class PreFlourishConsent(
     def natural_key(self):
         return (self.subject_identifier, self.version)
 
+    @property
+    def caregiver_type(self):
+        """Return the letter that represents the caregiver type.
+        """
+        if self.biological_caregiver == 'Yes':
+            return 'B'
+        elif self.biological_caregiver == 'No':
+            return 'C'
+        return None
+
     def make_new_identifier(self):
         """Returns a new and unique identifier.
 
@@ -161,6 +157,7 @@ class PreFlourishConsent(
         if not self.is_eligible:
             return None
         subject_identifier = SubjectIdentifier(
+            caregiver_type=self.caregiver_type,
             identifier_type='subject',
             requesting_model=self._meta.label_lower,
             site=self.site)
