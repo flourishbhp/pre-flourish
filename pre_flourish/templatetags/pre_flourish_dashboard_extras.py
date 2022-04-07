@@ -46,6 +46,11 @@ def edit_screening_button(model_wrapper):
         title=' '.join(title))
 
 
+@register.inclusion_tag('pre_flourish/buttons/screening_button.html')
+def screening_button(model_wrapper):
+    return dict()
+
+
 @register.inclusion_tag('pre_flourish/buttons/eligibility_button.html')
 def eligibility_button(model_wrapper):
     comment = []
@@ -57,3 +62,12 @@ def eligibility_button(model_wrapper):
         comment.sort()
     return dict(eligible=obj.is_eligible, comment=comment,
                 tooltip=tooltip, obj=obj)
+
+
+@register.inclusion_tag('pre_flourish/buttons/edit_screening_button.html')
+def edit_screening_button(model_wrapper):
+    title = ['Edit Subject Screening form.']
+    return dict(
+        screening_identifier=model_wrapper.object.screening_identifier,
+        href=model_wrapper.href,
+        title=' '.join(title))
