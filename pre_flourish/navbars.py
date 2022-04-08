@@ -1,11 +1,19 @@
 from django.conf import settings
 from edc_navbar import NavbarItem, site_navbars, Navbar
 
-
 no_url_namespace = True if settings.APP_NAME == 'pre_flourish' else False
 
 pre_flourish_dashboard = Navbar(name='pre_flourish_dashboard')
 
+pre_flourish_dashboard.append_item(
+    NavbarItem(
+        name='pre_flourish_maternal_dataset',
+        title='Pre Flourish Maternal Dataset',
+        label='pre flourish maternal dataset',
+        fa_icon='far fa-user-circle',
+        url_name=settings.DASHBOARD_URL_NAMES[
+            'pre_flourish_maternal_dataset_listboard_url'],
+        no_url_namespace=False))
 
 pre_flourish_dashboard.append_item(
     NavbarItem(
@@ -33,6 +41,5 @@ pre_flourish_dashboard.append_item(
         fa_icon='far fa-user-circle',
         url_name='pre_flourish_child_listboard_url',
         no_url_namespace=False))
-
 
 site_navbars.register(pre_flourish_dashboard)
