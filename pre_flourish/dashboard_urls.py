@@ -4,12 +4,20 @@ from edc_dashboard import UrlConfig
 
 from .patterns import subject_identifier, screening_identifier
 from .views import (ChildListboardView, ScreeningListBoardView,
-                    SubjectListboardView, DashboardView)
+                    SubjectListboardView, DashboardView,
+                    PreFlourishMaternalDatasetListBoardView)
 
 child_listboard_url_config = UrlConfig(
     url_name='pre_flourish_child_listboard_url',
     view_class=ChildListboardView,
     label='pre_flourish_child_listboard',
+    identifier_label='subject_identifier',
+    identifier_pattern=subject_identifier)
+
+pre_flourish_maternal_dataset_listboard_url_config = UrlConfig(
+    url_name='pre_flourish_maternal_dataset_listboard_url',
+    view_class=PreFlourishMaternalDatasetListBoardView,
+    label='pre_flourish_maternal_dataset_listboard',
     identifier_label='subject_identifier',
     identifier_pattern=subject_identifier)
 
@@ -41,3 +49,5 @@ urlpatterns += child_listboard_url_config.listboard_urls
 urlpatterns += pre_flourish_screening_listboard_url_config.listboard_urls
 urlpatterns += pre_flourish_consent_listboard_url_config.listboard_urls
 urlpatterns += pre_flourish_subject_dashboard_url_config.dashboard_urls
+urlpatterns += pre_flourish_maternal_dataset_listboard_url_config.listboard_urls
+

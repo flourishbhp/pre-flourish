@@ -1,0 +1,44 @@
+{% extends "edc_dashboard/listboard.html" %}
+{% load admin_urls %}
+{% load edc_base_extras %}
+{% load pre_flourish_dashboard_extras %}
+
+
+{% block listboard_panel %}
+    {% if results %}
+        <span class="pull-right">
+	<span class="glyphicon glyphicon-folder-open"></span>
+	<a href="{% url 'flourish_dashboard:locator_report_url' %}" class="btn btn-sm btn-info">Locator report</a>
+	</span>
+        &nbsp;&nbsp;
+    {% endif %}
+{% endblock listboard_panel %}
+{% block listboard_table_header %}
+    <!-- begin results header -->
+    <th>#</th>
+    <th></th>
+    <th>Prev study</th>
+    <th>Prev study Identifier</th>
+    <th>Screening Identifier</th>
+    <th>Subject Identifier</th>
+    <!-- end results header -->
+{% endblock listboard_table_header %}
+
+
+{% block listboard_table_button_column %}
+    <td style="white-space: nowrap;">
+        <div class="btn-group">
+            {% edit_screening_button result %}
+            {% screening_button result %}
+        </div>
+    </td>
+{% endblock listboard_table_button_column %}
+
+
+{% block listboard_table_columns %}
+
+    <td>{{ result.protocol }} </td>
+    <td>{{ result.study_maternal_identifier }}
+    <td>{{ result.object.screening_identifier }}</td>
+    <td>{{ result.subject_identifier }} </td>
+{% endblock listboard_table_columns %}
