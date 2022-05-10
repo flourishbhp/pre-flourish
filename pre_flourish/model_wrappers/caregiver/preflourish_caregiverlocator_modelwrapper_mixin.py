@@ -1,7 +1,14 @@
 
 from django.apps import apps as django_apps
+from .maternal_screening_model_wrapper import PreFlourishMaternalScreeningModelWrapper
 
 class PreflourishCaregiverLocatorModelWrapperMixin:
+
+    subject_consent_model = 'pre_flourish.preflourishconsent'
+    subject_screening_model = 'pre_flourish.preflourishsubjectscreening'
+    subject_screening_wrapper_cls = PreFlourishMaternalScreeningModelWrapper
+    
+
     @property
     def subject_consent_model_cls(self):
         return django_apps.get_model(self.subject_consent_model)

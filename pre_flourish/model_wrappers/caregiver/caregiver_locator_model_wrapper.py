@@ -9,10 +9,12 @@ class PreflourishCaregiverLocatorModelWrapper(ModelWrapper, PreflourishCaregiver
     querystring_attrs = ['screening_identifier', 'subject_identifier',
                          'study_maternal_identifier', 'first_name', 'last_name']
     next_url_attrs = ['screening_identifier', 'subject_identifier',
-                      'study_maternal_identifier']
+                      'study_maternal_identifier',]
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
         'maternal_dataset_listboard_url')
 
-    subject_consent_model = 'pre_flourish.preflourishconsent'
-    subject_screening_model = 'pre_flourish.preflourishsubjectscreening'
-    subject_screening_wrapper_cls = PreFlourishMaternalScreeningModelWrapper
+    @property
+    def previous_subject_identifier(self):
+        return self.object.study_maternal_identifier
+
+    
