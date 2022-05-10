@@ -48,7 +48,7 @@ def edit_screening_button(model_wrapper):
 
 @register.inclusion_tag('pre_flourish/buttons/screening_button.html')
 def screening_button(model_wrapper):
-    add_screening_href = model_wrapper.subject_screening_wrapper.href
+    add_screening_href = "model_wrapper.subject_screening_wrapper.href"
     subject_screening_obj = model_wrapper.subject_screening_obj
 
     return dict(

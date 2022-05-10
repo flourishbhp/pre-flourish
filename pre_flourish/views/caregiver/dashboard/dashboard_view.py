@@ -11,7 +11,7 @@ from ....action_items import PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
 from ....model_wrappers import (
     AppointmentModelWrapper, PreFlourishSubjectConsentModelWrapper)
 from ....model_wrappers import (MaternalVisitModelWrapper,
-                                PreFlourishCaregiverLocatorModelWrapper)
+                                PreflourishCaregiverLocatorWrapper)
 
 
 class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -26,7 +26,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     navbar_name = 'pre_flourish_dashboard'
     navbar_selected_item = 'pre_flourish_consent'
     subject_locator_model = 'pre_flourish.preflourishcaregiverlocator'
-    subject_locator_model_wrapper_cls = PreFlourishCaregiverLocatorModelWrapper
+    subject_locator_model_wrapper_cls = PreflourishCaregiverLocatorWrapper
     visit_model_wrapper_cls = MaternalVisitModelWrapper
     special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
 
