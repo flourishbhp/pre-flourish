@@ -21,7 +21,7 @@ class PreflourishCaregiverLocatorModelWrapperMixin:
     def subject_screening_obj(self):
         try:
             subject_screening = self.subject_screening_model_cls.objects.get(
-                screening_identifier=self.object.screening_identifier)
+                previous_subject_identifier=self.previous_subject_identifier)
         except self.subject_screening_model_cls.DoesNotExist:
             return None
         else:
@@ -43,3 +43,14 @@ class PreflourishCaregiverLocatorModelWrapperMixin:
         )
 
         return options
+
+    @property
+    def subject_consent_obj(self):
+        if self.subject_screening_obj:
+            try:
+                subject_consent = self.subject_consent_model_cls.objects.get(
+                    screening_identifier=self.subject_screening_obj.screening_identifier)                
+            except self.subject_consent_model_cls.DoesNotExist:
+                pass
+            else:
+                return subject_consent

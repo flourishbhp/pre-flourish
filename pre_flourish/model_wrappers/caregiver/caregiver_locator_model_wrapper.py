@@ -2,7 +2,7 @@ from edc_model_wrapper import ModelWrapper
 from django.conf import settings
 from django.apps import apps as django_apps
 from .maternal_screening_model_wrapper import PreFlourishMaternalScreeningModelWrapper
-from .preflourish_caregiverlocator_modelwrapper_mixin import PreflourishCaregiverLocatorModelWrapperMixin
+from .pre_flourish_caregiverlocator_modelwrapper_mixin import PreflourishCaregiverLocatorModelWrapperMixin
 
 class PreflourishCaregiverLocatorModelWrapper(ModelWrapper, PreflourishCaregiverLocatorModelWrapperMixin):
     model = 'flourish_caregiver.caregiverlocator'

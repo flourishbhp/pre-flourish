@@ -40,11 +40,16 @@
     <td>{{ result.protocol }} </td>
     <td>{{ result.study_maternal_identifier }}
 
-    {% if result.object.screening_identifier %}
-        <td>{{ result.object.screening_identifier }}</td>
+    {% if result.subject_screening_obj.screening_identifier %}
+        <td>{{ result.subject_screening_obj.screening_identifier }}</td>
+    {% else %}
+        <td></td>
+    {% endif %}
+
+    {% if result.subject_consent_obj.subject_identifier %}
+        <td>{{ result.subject_consent_obj.subject_identifier }}</td>
     {% else %}
         <td></td>
     {% endif %}
    
-    <td>{{ result.subject_identifier }} </td>
 {% endblock listboard_table_columns %}

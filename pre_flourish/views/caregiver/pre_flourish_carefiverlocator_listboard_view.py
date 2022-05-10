@@ -17,18 +17,18 @@ class PreFlourishCaregiverLocatorListBoardView(
         NavbarViewMixin, EdcBaseViewMixin,
         ListboardFilterViewMixin, SearchFormViewMixin,
         ListboardView):
-    listboard_template = 'pre_flourish_maternal_dataset_listboard_template'
-    listboard_url = 'pre_flourish_maternal_dataset_listboard_url'
+    listboard_template = 'pre_flourish_caragiver_locator_listboard_template'
+    listboard_url = 'pre_flourish_caregiver_locator_listboard_url'
     listboard_panel_style = 'info'
     listboard_fa_icon = "fa-user-plus"
     model = 'flourish_caregiver.caregiverlocator'
     model_wrapper_cls = PreflourishCaregiverLocatorModelWrapper
     # listboard_view_filters = ListboardViewFilters()
     navbar_name = 'pre_flourish_dashboard'
-    navbar_selected_item = 'pre_flourish_maternal_dataset'
+    # navbar_selected_item = 'pre_flourish_caregiver_locator'
     # ordering = '-locatorlog__locatorlogentry__report_datetime'
     paginate_by = 10
-    search_form_url = 'pre_flourish_maternal_dataset_listboard_url'
+    search_form_url = 'pre_flourish_caregiver_locator_listboard_url'
     protocol = 'Tshilo Dikotla'
 
     @method_decorator(login_required)
