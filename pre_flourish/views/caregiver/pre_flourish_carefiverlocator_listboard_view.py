@@ -11,9 +11,9 @@ from edc_navbar import NavbarViewMixin
 
 # from ...model_wrappers import MaternalDatasetModelWrapper
 
-from ...model_wrappers import PreflourishCaregiverLocatorWrapper
+from ...model_wrappers import PreflourishCaregiverLocatorModelWrapper
 
-class PreFlourishMaternalDatasetListBoardView(
+class PreFlourishCaregiverLocatorListBoardView(
         NavbarViewMixin, EdcBaseViewMixin,
         ListboardFilterViewMixin, SearchFormViewMixin,
         ListboardView):
@@ -22,7 +22,7 @@ class PreFlourishMaternalDatasetListBoardView(
     listboard_panel_style = 'info'
     listboard_fa_icon = "fa-user-plus"
     model = 'flourish_caregiver.caregiverlocator'
-    model_wrapper_cls = PreflourishCaregiverLocatorWrapper
+    model_wrapper_cls = PreflourishCaregiverLocatorModelWrapper
     # listboard_view_filters = ListboardViewFilters()
     navbar_name = 'pre_flourish_dashboard'
     navbar_selected_item = 'pre_flourish_maternal_dataset'

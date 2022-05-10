@@ -5,7 +5,7 @@ from edc_dashboard import UrlConfig
 from .patterns import subject_identifier, screening_identifier
 from .views import (ChildListboardView, ScreeningListBoardView,
                     SubjectListboardView, DashboardView,
-                    PreFlourishMaternalDatasetListBoardView)
+                    PreFlourishCaregiverLocatorListBoardView)
 
 child_listboard_url_config = UrlConfig(
     url_name='pre_flourish_child_listboard_url',
@@ -16,7 +16,7 @@ child_listboard_url_config = UrlConfig(
 
 pre_flourish_maternal_dataset_listboard_url_config = UrlConfig(
     url_name='pre_flourish_maternal_dataset_listboard_url',
-    view_class=PreFlourishMaternalDatasetListBoardView,
+    view_class=PreFlourishCaregiverLocatorListBoardView,
     label='pre_flourish_maternal_dataset_listboard',
     identifier_label='subject_identifier',
     identifier_pattern=subject_identifier)
