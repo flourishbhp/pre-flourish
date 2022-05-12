@@ -5,7 +5,7 @@ from edc_dashboard import UrlConfig
 from .patterns import subject_identifier, screening_identifier
 from .views import (ChildListboardView, ScreeningListBoardView,
                     SubjectListboardView, DashboardView,
-                    PreFlourishMaternalDatasetListBoardView)
+                    PreFlourishCaregiverLocatorListBoardView)
 
 child_listboard_url_config = UrlConfig(
     url_name='pre_flourish_child_listboard_url',
@@ -14,10 +14,10 @@ child_listboard_url_config = UrlConfig(
     identifier_label='subject_identifier',
     identifier_pattern=subject_identifier)
 
-pre_flourish_maternal_dataset_listboard_url_config = UrlConfig(
-    url_name='pre_flourish_maternal_dataset_listboard_url',
-    view_class=PreFlourishMaternalDatasetListBoardView,
-    label='pre_flourish_maternal_dataset_listboard',
+pre_flourish_caregiver_locator_listboard_url_config = UrlConfig(
+    url_name='pre_flourish_caregiver_locator_listboard_url',
+    view_class=PreFlourishCaregiverLocatorListBoardView,
+    label='pre_flourish_caregiver_locator_listboard_url',
     identifier_label='subject_identifier',
     identifier_pattern=subject_identifier)
 
@@ -49,5 +49,5 @@ urlpatterns += child_listboard_url_config.listboard_urls
 urlpatterns += pre_flourish_screening_listboard_url_config.listboard_urls
 urlpatterns += pre_flourish_consent_listboard_url_config.listboard_urls
 urlpatterns += pre_flourish_subject_dashboard_url_config.dashboard_urls
-urlpatterns += pre_flourish_maternal_dataset_listboard_url_config.listboard_urls
+urlpatterns += pre_flourish_caregiver_locator_listboard_url_config.listboard_urls
 

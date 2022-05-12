@@ -39,6 +39,17 @@
 
     <td>{{ result.protocol }} </td>
     <td>{{ result.study_maternal_identifier }}
-    <td>{{ result.object.screening_identifier }}</td>
-    <td>{{ result.subject_identifier }} </td>
+
+    {% if result.subject_screening_obj.screening_identifier %}
+        <td>{{ result.subject_screening_obj.screening_identifier }}</td>
+    {% else %}
+        <td></td>
+    {% endif %}
+
+    {% if result.subject_consent_obj.subject_identifier %}
+        <td>{{ result.subject_consent_obj.subject_identifier }}</td>
+    {% else %}
+        <td></td>
+    {% endif %}
+   
 {% endblock listboard_table_columns %}
