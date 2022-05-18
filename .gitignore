@@ -127,3 +127,7 @@ ENV/
 .mypy_cache/
 
 crypto_fields/
+
+# ide
+**/.idea/**
+**/.vscode/**

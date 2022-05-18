@@ -1,3 +1,4 @@
+from statistics import mode
 from django.db import models
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
@@ -12,6 +13,7 @@ from edc_search.model_mixins import SearchSlugManager
 from ...identifiers import ScreeningIdentifier
 from .eligibility import Eligibility
 from .model_mixins import SearchSlugModelMixin
+from flourish_caregiver.models import CaregiverLocator
 
 
 class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):
@@ -36,6 +38,11 @@ class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteMode
         null=True,
         unique=True)
 
+    previous_subject_identifier = models.CharField(
+        verbose_name='Prev. Subject Identifier',
+        max_length=15,
+        null=True)
+        
     report_datetime = models.DateTimeField(
         verbose_name="Report Date and Time",
         default=get_utcnow,

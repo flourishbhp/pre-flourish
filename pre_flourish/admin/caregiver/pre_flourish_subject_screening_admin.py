@@ -13,13 +13,14 @@ class PreFlourishSubjectScreeningAdmin(ModelAdminMixin, admin.ModelAdmin):
     search_fields = ['subject_identifier']
 
     fields = ('screening_identifier',
+              'previous_subject_identifier',
               'report_datetime',
               'age_in_years',
               'has_omang',
               'has_child')
 
     radio_fields = {'has_omang': admin.VERTICAL,
-                    'has_child': admin.VERTICAL,}
+                    'has_child': admin.VERTICAL}
 
     list_display = (
         'report_datetime', 'age_in_years', 'has_child', 'is_eligible', 'is_consented')
