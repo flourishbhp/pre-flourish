@@ -22,24 +22,7 @@ from pre_flourish.choices import (
 from .list_models import ReasonsUnwilling
 
 
-class Call(CallModelMixin, BaseUuidModel):
-    scheduled = models.DateTimeField(
-        default=get_utcnow)
-
-    class Meta(CallModelMixin.Meta):
-        app_label = 'pre_flourish'
-
-
-class Log(LogModelMixin, BaseUuidModel):
-    call = models.ForeignKey(Call, on_delete=models.PROTECT)
-
-    class Meta(LogModelMixin.Meta):
-        app_label = 'pre_flourish'
-
-
-class LogEntry(BaseUuidModel):
-    log = models.ForeignKey(Log, on_delete=models.PROTECT)
-
+class PreFlourishLogEntry(BaseUuidModel):
     subject_identifier = models.CharField(
         max_length=50,
         blank=True, )
@@ -249,10 +232,10 @@ class LogEntry(BaseUuidModel):
     @property
     def log_entries(self):
         # return self.objects.filter()
-        return LogEntry.objects.filter(log__id=self.log.id)
+        return PreFlourishLogEntry.objects.filter(log__id=self.log.id)
 
     class Meta:
-        unique_together = ('call_datetime', 'log')
+        unique_together = ('call_datetime', 'study_maternal_identifier')
         app_label = 'pre_flourish'
         verbose_name = 'Call Log Entry'
         verbose_name_plural = 'Call Log Entries'

@@ -7,3 +7,4 @@ from .caregiver import PreFlourishConsentForm
 from .caregiver import PreFlourishSubjectScreeningForm
 from .child import PreFlourishChildVisitForm
 from .child import HuuPreEnrollmentForm
+from .caregiver import PreFlourishLogEntryForm
