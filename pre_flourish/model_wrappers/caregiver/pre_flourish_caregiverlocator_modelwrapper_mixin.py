@@ -19,9 +19,10 @@ class PreflourishCaregiverLocatorModelWrapperMixin:
 
     @property
     def subject_screening_obj(self):
+        breakpoint()
         try:
             subject_screening = self.subject_screening_model_cls.objects.get(
-                previous_subject_identifier=self.previous_subject_identifier)
+                previous_subject_identifier=self.flourish_subject_identifier)
         except self.subject_screening_model_cls.DoesNotExist:
             return None
         else:
