@@ -1,7 +1,8 @@
 from django import template
 from django.conf import settings
-
+from ..models import PreFlourishLogEntry
 register = template.Library()
+
 
 
 @register.filter
@@ -48,7 +49,7 @@ def edit_screening_button(model_wrapper):
 
 @register.inclusion_tag('pre_flourish/buttons/screening_button.html')
 def screening_button(model_wrapper):
-    add_screening_href = f'{model_wrapper.subject_screening_wrapper.href}&previous_subject_identifier={model_wrapper.subject_identifier}'
+    add_screening_href = f'{model_wrapper.subject_screening_wrapper.href}&previous_subject_identifier={model_wrapper.study_maternal_identifier}'
     subject_screening_obj = model_wrapper.subject_screening_obj
 
     return dict(
@@ -72,8 +73,10 @@ def eligibility_button(model_wrapper):
 
 @register.inclusion_tag('pre_flourish/buttons/log_entry_button.html')
 def log_entry_button(model_wrapper):
-    return dict()
-
+    href = model_wrapper.log_entry_model_wrapper.href
+    return dict(
+        href = href,
+    )
 
 @register.inclusion_tag('pre_flourish/buttons/edit_screening_button.html')
 def edit_screening_button(model_wrapper):

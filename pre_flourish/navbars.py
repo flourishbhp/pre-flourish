@@ -41,4 +41,13 @@ pre_flourish_dashboard.append_item(
         url_name='pre_flourish_child_listboard_url',
         no_url_namespace=False))
 
+
+pre_flourish_dashboard.append_item(
+    NavbarItem(
+        name='home_url',
+        title='pre_flourish_follow_up',
+        label='Pre Flourish Follow up',
+        fa_icon='fa-phone',
+        url_name='pre_flourish_follow:home_url'))
+
 site_navbars.register(pre_flourish_dashboard)
