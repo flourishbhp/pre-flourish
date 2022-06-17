@@ -13,10 +13,11 @@ from edc_navbar import NavbarViewMixin
 
 from ...model_wrappers import PreflourishCaregiverLocatorModelWrapper
 
-class PreFlourishCaregiverLocatorListBoardView(
-        NavbarViewMixin, EdcBaseViewMixin,
-        ListboardFilterViewMixin, SearchFormViewMixin,
-        ListboardView):
+
+class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin,
+                                               ListboardFilterViewMixin, SearchFormViewMixin,
+                                               ListboardView):
+
     listboard_template = 'pre_flourish_caragiver_locator_listboard_template'
     listboard_url = 'pre_flourish_caregiver_locator_listboard_url'
     listboard_panel_style = 'info'
@@ -56,6 +57,12 @@ class PreFlourishCaregiverLocatorListBoardView(
         if kwargs.get('study_maternal_identifier'):
             options.update(
                 {'study_maternal_identifier': kwargs.get('study_maternal_identifier')})
+        return options
+
+    def get_queryset_filter_options(self, request, *args, **kwargs):
+        options = super().get_queryset_filter_options(request, *args, **kwargs)
+
+        options.update({'study_maternal_identifier__startswith': '066-'})
         return options
 
     def extra_search_options(self, search_term):
