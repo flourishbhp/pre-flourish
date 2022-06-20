@@ -40,8 +40,8 @@ class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteMode
 
     previous_subject_identifier = models.CharField(
         verbose_name='Prev. Subject Identifier',
-        max_length=15,
-        null=True)
+        max_length=17,
+        null=True, )
         
     report_datetime = models.DateTimeField(
         verbose_name="Report Date and Time",

@@ -49,15 +49,15 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
             maternal_locator_add_url=self.model_cls().get_absolute_url())
         return context
 
-    # def get_queryset_filter_options(self, request, *args, **kwargs):
-    #     options = super().get_queryset_filter_options(request, *args, **kwargs)
-    #     if kwargs.get('screening_identifier'):
-    #         options.update(
-    #             {'screening_identifier': kwargs.get('screening_identifier')})
-    #     if kwargs.get('study_maternal_identifier'):
-    #         options.update(
-    #             {'study_maternal_identifier': kwargs.get('study_maternal_identifier')})
-    #     return options
+    def get_queryset_filter_options(self, request, *args, **kwargs):
+        options = super().get_queryset_filter_options(request, *args, **kwargs)
+        if kwargs.get('screening_identifier'):
+            options.update(
+                {'screening_identifier': kwargs.get('screening_identifier')})
+        if kwargs.get('study_maternal_identifier'):
+            options.update(
+                {'study_maternal_identifier': kwargs.get('study_maternal_identifier')})
+        return options
 
     def get_queryset_filter_options(self, request, *args, **kwargs):
         options = super().get_queryset_filter_options(request, *args, **kwargs)
@@ -66,7 +66,8 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
         return options
 
     def extra_search_options(self, search_term):
+        breakpoint()
         q = Q()
-        if re.match('^[A-Z]+$', search_term):
-            q = Q(first_name__exact=search_term)
+        if search_term:
+            q = Q(study_maternal_identifier__iexact=search_term)
         return q

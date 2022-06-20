@@ -6,3 +6,4 @@ from .pre_flourish_caregiver_visit_form import PreFlourishCaregiverVisitForm
 from .cyhuu_pre_enrollment_form import CyhuuPreEnrollmentForm
 from .pre_flourish_consent_form import PreFlourishConsentForm
 from .pre_flourish_subject_screening_form import PreFlourishSubjectScreeningForm
+from .preflourish_log_entry_form import PreFlourishLogEntryForm
