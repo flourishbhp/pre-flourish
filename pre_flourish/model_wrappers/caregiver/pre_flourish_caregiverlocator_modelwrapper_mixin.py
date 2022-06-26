@@ -1,12 +1,16 @@
 
 from django.apps import apps as django_apps
+from zmq import has
 from .maternal_screening_model_wrapper import PreFlourishMaternalScreeningModelWrapper
+from .log_entry_model_wrapper import PreFlourishLogEntryModelWrapper
+from ...models import PreFlourishLogEntry
 
 class PreflourishCaregiverLocatorModelWrapperMixin:
 
     subject_consent_model = 'pre_flourish.preflourishconsent'
     subject_screening_model = 'pre_flourish.preflourishsubjectscreening'
     subject_screening_wrapper_cls = PreFlourishMaternalScreeningModelWrapper
+
     
 
     @property
@@ -54,3 +58,17 @@ class PreflourishCaregiverLocatorModelWrapperMixin:
                 pass
             else:
                 return subject_consent
+              
+    @property      
+    def log_entry_model_wrapper(self):
+
+        log_entry = PreFlourishLogEntry()
+        if hasattr(self, 'subject_identifier'):
+            # log_entry.subject_identifier = self.subject_identifier
+            log_entry.study_maternal_identifier = self.subject_identifier
+            
+            
+        return PreFlourishLogEntryModelWrapper(model_obj=log_entry)
+
+    # def call_log_entry_objs(self):
+    #     return

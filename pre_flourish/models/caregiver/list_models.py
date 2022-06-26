@@ -17,9 +17,13 @@ class MaternalDiagnosesList(ListModelMixin, BaseUuidModel):
     pass
 
 
-class PriorArv (ListModelMixin, BaseUuidModel):
+class PriorArv(ListModelMixin, BaseUuidModel):
     pass
 
 
 class WcsDxAdult(ListModelMixin, BaseUuidModel):
+    pass
+
+
+class ReasonsUnwilling(ListModelMixin, BaseUuidModel):
     pass
