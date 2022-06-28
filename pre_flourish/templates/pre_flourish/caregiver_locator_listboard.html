@@ -5,19 +5,19 @@
 
 
 {% block listboard_panel %}
-    {% if results %}
+    {% comment %} {% if results %}
         <span class="pull-right">
 	<span class="glyphicon glyphicon-folder-open"></span>
 	<a href="{% url 'flourish_dashboard:locator_report_url' %}" class="btn btn-sm btn-info">Locator report</a>
 	</span>
         &nbsp;&nbsp;
-    {% endif %}
+    {% endif %} {% endcomment %}
 {% endblock listboard_panel %}
 {% block listboard_table_header %}
     <!-- begin results header -->
     <th>#</th>
     <th></th>
-    <th>Flourish Subject Identifier</th>
+    <th>Study Maternal Identifier</th>
     <th>Screening Identifier</th>
     <th>Subject Identifier</th>
     <!-- end results header -->
@@ -28,7 +28,33 @@
     <td style="white-space: nowrap;">
         <div class="btn-group">
             {% edit_screening_button result %}
-            {% screening_button result %}
+
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ result.call_log_model_wrappers.count }} Calls
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    {% if  result.call_log_model_wrappers %}
+
+                        {% for log in result.call_log_model_wrappers %}
+                            <li  style="font-size: 10px; text-align: center"> {{ log.call_datetime }}</li>      
+                        {% endfor %}
+
+                    {% elif result.subject_screening_obj.screening_identifier %}
+                        <li style="font-size: 10px; text-align: center"> Not Called but screening already filled</li>
+                    {% else %}
+                            <li style="font-size: 10px; text-align: center"> No Call Log Entry </li>
+
+                    {% endif %}
+                    
+                </ul>
+            </div>
+
+            {% if result.call_or_home_visit_success %}
+                {% screening_button result %}
+            {% endif %}
+            
         </div>
     </td>
 {% endblock listboard_table_button_column %}
@@ -36,7 +62,7 @@
 
 {% block listboard_table_columns %}
 
-    <td>{{ result.subject_identifier }} </td>
+    <td>{{ result.previous_subject_identifier }} </td>
 
     {% if result.subject_screening_obj.screening_identifier %}
         <td>{{ result.subject_screening_obj.screening_identifier }}</td>
