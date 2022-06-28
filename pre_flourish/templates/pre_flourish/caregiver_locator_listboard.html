@@ -17,7 +17,7 @@
     <!-- begin results header -->
     <th>#</th>
     <th></th>
-    <th>Flourish Subject Identifier</th>
+    <th>Study Maternal Identifier</th>
     <th>Screening Identifier</th>
     <th>Subject Identifier</th>
     <!-- end results header -->
@@ -36,7 +36,7 @@
 
 {% block listboard_table_columns %}
 
-    <td>{{ result.subject_identifier }} </td>
+    <td>{{ result.previous_subject_identifier }} </td>
 
     {% if result.subject_screening_obj.screening_identifier %}
         <td>{{ result.subject_screening_obj.screening_identifier }}</td>
