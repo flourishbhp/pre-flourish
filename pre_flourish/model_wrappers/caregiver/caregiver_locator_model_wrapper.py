@@ -1,9 +1,10 @@
 from edc_model_wrapper import ModelWrapper
 from django.conf import settings
 from django.apps import apps as django_apps
+from django.db.models import Q
 from .maternal_screening_model_wrapper import PreFlourishMaternalScreeningModelWrapper
 from .pre_flourish_caregiverlocator_modelwrapper_mixin import PreflourishCaregiverLocatorModelWrapperMixin
-
+from .log_entry_model_wrapper import PreFlourishLogEntryModelWrapper
 class PreflourishCaregiverLocatorModelWrapper(PreflourishCaregiverLocatorModelWrapperMixin, 
                                               ModelWrapper):
     model = 'flourish_caregiver.caregiverlocator'
@@ -11,9 +12,53 @@ class PreflourishCaregiverLocatorModelWrapper(PreflourishCaregiverLocatorModelWr
                          'study_maternal_identifier', 'first_name', 'last_name']
     next_url_attrs = ['screening_identifier', 'subject_identifier',
                       'study_maternal_identifier',]
-    next_url_name = settings.DASHBOARD_URL_NAMES.get(
-        'maternal_dataset_listboard_url')
+    next_url_name = settings.DASHBOARD_URL_NAMES.get('maternal_dataset_listboard_url')   
+    inperson_contact_model = 'pre_flourish_follow.preflourishinpersoncontactattempt'
+    log_entry_model = 'pre_flourish_follow.preflourishlogentry'
+    
+    
+    @property
+    def inperson_contact_cls(self):
+        return django_apps.get_model(self.inperson_contact_model)
+    
+    @property
+    def log_entry_cls(self):
+        return django_apps.get_model(self.log_entry_model)
 
     @property
     def previous_subject_identifier(self):
         return self.object.study_maternal_identifier
+
+    @property
+    def call_or_home_visit_success(self):
+        """Returns true if the call or home visit was a success.
+        """
+        log_entries = self.log_entry_cls.objects.filter(
+            ~Q(phone_num_success='none_of_the_above'),
+            study_maternal_identifier=self.object.study_maternal_identifier,
+            phone_num_success__isnull=False)
+        home_visit_logs = self.inperson_contact_cls.objects.filter(
+            ~Q(successful_location='none_of_the_above'),
+            study_maternal_identifier=self.object.study_maternal_identifier,
+            successful_location__isnull=False)
+        if log_entries:
+            return True
+        elif home_visit_logs:
+            return True
+        return False
+    
+    @property
+    def call_log_model_wrappers(self):
+        
+        log_entry_wrappers = []
+        
+        log_entries = self.log_entry_cls.objects.filter(
+            study_maternal_identifier = self.object.study_maternal_identifier
+        )
+        
+        for entry in log_entries:
+            log_entry_wrappers.append(
+                PreFlourishLogEntryModelWrapper(model_obj=entry)
+            )
+        
+        return log_entries

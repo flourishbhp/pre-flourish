@@ -30,18 +30,29 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
     # ordering = '-locatorlog__locatorlogentry__report_datetime'
     paginate_by = 10
     search_form_url = 'pre_flourish_caregiver_locator_listboard_url'
-    protocol = 'Tshilo Dikotla'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
-    # def get_queryset(self):
+    def get_queryset(self):
+        """
+        This study is for prev. BCCP participants only, hence they are being
+        collected from the caregiver locator whose subject identifier starts with
+        066-
 
-    #     participants = super(PreFlourishMaternalDatasetListBoardView, self).get_queryset().filter(
-    #         protocol=self.protocol)
+        Returns:
+            Queryset with BCCP participants
+        """
+        # participants = super().get_queryset().filter(
+        #     subject_identifier__istartswith='066'
+        # )
+        
+        participants = super().get_queryset().filter(
+            study_maternal_identifier__istartswith='066'
+        )
 
-    #     return participants
+        return participants
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -66,7 +77,6 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
         return options
 
     def extra_search_options(self, search_term):
-        breakpoint()
         q = Q()
         if search_term:
             q = Q(study_maternal_identifier__iexact=search_term)
