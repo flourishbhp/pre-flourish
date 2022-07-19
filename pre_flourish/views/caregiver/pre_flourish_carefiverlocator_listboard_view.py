@@ -70,11 +70,6 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
                 {'study_maternal_identifier': kwargs.get('study_maternal_identifier')})
         return options
 
-    def get_queryset_filter_options(self, request, *args, **kwargs):
-        options = super().get_queryset_filter_options(request, *args, **kwargs)
-
-        options.update({'study_maternal_identifier__startswith': '066-'})
-        return options
 
     def extra_search_options(self, search_term):
         q = Q()
