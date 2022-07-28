@@ -5,21 +5,29 @@ from ...constants import (MAX_AGE_OF_CONSENT, MIN_AGE_OF_CONSENT)
 
 class Eligibility:
 
-    def __init__(self, age_in_years=None, has_omang=None, has_child=None, **kwargs):
+    def __init__(self, age_in_years=None, has_omang=None, has_child=None, remain_in_study=None, **kwargs):
         """checks if mother is eligible otherwise'
         ' error message is the reason for'
         ' eligibility test failed."""
         self.error_message = []
+        
         if age_in_years < MIN_AGE_OF_CONSENT:
             self.error_message.append(
                 'Mother is under {}'.format(MIN_AGE_OF_CONSENT))
+            
         if age_in_years > MAX_AGE_OF_CONSENT:
             self.error_message.append(
                 'Mother is too old (>{})'.format(MAX_AGE_OF_CONSENT))
+            
         if has_omang == NO:
             self.error_message.append('Not a citizen')
+            
         if has_child == NO:
             self.error_message.append('Does not have a child > 10 years')
+            
+        if remain_in_study == NO:
+            self.error_message.append('Not willing to remain in the study till 2025')
+            
         self.is_eligible = False if self.error_message else True
 
     def __str__(self):
