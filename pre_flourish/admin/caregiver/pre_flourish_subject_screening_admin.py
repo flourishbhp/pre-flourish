@@ -17,10 +17,12 @@ class PreFlourishSubjectScreeningAdmin(ModelAdminMixin, admin.ModelAdmin):
               'report_datetime',
               'age_in_years',
               'has_omang',
-              'has_child')
+              'has_child',
+              'remain_in_study')
 
     radio_fields = {'has_omang': admin.VERTICAL,
-                    'has_child': admin.VERTICAL}
+                    'has_child': admin.VERTICAL,
+                    'remain_in_study': admin.VERTICAL,}
 
     list_display = (
         'report_datetime', 'age_in_years', 'has_child', 'is_eligible', 'is_consented')
