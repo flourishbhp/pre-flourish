@@ -26,7 +26,8 @@ class Eligibility:
             self.error_message.append('Does not have a child > 10 years')
             
         if remain_in_study == NO:
-            self.error_message.append('Not willing to remain in the study till 2025')
+            self.error_message.append(
+                'Participant is not willing to remain in study area until 2025.')
             
         self.is_eligible = False if self.error_message else True
 
@@ -36,11 +37,10 @@ class Eligibility:
 
 class ConsentEligibility:
 
-    def __init__(self, remain_in_study=None, hiv_testing=None, breastfeed_intent=None,
+    def __init__(self, hiv_testing=None, breastfeed_intent=None,
                  consent_reviewed=None, study_questions=None, assessment_score=None,
                  consent_signature=None, consent_copy=None, child_consent=None):
         self.error_message = []
-        self.remain_in_study = remain_in_study
         self.hiv_testing = hiv_testing
         self.breastfeed_intent = breastfeed_intent
         self.consent_reviewed = consent_reviewed
@@ -49,9 +49,6 @@ class ConsentEligibility:
         self.consent_signature = consent_signature
         self.consent_copy = consent_copy
         self.child_consent = child_consent
-        if self.remain_in_study == NO:
-            self.error_message.append(
-                'Participant is not willing to remain in study area until 2025.')
         if self.hiv_testing == NO:
             self.error_message.append(
                 'Participant is not willing to undergo HIV testing and counseling.')

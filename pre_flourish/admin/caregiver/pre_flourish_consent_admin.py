@@ -73,7 +73,6 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
                 'biological_caregiver',
                 'future_contact',
                 'child_consent',
-                'comment',
                 'consent_datetime',)}),
         ('Review Questions', {
             'fields': (
