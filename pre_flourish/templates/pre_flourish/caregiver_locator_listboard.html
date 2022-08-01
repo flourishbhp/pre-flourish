@@ -51,7 +51,7 @@
                 </ul>
             </div>
 
-            {% if result.call_or_home_visit_success %}
+            {% if result.call_or_home_visit_success and result.eligible_status %}
                 {% screening_button result %}
             {% endif %}
             
