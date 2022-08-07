@@ -87,11 +87,6 @@ class PreFlourishConsent(
         verbose_name='Are you the biological mother to the child or children?',
         choices=YES_NO)
 
-    remain_in_study = models.CharField(
-        max_length=3,
-        verbose_name='Are you willing to remain in the study area until 2025?',
-        choices=YES_NO,
-        help_text='If no, participant is not eligible.')
 
     future_contact = models.CharField(
         max_length=3,
@@ -125,7 +120,6 @@ class PreFlourishConsent(
 
     def save(self, *args, **kwargs):
         eligibility_criteria = ConsentEligibility(
-            self.remain_in_study,
             self.consent_reviewed, self.study_questions, self.assessment_score,
             self.consent_signature, self.consent_copy, self.child_consent)
         self.is_eligible = eligibility_criteria.is_eligible

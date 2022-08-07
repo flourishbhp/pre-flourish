@@ -5,21 +5,30 @@ from ...constants import (MAX_AGE_OF_CONSENT, MIN_AGE_OF_CONSENT)
 
 class Eligibility:
 
-    def __init__(self, age_in_years=None, has_omang=None, has_child=None, **kwargs):
+    def __init__(self, age_in_years=None, has_omang=None, has_child=None, remain_in_study=None, **kwargs):
         """checks if mother is eligible otherwise'
         ' error message is the reason for'
         ' eligibility test failed."""
         self.error_message = []
+        
         if age_in_years < MIN_AGE_OF_CONSENT:
             self.error_message.append(
                 'Mother is under {}'.format(MIN_AGE_OF_CONSENT))
+            
         if age_in_years > MAX_AGE_OF_CONSENT:
             self.error_message.append(
                 'Mother is too old (>{})'.format(MAX_AGE_OF_CONSENT))
+            
         if has_omang == NO:
             self.error_message.append('Not a citizen')
+            
         if has_child == NO:
             self.error_message.append('Does not have a child > 10 years')
+            
+        if remain_in_study == NO:
+            self.error_message.append(
+                'Participant is not willing to remain in study area until 2025.')
+            
         self.is_eligible = False if self.error_message else True
 
     def __str__(self):
@@ -28,11 +37,10 @@ class Eligibility:
 
 class ConsentEligibility:
 
-    def __init__(self, remain_in_study=None, hiv_testing=None, breastfeed_intent=None,
+    def __init__(self, hiv_testing=None, breastfeed_intent=None,
                  consent_reviewed=None, study_questions=None, assessment_score=None,
                  consent_signature=None, consent_copy=None, child_consent=None):
         self.error_message = []
-        self.remain_in_study = remain_in_study
         self.hiv_testing = hiv_testing
         self.breastfeed_intent = breastfeed_intent
         self.consent_reviewed = consent_reviewed
@@ -41,9 +49,6 @@ class ConsentEligibility:
         self.consent_signature = consent_signature
         self.consent_copy = consent_copy
         self.child_consent = child_consent
-        if self.remain_in_study == NO:
-            self.error_message.append(
-                'Participant is not willing to remain in study area until 2025.')
         if self.hiv_testing == NO:
             self.error_message.append(
                 'Participant is not willing to undergo HIV testing and counseling.')

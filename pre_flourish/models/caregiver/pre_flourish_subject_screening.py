@@ -50,7 +50,7 @@ class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteMode
             datetime_not_before_study_start,
             datetime_not_future],
         help_text='Date and time of assessing eligibility')
-
+    
     age_in_years = models.IntegerField(
         verbose_name='What is the age of the participant?')
 
@@ -63,6 +63,12 @@ class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteMode
         verbose_name="Do you have a child who is 10 years or older?",
         max_length=3,
         choices=YES_NO)
+    
+    remain_in_study = models.CharField(
+        max_length=3,
+        verbose_name='Are you willing to remain in the study area until 2025?',
+        choices=YES_NO,
+        help_text='If no, participant is not eligible.')
 
     ineligibility = models.TextField(
         verbose_name="Reason not eligible",
@@ -91,11 +97,17 @@ class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteMode
         verbose_name_plural = "Caregiver Eligibility"
 
     def save(self, *args, **kwargs):
-        eligibility_criteria = Eligibility(self.age_in_years, self.has_omang, self.has_child)
+        eligibility_criteria = Eligibility(self.age_in_years, 
+                                           self.has_omang, 
+                                           self.has_child, 
+                                           self.remain_in_study)
+        
         self.is_eligible = eligibility_criteria.is_eligible
         self.ineligibility = eligibility_criteria.error_message
+        
         if not self.screening_identifier:
             self.screening_identifier = self.identifier_cls().identifier
+            
         super(PreFlourishSubjectScreening, self).save(*args, **kwargs)
 
     def natural_key(self):

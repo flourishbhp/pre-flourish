@@ -2,6 +2,7 @@ from edc_model_wrapper import ModelWrapper
 from django.conf import settings
 from django.apps import apps as django_apps
 from django.db.models import Q
+from edc_constants.constants import YES
 from .maternal_screening_model_wrapper import PreFlourishMaternalScreeningModelWrapper
 from .pre_flourish_caregiverlocator_modelwrapper_mixin import PreflourishCaregiverLocatorModelWrapperMixin
 from .log_entry_model_wrapper import PreFlourishLogEntryModelWrapper
@@ -48,17 +49,31 @@ class PreflourishCaregiverLocatorModelWrapper(PreflourishCaregiverLocatorModelWr
         return False
     
     @property
-    def call_log_model_wrappers(self):
-        
-        log_entry_wrappers = []
-        
+    def call_log_model_objs(self):
         log_entries = self.log_entry_cls.objects.filter(
             study_maternal_identifier = self.object.study_maternal_identifier
         )
         
-        for entry in log_entries:
+        return log_entries
+    
+    @property
+    def eligible_status(self):
+        try:
+            log_entry = self.call_log_model_objs.latest('call_datetime')
+        except self.log_entry_cls.DoesNotExist:
+            return False
+        else:
+            return log_entry.has_biological_child == YES
+    
+    @property
+    def call_log_model_wrappers(self):
+        
+        log_entry_wrappers = []
+        
+        
+        for entry in self.call_log_model_objs:
             log_entry_wrappers.append(
                 PreFlourishLogEntryModelWrapper(model_obj=entry)
             )
         
-        return log_entries
+        return log_entry_wrappers
