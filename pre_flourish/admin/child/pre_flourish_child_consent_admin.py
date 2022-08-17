@@ -5,13 +5,13 @@ from edc_model_admin import ModelAdminFormAutoNumberMixin, audit_fieldset_tuple,
 from edc_model_admin import StackedInlineMixin
 from django.contrib import admin
 from ...models import PreFlourishCaregiverChildConsent
-from ...forms import PreFlourishCaregiverChildConsent
+from ...forms import PreFlourishCaregiverChildConsentForm
 
 
-class CaregiverChildConsentInline(StackedInlineMixin, ModelAdminFormAutoNumberMixin,
+class PreFlourishCaregiverChildConsentInline(StackedInlineMixin, ModelAdminFormAutoNumberMixin,
                                   admin.StackedInline):
-    model = CaregiverChildConsent
-    form = CaregiverChildConsentForm
+    model = PreFlourishCaregiverChildConsent
+    form = PreFlourishCaregiverChildConsentForm
 
     extra = 0
     max_num = 3
@@ -20,7 +20,6 @@ class CaregiverChildConsentInline(StackedInlineMixin, ModelAdminFormAutoNumberMi
         (None, {
             'fields': [
                 'subject_identifier',
-                'study_child_identifier',
                 'first_name',
                 'last_name',
                 'gender',
@@ -34,7 +33,6 @@ class CaregiverChildConsentInline(StackedInlineMixin, ModelAdminFormAutoNumberMi
                 'confirm_identity',
                 'future_studies_contact',
                 'specimen_consent',
-                'version',
                 'consent_datetime'
             ]}
          ),)

@@ -14,8 +14,10 @@ from edc_constants.choices import GENDER, YES_NO_NA, YES_NO
 from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_protocol.validators import datetime_not_before_study_start
 from flourish_caregiver.choices import CHILD_IDENTITY_TYPE
+from flourish_caregiver.subject_identifier import InfantIdentifier
+from ...constants import INFANT
 from ..caregiver import PreFlourishConsent
-
+from edc_base.utils import age, get_utcnow
 
 class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixin,
                             IdentityFieldsMixin, ReviewFieldsMixin,
@@ -29,27 +31,29 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifie
 
     subject_identifier = models.CharField(
         verbose_name="Subject Identifier",
+        blank=True,
+        null=True,
         max_length=50)
 
-    first_name = FirstnameField(
-        null=True, blank=True)
+    # first_name = FirstnameField(
+    #     null=True, blank=True)
 
-    last_name = LastnameField(
-        verbose_name="Last name",
-        null=True, blank=True)
+    # last_name = LastnameField(
+    #     verbose_name="Last name",
+    #     null=True, blank=True)
 
 
-    gender = models.CharField(
-        verbose_name="Gender",
-        choices=GENDER,
-        max_length=1,
-        null=True,
-        blank=True)
+    # gender = models.CharField(
+    #     verbose_name="Gender",
+    #     choices=GENDER,
+    #     max_length=1,
+    #     null=True,
+    #     blank=True)
 
-    identity = IdentityField(
-        verbose_name='Identity number',
-        null=True,
-        blank=True)
+    # identity = IdentityField(
+    #     verbose_name='Identity number',
+    #     null=True,
+    #     blank=True)
 
     identity_type = models.CharField(
         verbose_name='What type of identity number is this?',
@@ -58,16 +62,14 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifie
         null=True,
         blank=True)
 
-    confirm_identity = IdentityField(
-        help_text='Retype the identity number',
-        null=True,
-        blank=True)
+    # confirm_identity = IdentityField(
+    #     help_text='Retype the identity number',
+    #     null=True,
+    #     blank=True)
 
     child_dob = models.DateField(
         verbose_name="Date of birth",
-        validators=[date_not_future, ],
-        null=True,
-        blank=True)
+        validators=[date_not_future, ],)
 
     child_test = models.CharField(
         verbose_name='Will you allow for HIV testing and counselling of '
@@ -135,6 +137,31 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifie
         max_length=150,
         null=True,
         editable=False)
+    
+    @property
+    def registration_status(self):
+        return 'REGISTERED'
+    
+    @property
+    def child_subject_identifier_postfix(self):
+        child_identifier_postfix = 10
+        
+        return child_identifier_postfix
+    
+    def save(self, *args, **kwargs):
+        breakpoint()
+        
+        self.child_age_at_enrollment = age(self.child_dob, get_utcnow()).years
+        
+        if not self.subject_identifier:
+            self.subject_identifier = InfantIdentifier(
+                    maternal_identifier=self.subject_consent.subject_identifier,
+                    registration_status=self.registration_status,
+                    registration_datetime=self.consent_datetime,
+                    subject_type=INFANT,
+                    supplied_infant_suffix=self.child_subject_identifier_postfix).identifier
+                
+        return super().save(*args, **kwargs)
     
     class Meta:
         app_label = 'pre_flourish'
