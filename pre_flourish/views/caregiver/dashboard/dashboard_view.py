@@ -11,6 +11,7 @@ from ....model_wrappers import (
     AppointmentModelWrapper, PreFlourishSubjectConsentModelWrapper)
 from ....model_wrappers import (MaternalVisitModelWrapper,
                                 PreflourishCaregiverLocatorModelWrapper)
+from ....models import PreFlourishCaregiverLocator
 
 
 class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -56,20 +57,29 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
 
         screening_identifier = self.consent.screening_identifier
 
+        subject_locator_obj = None
+
         try:
             screening_obj = self.screening_model_cls.objects.get(
                 screening_identifier=screening_identifier
             )
 
-            subject_locator_obj = self.subject_locator_model_cls.objects.get(
+            subject_locator_objs = self.subject_locator_model_cls.objects.filter(
                 study_maternal_identifier=screening_obj.previous_subject_identifier
             )
 
-            breakpoint()
+            if not subject_locator_objs.exists():
+                subject_locator_obj = PreFlourishCaregiverLocator.objects.get(
+                    subject_identifier=self.consent.subject_identifier
+                )
+
         except ObjectDoesNotExist:
-            return None
+            pass
         else:
-            return subject_locator_obj
+            subject_locator_obj = subject_locator_objs.first()
+
+        return subject_locator_obj
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
