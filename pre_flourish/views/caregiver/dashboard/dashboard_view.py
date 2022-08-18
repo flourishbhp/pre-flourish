@@ -3,6 +3,7 @@ from django.apps import apps as django_apps
 from edc_action_item.site_action_items import site_action_items
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_dashboard.views import DashboardView as BaseDashboardView
+from edc_data_manager.models import DataActionItem
 from edc_navbar import NavbarViewMixin
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
@@ -10,7 +11,8 @@ from ....action_items import PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
 from ....model_wrappers import (
     AppointmentModelWrapper, PreFlourishSubjectConsentModelWrapper)
 from ....model_wrappers import (MaternalVisitModelWrapper,
-                                PreflourishCaregiverLocatorModelWrapper)
+                                PreflourishCaregiverLocatorModelWrapper,
+                                PreFlourishDataActionItemModelWrapper)
 from ....models import PreFlourishCaregiverLocator
 
 
@@ -80,6 +82,12 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
 
         return subject_locator_obj
 
+    @property
+    def data_action_item(self):
+        """Returns a wrapped saved or unsaved consent version.
+        """
+        model_obj = DataActionItem(subject_identifier=self.subject_identifier)
+        return PreFlourishDataActionItemModelWrapper(model_obj=model_obj)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
