@@ -149,8 +149,7 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifie
         return child_identifier_postfix
     
     def save(self, *args, **kwargs):
-        breakpoint()
-        
+
         self.child_age_at_enrollment = age(self.child_dob, get_utcnow()).years
         
         if not self.subject_identifier:

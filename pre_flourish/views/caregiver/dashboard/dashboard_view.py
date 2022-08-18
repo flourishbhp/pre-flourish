@@ -94,6 +94,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
         locator_obj = self.get_locator_info()
         context.update(
             locator_obj=locator_obj,
+            data_action_item_add_url=self.data_action_item.href,
             subject_consent=self.consent_wrapped,
             schedule_names=[model.schedule_name for model in self.onschedule_models], )
         return context
