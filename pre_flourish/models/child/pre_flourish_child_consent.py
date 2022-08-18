@@ -35,25 +35,6 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifie
         null=True,
         max_length=50)
 
-    # first_name = FirstnameField(
-    #     null=True, blank=True)
-
-    # last_name = LastnameField(
-    #     verbose_name="Last name",
-    #     null=True, blank=True)
-
-
-    # gender = models.CharField(
-    #     verbose_name="Gender",
-    #     choices=GENDER,
-    #     max_length=1,
-    #     null=True,
-    #     blank=True)
-
-    # identity = IdentityField(
-    #     verbose_name='Identity number',
-    #     null=True,
-    #     blank=True)
 
     identity_type = models.CharField(
         verbose_name='What type of identity number is this?',
@@ -62,10 +43,6 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifie
         null=True,
         blank=True)
 
-    # confirm_identity = IdentityField(
-    #     help_text='Retype the identity number',
-    #     null=True,
-    #     blank=True)
 
     child_dob = models.DateField(
         verbose_name="Date of birth",
@@ -144,7 +121,17 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifie
     
     @property
     def child_subject_identifier_postfix(self):
-        child_identifier_postfix = 10
+        
+        children_count = PreFlourishCaregiverChildConsent.objects.filter(
+            subject_identifier__istartswith = self.subject_consent.subject_identifier
+        ).count()
+        
+        child_identifier_postfix = 0
+        
+        if not children_count:
+            child_identifier_postfix = 10
+        else:
+            child_identifier_postfix = f'{(children_count + 1) * 10}'
         
         return child_identifier_postfix
     
