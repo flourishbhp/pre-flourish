@@ -8,3 +8,4 @@ from .caregiver import PreFlourishSubjectScreeningForm
 from .child import PreFlourishChildVisitForm
 from .child import HuuPreEnrollmentForm
 from .caregiver import PreFlourishLogEntryForm
+from .child import PreFlourishCaregiverChildConsentForm
