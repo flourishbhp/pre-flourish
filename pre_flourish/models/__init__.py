@@ -10,3 +10,4 @@ from .caregiver import OnSchedulePreFlourish
 from .caregiver import PreFlourishLogEntry
 from .child import PreFlourishChildVisit
 from .child import HuuPreEnrollment
+from .child import PreFlourishCaregiverChildConsent

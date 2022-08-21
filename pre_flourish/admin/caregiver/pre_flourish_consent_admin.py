@@ -16,6 +16,7 @@ from ...admin_site import pre_flourish_admin
 from ...forms import PreFlourishConsentForm
 from ...models import PreFlourishConsent
 from .exportaction_mixin import ExportActionMixin
+from ..child import PreFlourishCaregiverChildConsentInline
 
 
 class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormAutoNumberMixin,
@@ -48,6 +49,7 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
                               SimpleHistoryAdmin, admin.ModelAdmin):
 
     form = PreFlourishConsentForm
+    inlines =  [ PreFlourishCaregiverChildConsentInline, ]
 
     fieldsets = (
         (None, {
