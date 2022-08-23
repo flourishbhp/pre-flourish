@@ -1,0 +1,20 @@
+{% if wrapped_assents %}
+	<div class="btn-group">
+
+		<button title = "{{ title|default:'Assents' }}" type="button" class="btn {% if child_assents_exist %} btn-success {% else %} btn-warning{% endif %} btn-sm dropdown-toggle" data-toggle="dropdown">
+		  	{{ wrapped_assents|length }} Child Assent(s) <i class=""></i>
+		    <span class="caret"></span>
+		</button>
+	    <ul class="dropdown-menu" role="menu">
+	        <li class="dropdown-header">{{ title|default:'Assent' }}</li>
+	        {% for assent in wrapped_assents %}
+	          <li>
+	          	<a href="{{ assent.href }}">
+	               <small>{{ assent.first_name }} {{ assent.last_name }}, PID: {{assent.subject_identifier}}</small>
+	            </a>
+	         </li>
+	        {% endfor %}
+	     </ul>
+	</div>
+	<br>
+{% endif %}
