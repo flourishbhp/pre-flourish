@@ -83,3 +83,13 @@ def edit_screening_button(model_wrapper):
         screening_identifier=model_wrapper.object.screening_identifier,
         href=model_wrapper.href,
         title=' '.join(title))
+    
+    
+@register.inclusion_tag('pre_flourish/buttons/assents_button.html')
+def assents_button(model_wrapper):
+    title = ['Child Assent(s)']
+    
+    return dict(
+        wrapped_assents=model_wrapper.wrapped_child_assents,
+        child_assents_exist = model_wrapper.child_assents_exist,
+        title=' '.join(title), )
