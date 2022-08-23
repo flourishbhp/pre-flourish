@@ -1,3 +1,4 @@
 from .pre_flourish_child_visit_form import PreFlourishChildVisitForm
 from .huu_pre_enrollment_form import HuuPreEnrollmentForm
 from .pre_flourish_child_consent_form import PreFlourishCaregiverChildConsentForm
+from .pre_flourish_child_assent_form import PreFlourishChildAssentForm
