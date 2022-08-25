@@ -208,16 +208,6 @@ class PreFlourishChildAssentFormValidator(FormValidator):
                     self._errors.update(message)
                     raise ValidationError(message)
                 
-            # if child_consent_value and child_consent_value != field_value:
-                
-            #     breakpoint()
-                
-            #     message = {field:
-            #                f'{field_value} does not match {child_consent_value} '
-            #                'from the caregiver consent on behalf of child. Please '
-            #                'correct this.'}
-            #     self._errors.update(message)
-            #     raise ValidationError(message)
 
     @property
     def caregiver_child_consent(self):
