@@ -8,3 +8,4 @@ from .caregiver import PreFlourishSubjectScreeningAdmin
 from .caregiver import PreFlourishLogEntryAdmin
 from .child import PreFlourishChildVisitAdmin
 from .child import HuuPreEnrollmentAdmin
+from .child import PreFlourishChildAssentAdmin
