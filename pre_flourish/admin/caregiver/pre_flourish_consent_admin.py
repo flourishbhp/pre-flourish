@@ -74,15 +74,15 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
                 'confirm_identity',
                 'biological_caregiver',
                 'future_contact',
-                'child_consent',
-                'consent_datetime',)}),
+                'child_consent',)}),
         ('Review Questions', {
             'fields': (
                 'consent_reviewed',
                 'study_questions',
                 'assessment_score',
                 'consent_signature',
-                'consent_copy'),
+                'consent_copy',
+                'consent_datetime',),
             'description': 'The following questions are directed to the interviewer.'}),
         audit_fieldset_tuple)
 

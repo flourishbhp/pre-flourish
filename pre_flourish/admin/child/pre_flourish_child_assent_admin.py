@@ -18,8 +18,8 @@ from ...constants import INFANT
 from ...forms import PreFlourishChildAssentForm
 from ...models import PreFlourishChildAssent
 from .exportaction_mixin import ExportActionMixin
-
-
+from django.conf import settings
+from django.shortcuts import reverse
 class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormAutoNumberMixin,
                       ModelAdminRevisionMixin, ModelAdminReplaceLabelTextMixin,
                       ModelAdminInstitutionMixin, ExportActionMixin):
@@ -29,22 +29,16 @@ class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormAutoNumberMi
     empty_value_display = '-'
 
     def redirect_url(self, request, obj, post_url_continue=None):
-        redirect_url = super().redirect_url(
-            request, obj, post_url_continue=post_url_continue)
-        if request.GET.dict().get('next'):
-            url_name = request.GET.dict().get('next').split(',')[0]
-            attrs = request.GET.dict().get('next').split(',')[1:]
-            options = {k: request.GET.dict().get(k)
-                       for k in attrs if request.GET.dict().get(k)}
-            if (obj.require_crfs == NO):
-                del options['appointment']
-                del options['reason']
-            try:
-                redirect_url = reverse(url_name, kwargs=options)
-            except NoReverseMatch as e:
-                raise ModelAdminNextUrlRedirectError(
-                    f'{e}. Got url_name={url_name}, kwargs={options}.')
-        return redirect_url
+        url =  settings.DASHBOARD_URL_NAMES.get('pre_flourish_subject_dashboard_url')
+        
+        child_subject_identifier = request.POST.get('subject_identifier', None)
+        
+        if child_subject_identifier:
+        
+            return reverse(url, args=[child_subject_identifier[:16],])
+        
+        else:
+            return super().redirect_url(request, obj, post_url_continue)
 
 
 @admin.register(PreFlourishChildAssent, site=pre_flourish_admin)
@@ -124,3 +118,4 @@ class PreFlourishChildAssentAdmin(
                    'identity_type')
     
     search_fields = ('subject_identifier', 'dob',)
+    
