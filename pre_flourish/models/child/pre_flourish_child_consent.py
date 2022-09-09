@@ -155,6 +155,7 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifie
                     registration_datetime=self.consent_datetime,
                     subject_type=INFANT,
                     supplied_infant_suffix=self.child_subject_identifier_postfix).identifier
+            self.subject_identifier =  f'{self.subject_identifier}-P'
                 
         return super().save(*args, **kwargs)
     
