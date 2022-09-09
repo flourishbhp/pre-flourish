@@ -34,7 +34,16 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifie
         blank=True,
         null=True,
         max_length=50)
-
+    
+    identity = IdentityField(
+        verbose_name='Identity number',
+        null=True,
+        blank=True)
+    
+    confirm_identity = IdentityField(
+        help_text='Retype the identity number',
+        null=True,
+        blank=True)
 
     identity_type = models.CharField(
         verbose_name='What type of identity number is this?',
