@@ -1,19 +1,19 @@
 import re
+
 from django.apps import apps as django_apps
 from django.core.exceptions import ValidationError
 from edc_base.utils import relativedelta
-from edc_constants.constants import NO, FEMALE, MALE
 from edc_form_validators import FormValidator
+
+from edc_constants.constants import NO, FEMALE, MALE
 from edc_constants.constants import OMANG
 
 
 class PreFlourishChildAssentFormValidator(FormValidator):
-    
+
     child_assent_model = 'pre_flourish.preflourishchildassent'
 
     caregiver_child_consent_model = 'pre_flourish.preflourishcaregiverchildconsent'
-
-
 
     @property
     def assent_cls(self):
@@ -192,10 +192,9 @@ class PreFlourishChildAssentFormValidator(FormValidator):
 
     def validate_against_child_consent(self):
         cleaned_data = self.cleaned_data
-        
+
         fields = [key for key in cleaned_data.keys() if key != 'consent_datetime']
-        
-        
+
         for field in fields:
             child_consent_value = getattr(self.caregiver_child_consent, field, None)
             field_value = cleaned_data.get(field)
@@ -207,11 +206,10 @@ class PreFlourishChildAssentFormValidator(FormValidator):
                                'correct this.'}
                     self._errors.update(message)
                     raise ValidationError(message)
-                
 
     @property
     def caregiver_child_consent(self):
-        
+
         try:
 
             child_consent = self.caregiver_child_consent_cls.objects.get(
