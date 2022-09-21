@@ -52,7 +52,7 @@ class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixi
     confirm_identity = IdentityField(
         help_text='Retype the identity number',
         null=True,
-        blank=False)
+        blank=True)
 
     remain_in_study = models.CharField(
         max_length=3,
