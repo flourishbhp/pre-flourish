@@ -1,9 +1,8 @@
-from edc_action_item.model_mixins import ActionModelMixin
-
 from django.apps import apps as django_apps
 from django.core.exceptions import ValidationError
 from django.db import models
 from django_crypto_fields.fields import IdentityField
+from edc_action_item.model_mixins import ActionModelMixin
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.model_validators import datetime_not_future
@@ -13,11 +12,12 @@ from edc_consent.field_mixins import (
     VerificationFieldsMixin)
 from edc_consent.field_mixins import IdentityFieldsMixin, PersonalFieldsMixin
 from edc_consent.validators import eligible_if_yes
-from edc_constants.choices import YES_NO, GENDER, YES_NO_NA
-from edc_constants.constants import NOT_APPLICABLE
 from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_protocol.validators import datetime_not_before_study_start
 from edc_search.model_mixins import SearchSlugManager
+
+from edc_constants.choices import YES_NO, GENDER, YES_NO_NA
+from edc_constants.constants import NOT_APPLICABLE
 from flourish_caregiver.choices import CHILD_IDENTITY_TYPE
 
 
@@ -25,8 +25,6 @@ from flourish_caregiver.choices import CHILD_IDENTITY_TYPE
 # from ..choices import IDENTITY_TYPE
 # from .eligibility import AssentEligibility
 # from .model_mixins import SearchSlugModelMixin
-
-
 class PreFlourishChildAssentManager(SearchSlugManager, models.Manager):
 
     def get_by_natural_key(self, subject_identifier):
@@ -35,14 +33,24 @@ class PreFlourishChildAssentManager(SearchSlugManager, models.Manager):
 
 
 class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixin,
-                  IdentityFieldsMixin,PersonalFieldsMixin, ReviewFieldsMixin,
-                  VulnerabilityFieldsMixin, CitizenFieldsMixin, 
-                  VerificationFieldsMixin, BaseUuidModel):
-    
+                             IdentityFieldsMixin, PersonalFieldsMixin, ReviewFieldsMixin,
+                             VulnerabilityFieldsMixin, CitizenFieldsMixin,
+                             VerificationFieldsMixin, BaseUuidModel):
+
+    identity = IdentityField(
+        verbose_name='Identity number',
+        null=True,
+        blank=True)
+
     identity_type = models.CharField(
         verbose_name='What type of identity number is this?',
         max_length=25,
         choices=CHILD_IDENTITY_TYPE,
+        null=True,
+        blank=True)
+
+    confirm_identity = IdentityField(
+        help_text='Retype the identity number',
         null=True,
         blank=True)
 
@@ -86,7 +94,6 @@ class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixi
 
     def natural_key(self):
         return self.subject_identifier
-
 
     class Meta:
         app_label = 'pre_flourish'
