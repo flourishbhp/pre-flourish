@@ -29,9 +29,9 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
             caregiver_screening.save()
 
         if instance.is_eligible:
-
             if caregiver_screening:
                 caregiver_screening.has_passed_consent = True
+                caregiver_screening.subject_identifier = instance.subject_identifier
                 caregiver_screening.save()
 
             put_on_schedule(instance, instance.subject_identifier,
