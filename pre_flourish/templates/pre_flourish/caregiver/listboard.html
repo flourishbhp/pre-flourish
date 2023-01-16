@@ -4,9 +4,10 @@
 {% load pre_flourish_dashboard_extras %}
 
 {% block listboard_panel %}
-    <a id="maternal_screening_add" title="add screening" class="btn btn-sm btn-default" role="button"
-        href="{{ maternal_screening_add_url }}?next={{ pre_flourish_screening_listboard_url }}">
-            <i class="fa fa-plus fa-sm"></i>Add Pre Flourish Screening
+    <a id="maternal_screening_add" title="add screening" class="btn btn-sm btn-default"
+       role="button"
+       href="{{ maternal_screening_add_url }}?next={{ pre_flourish_screening_listboard_url }}">
+        <i class="fa fa-plus fa-sm"></i>Add Pre Flourish Screening
     </a>
 {% endblock listboard_panel %}
 {% block listboard_table_header %}
@@ -25,17 +26,20 @@
 
 {% block listboard_table_button_column %}
     <td style="white-space: nowrap;">
-    <div class="btn-group">
-    {% edit_screening_button result %}
-    {% if result.screening_model_obj.is_eligible %}
-	    {% consent_button result %}
-	    {% if result.consent %}
-	    	{% dashboard_button result %}
-		{% endif %}
-	{% else %}
-		{% eligibility_button result %}
-	{% endif %}
-    </div>
+        <div class="btn-group">
+            {% edit_screening_button result %}
+            {% if result.screening_model_obj.is_eligible %}
+                {% consent_button result %}
+                {% if result.consent %}
+                    {% locator_button result %}
+                    {% if result.locator_model_obj %}
+                        {% dashboard_button result %}
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                {% eligibility_button result %}
+            {% endif %}
+        </div>
     </td>
 {% endblock listboard_table_button_column %}
 
