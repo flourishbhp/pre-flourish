@@ -12,6 +12,7 @@ from edc_navbar import NavbarViewMixin
 # from ...model_wrappers import MaternalDatasetModelWrapper
 
 from ...model_wrappers import PreflourishCaregiverLocatorModelWrapper
+from ...model_wrappers import PreFlourishMaternalScreeningModelWrapper
 
 
 class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin,
@@ -23,7 +24,6 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
     listboard_panel_style = 'info'
     listboard_fa_icon = "fa-user-plus"
     model = 'flourish_caregiver.caregiverlocator'
-    model_wrapper_cls = PreflourishCaregiverLocatorModelWrapper
     # listboard_view_filters = ListboardViewFilters()
     navbar_name = 'pre_flourish_dashboard'
     # navbar_selected_item = 'pre_flourish_caregiver_locator'
@@ -35,6 +35,11 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
+    @property
+    def model_wrapper_cls(self):
+        model_wrapper_cls = PreflourishCaregiverLocatorModelWrapper
+        model_wrapper_cls.subject_screening_wrapper = PreFlourishMaternalScreeningModelWrapper
+        return model_wrapper_cls
     def get_queryset(self):
         """
         This study is for prev. BCCP participants only, hence they are being

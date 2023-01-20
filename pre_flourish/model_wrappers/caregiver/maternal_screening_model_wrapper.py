@@ -5,21 +5,19 @@ from edc_base.utils import get_uuid
 from edc_consent import ConsentModelWrapperMixin
 from edc_model_wrapper import ModelWrapper
 
-from .maternal_screening_model_wrapper_mixin import MaternalScreeningModelWrapperMixin
+from .caregiver_locator_model_wrapper import PreflourishCaregiverLocatorModelWrapper
 from .pre_flourish_caregiverlocator_modelwrapper_mixin import \
     PreflourishCaregiverLocatorModelWrapperMixin
 from .pre_flourish_subject_consent_model_wrapper import \
     PreFlourishSubjectConsentModelWrapper
 
 
-class PreFlourishMaternalScreeningModelWrapper(PreflourishCaregiverLocatorModelWrapperMixin,
-                                               ConsentModelWrapperMixin,
-                                               MaternalScreeningModelWrapperMixin,
-                                               ModelWrapper):
+class PreFlourishMaternalScreeningModelWrapper(
+    PreflourishCaregiverLocatorModelWrapperMixin, ConsentModelWrapperMixin, ModelWrapper):
     consent_model_wrapper_cls = PreFlourishSubjectConsentModelWrapper
     model = 'pre_flourish.preflourishsubjectscreening'
     querystring_attrs = ['screening_identifier']
-    next_url_attrs = ['screening_identifier', 'isPreFlourish']
+    next_url_attrs = ['screening_identifier']
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
         'pre_flourish_screening_listboard_url')
 
