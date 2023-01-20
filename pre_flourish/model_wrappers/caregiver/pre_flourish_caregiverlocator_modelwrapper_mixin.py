@@ -1,8 +1,8 @@
 from django.apps import apps as django_apps
 from django.core.exceptions import ObjectDoesNotExist
 
-from .log_entry_model_wrapper import PreFlourishLogEntryModelWrapper
 from .caregiver_locator_model_wrapper import PreflourishCaregiverLocatorModelWrapper
+from .log_entry_model_wrapper import PreFlourishLogEntryModelWrapper
 from ...models import PreFlourishLogEntry
 
 
@@ -87,11 +87,9 @@ class PreflourishCaregiverLocatorModelWrapperMixin:
     def create_subject_screening_options(self):
         options = dict(
             previous_subject_identifier=self.object.study_maternal_identifier)
-        if (hasattr(self, 'screening_identifier') and
-                getattr(self, 'screening_identifier')):
+        if getattr(self, 'screening_identifier', None):
             options.update({'screening_identifier': self.object.screening_identifier})
-        if (hasattr(self, 'subject_identifier') and
-                getattr(self, 'subject_identifier')):
+        if getattr(self, 'subject_identifier', None):
             options.update({'subject_identifier': self.object.subject_identifier})
 
         return options
