@@ -1,23 +1,25 @@
 from django.apps import apps as django_apps
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from edc_model_wrapper import ModelWrapper
 from edc_base.utils import get_uuid
 from edc_consent import ConsentModelWrapperMixin
-from .maternal_screening_model_wrapper_mixin import MaternalScreeningModelWrapperMixin
-from .pre_flourish_subject_consent_model_wrapper import PreFlourishSubjectConsentModelWrapper
+from edc_model_wrapper import ModelWrapper
+
+from .caregiver_locator_model_wrapper import PreflourishCaregiverLocatorModelWrapper
+from .pre_flourish_caregiverlocator_modelwrapper_mixin import \
+    PreflourishCaregiverLocatorModelWrapperMixin
+from .pre_flourish_subject_consent_model_wrapper import \
+    PreFlourishSubjectConsentModelWrapper
 
 
-class PreFlourishMaternalScreeningModelWrapper(ConsentModelWrapperMixin,
-                                               MaternalScreeningModelWrapperMixin,
-                                               ModelWrapper):
-
+class PreFlourishMaternalScreeningModelWrapper(
+    PreflourishCaregiverLocatorModelWrapperMixin, ConsentModelWrapperMixin, ModelWrapper):
     consent_model_wrapper_cls = PreFlourishSubjectConsentModelWrapper
     model = 'pre_flourish.preflourishsubjectscreening'
     querystring_attrs = ['screening_identifier']
     next_url_attrs = ['screening_identifier']
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
-                                'pre_flourish_screening_listboard_url')
+        'pre_flourish_screening_listboard_url')
 
     @property
     def consent_version(self):

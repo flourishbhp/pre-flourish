@@ -1,7 +1,6 @@
 from django.apps import apps as django_apps
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
 from .pre_flourish_consent import PreFlourishConsent
@@ -10,6 +9,21 @@ from .pre_flourish_subject_screening import PreFlourishSubjectScreening
 
 class PreFlourishSubjectScreeningError(Exception):
     pass
+
+
+def update_locator(consent, screening):
+    locator_model = 'flourish_caregiver.caregiverlocator'
+    locator_cls = django_apps.get_model(locator_model)
+    try:
+        locator_obj = locator_cls.objects.get(
+            study_maternal_identifier=screening.previous_subject_identifier
+        )
+    except locator_cls.DoesNotExist:
+        pass
+    else:
+        locator_obj.subject_identifier = consent.subject_identifier
+        locator_obj.screening_identifier = screening.screening_identifier
+        locator_obj.save()
 
 
 @receiver(post_save, weak=False, sender=PreFlourishConsent,
@@ -29,16 +43,17 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
             caregiver_screening.save()
 
         if instance.is_eligible:
-
             if caregiver_screening:
+                if hasattr(caregiver_screening, 'previous_subject_identifier') and \
+                        getattr(caregiver_screening, 'previous_subject_identifier'):
+                    update_locator(consent=instance, screening=caregiver_screening)
                 caregiver_screening.has_passed_consent = True
+                caregiver_screening.subject_identifier = instance.subject_identifier
                 caregiver_screening.save()
 
             put_on_schedule(instance, instance.subject_identifier,
                             'pre_flourish.onschedulepreflourish',
                             'pre_flourish_schedule1')
-
-
 def put_on_schedule(instance, subject_identifier,
                     onschedule_model, schedule_name):
     if instance:

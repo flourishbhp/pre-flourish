@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 class MaternalScreeningModelWrapperMixin:
+    subject_screening_wrapper = None
 
     @property
     def screening_model_obj(self):
@@ -20,7 +21,7 @@ class MaternalScreeningModelWrapperMixin:
         """
         model_obj = self.screening_model_obj or self.maternal_screening_cls(
             **self.maternal_screening_options)
-        return self.__cls__(model_obj=model_obj)
+        return self.subject_screening_wrapper(model_obj=model_obj)
 
     @property
     def maternal_screening_cls(self):

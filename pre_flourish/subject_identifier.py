@@ -21,7 +21,7 @@ class SubjectIdentifier(BaseSubjectIdentifier):
             check_digit = self.checkdigit.calculate_checkdigit(
                 ''.join(self._identifier.split('-')))
             if self.caregiver_type:
-                self._identifier = f'{self.caregiver_type}{self._identifier}-{check_digit}'
+                self._identifier = f'{self.caregiver_type}{self._identifier}-{check_digit}P'
             self.identifier_model = self.identifier_model_cls.objects.create(
                 name=self.label,
                 sequence_number=self.sequence_number,

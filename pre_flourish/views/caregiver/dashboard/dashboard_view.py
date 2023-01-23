@@ -1,5 +1,5 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.apps import apps as django_apps
+from django.core.exceptions import ObjectDoesNotExist
 from edc_action_item.site_action_items import site_action_items
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_dashboard.views import DashboardView as BaseDashboardView
@@ -41,7 +41,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
                 subject_identifier=self.subject_identifier).order_by(
                 'visit_code')
         return self._appointments
-    
+
     @property
     def consent_model_cls(self):
         return django_apps.get_model(self.consent_model)
@@ -53,12 +53,12 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     @property
     def subject_locator_model_cls(self):
         return django_apps.get_model(self.subject_locator_model)
-    
+
     @property
     def subject_consent(self):
         try:
             consent = self.consent_model_cls.objects.get(
-                subject_identifier = self.subject_identifier[:16]
+                subject_identifier=self.subject_identifier[:17]
             )
         except self.consent_model_cls.DoesNotExist:
             pass
@@ -71,8 +71,8 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
 
         If a save instance does not exits, returns a new unsaved instance.
         """
-        
-        screening_identifier = self.subject_consent.screening_identifier
+
+        screening_identifier = getattr(self.subject_consent, 'screening_identifier')
 
         subject_locator_obj = None
 
@@ -80,21 +80,23 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
             screening_obj = self.screening_model_cls.objects.get(
                 screening_identifier=screening_identifier
             )
-
+        except  self.screening_model_cls.ObjectDoesNotExist:
+            pass
+        else:
             subject_locator_objs = self.subject_locator_model_cls.objects.filter(
                 study_maternal_identifier=screening_obj.previous_subject_identifier
             )
-
-            if not subject_locator_objs.exists():
-                subject_locator_obj = PreFlourishCaregiverLocator.objects.get(
-                    subject_identifier=self.consent.subject_identifier
-                )
-
-        except ObjectDoesNotExist:
-            pass
-        else:
-            subject_locator_obj = subject_locator_objs.first()
-
+            if not subject_locator_objs:
+                try:
+                    subject_locator_obj = self.subject_locator_model_cls.objects.get(
+                        subject_identifier=self.consent.subject_identifier
+                    )
+                except self.subject_locator_model_cls.DoesNotExist:
+                    pass
+                else:
+                    subject_locator_obj = subject_locator_obj
+            else:
+                subject_locator_obj = subject_locator_objs.first()
         return subject_locator_obj
 
     @property
@@ -115,8 +117,8 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
         return context
 
     def set_current_schedule(self, onschedule_model_obj=None,
-                             schedule=None, visit_schedule=None,
-                             is_onschedule=True):
+            schedule=None, visit_schedule=None,
+            is_onschedule=True):
         if onschedule_model_obj:
             if is_onschedule:
                 self.current_schedule = schedule
