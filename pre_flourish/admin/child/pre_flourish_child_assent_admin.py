@@ -1,25 +1,19 @@
-from edc_visit_schedule.fieldsets import visit_schedule_fieldset_tuple
-
+from django.conf import settings
 from django.contrib import admin
-from django.urls.base import reverse
-from django.urls.exceptions import NoReverseMatch
+from django.shortcuts import reverse
 from django_revision.modeladmin_mixin import ModelAdminRevisionMixin
-from edc_constants.constants import NO
 from edc_model_admin import (
     ModelAdminFormAutoNumberMixin, ModelAdminInstitutionMixin,
     ModelAdminNextUrlRedirectMixin,
-    ModelAdminNextUrlRedirectError, ModelAdminReplaceLabelTextMixin)
+    ModelAdminReplaceLabelTextMixin)
 from edc_model_admin import audit_fieldset_tuple
 
-from edc_visit_tracking.modeladmin_mixins import VisitModelAdminMixin
-
+from .exportaction_mixin import ExportActionMixin
 from ...admin_site import pre_flourish_admin
-from ...constants import INFANT
 from ...forms import PreFlourishChildAssentForm
 from ...models import PreFlourishChildAssent
-from .exportaction_mixin import ExportActionMixin
-from django.conf import settings
-from django.shortcuts import reverse
+
+
 class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormAutoNumberMixin,
                       ModelAdminRevisionMixin, ModelAdminReplaceLabelTextMixin,
                       ModelAdminInstitutionMixin, ExportActionMixin):
@@ -34,8 +28,8 @@ class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormAutoNumberMi
         child_subject_identifier = request.POST.get('subject_identifier', None)
         
         if child_subject_identifier:
-        
-            return reverse(url, args=[child_subject_identifier[:16],])
+
+            return reverse(url, args=[child_subject_identifier[:17],])
         
         else:
             return super().redirect_url(request, obj, post_url_continue)
