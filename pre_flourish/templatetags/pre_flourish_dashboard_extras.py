@@ -1,6 +1,6 @@
 from django import template
 from django.conf import settings
-from ..models import PreFlourishLogEntry
+
 register = template.Library()
 
 
@@ -47,8 +47,12 @@ def edit_screening_button(model_wrapper):
 
 @register.inclusion_tag('pre_flourish/buttons/screening_button.html')
 def screening_button(model_wrapper):
-    add_screening_href = f'{model_wrapper.subject_screening_wrapper.href}&previous_subject_identifier={model_wrapper.study_maternal_identifier}'
-    subject_screening_obj = model_wrapper.subject_screening_obj
+    add_screening_href = ''
+    subject_screening_obj = None
+    if hasattr(model_wrapper, 'maternal_screening'):
+        add_screening_href = f'{model_wrapper.maternal_screening.href}&previous_subject_identifier={model_wrapper.study_maternal_identifier}'
+    if hasattr(model_wrapper, 'screening_model_obj'):
+        subject_screening_obj = model_wrapper.screening_model_obj
 
     return dict(
         add_screening_href=add_screening_href,

@@ -110,7 +110,7 @@ class PreFlourishLogEntryAdmin(ModelAdminMixin, admin.ModelAdmin):
                 and obj.home_visit == NOT_APPLICABLE):
             if request.GET.dict().get('next'):
                 url_name = settings.DASHBOARD_URL_NAMES.get(
-                    'maternal_dataset_listboard_url')
+                    'pre_flourish_screening_listboard_url')
             options = {'study_maternal_identifier': request.GET.dict().get('study_maternal_identifier')}
             try:
                 redirect_url = reverse(url_name, kwargs=options)
