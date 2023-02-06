@@ -12,3 +12,4 @@ from .child import PreFlourishChildVisit
 from .child import HuuPreEnrollment
 from .child import PreFlourishCaregiverChildConsent
 from .child import PreFlourishChildAssent
+from .child import Appointment

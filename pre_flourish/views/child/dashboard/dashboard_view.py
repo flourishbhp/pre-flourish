@@ -1,39 +1,37 @@
 from django.apps import apps as django_apps
 from django.core.exceptions import ObjectDoesNotExist
-from edc_action_item.site_action_items import site_action_items
+from edc_action_item import site_action_items
 from edc_base.view_mixins import EdcBaseViewMixin
-from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_data_manager.models import DataActionItem
 from edc_navbar import NavbarViewMixin
 from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
+from edc_dashboard.views import DashboardView as BaseDashboardView
 
-from ....action_items import PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
-from ....model_wrappers import (
-    AppointmentModelWrapper, PreFlourishSubjectConsentModelWrapper)
-from ....model_wrappers import (MaternalVisitModelWrapper,
-                                PreflourishCaregiverLocatorModelWrapper,
-                                PreFlourishDataActionItemModelWrapper)
+from pre_flourish.action_items import PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
+from pre_flourish.model_wrappers import ChildAppointmentModelWrapper, \
+    ChildConsentModelWrapper, ActionItemModelWrapper, ChildVisitModelWrapper, \
+    PreflourishCaregiverLocatorModelWrapper, PreFlourishDataActionItemModelWrapper
 
 
 class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
                     NavbarViewMixin, BaseDashboardView):
-    dashboard_url = 'pre_flourish_subject_dashboard_url'
+    dashboard_url = 'pre_flourish_child_dashboard_url'
     dashboard_template = 'pre_flourish_subject_dashboard_template'
-    appointment_model = 'edc_appointment.appointment'
-    appointment_model_wrapper_cls = AppointmentModelWrapper
-    consent_model = 'pre_flourish.preflourishconsent'
-    consent_model_wrapper_cls = PreFlourishSubjectConsentModelWrapper
-    screening_model = 'pre_flourish.preflourishsubjectscreening'
+    appointment_model = 'pre_flourish.appointment'
+    appointment_model_wrapper_cls = ChildAppointmentModelWrapper
+    consent_model = 'pre_flourish.preflourishcaregiverchildconsent'
+    consent_model_wrapper_cls = ChildConsentModelWrapper
+    action_item_model_wrapper_cls = ActionItemModelWrapper
     navbar_name = 'pre_flourish_dashboard'
-    navbar_selected_item = 'pre_flourish_consent'
+    navbar_selected_item = 'child_subject'
     subject_locator_model = 'flourish_caregiver.caregiverlocator'
+    visit_model_wrapper_cls = ChildVisitModelWrapper
     subject_locator_model_wrapper_cls = PreflourishCaregiverLocatorModelWrapper
-    visit_model_wrapper_cls = MaternalVisitModelWrapper
     mother_infant_study = True
-    infant_links = True
-    infant_subject_dashboard_url = 'pre_flourish_child_dashboard_url'
-    infant_dashboard_include_value = 'pre_flourish/caregiver/dashboard/infant_dashboard_links.html'
+    infant_links = False
+    maternal_links = True
+    maternal_dashboard_include_value = "flourish_dashboard/child_subject/dashboard/caregiver_dashboard_links.html"
     special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
 
     @property
@@ -193,10 +191,3 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
             return None
         else:
             return registered_subject
-
-    def get_subject_locator_or_message(self):
-        """
-        Overridden to stop system from generating subject locator
-        action items for child.
-        """
-        pass

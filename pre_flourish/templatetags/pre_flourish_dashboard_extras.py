@@ -87,13 +87,22 @@ def edit_screening_button(model_wrapper):
         screening_identifier=model_wrapper.object.screening_identifier,
         href=model_wrapper.href,
         title=' '.join(title))
-    
-    
+
+
 @register.inclusion_tag('pre_flourish/buttons/assents_button.html')
 def assents_button(model_wrapper):
     title = ['Child Assent(s)']
-    
+
     return dict(
         wrapped_assents=model_wrapper.wrapped_child_assents,
         child_assents_exist = model_wrapper.child_assents_exist,
         title=' '.join(title), )
+
+@register.inclusion_tag(
+    'flourish_dashboard/buttons/child_dashboard_button.html')
+def child_dashboard_button(model_wrapper):
+    child_dashboard_url = settings.DASHBOARD_URL_NAMES.get(
+        'pre_flourish_child_dashboard_url')
+    return dict(
+        child_dashboard_url=child_dashboard_url,
+        subject_identifier=model_wrapper.subject_identifier)

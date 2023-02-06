@@ -5,7 +5,7 @@ from edc_dashboard import UrlConfig
 from .patterns import subject_identifier, screening_identifier, study_maternal_identifier
 from .views import (ChildListboardView, ScreeningListBoardView,
                     SubjectListboardView, DashboardView,
-                    PreFlourishCaregiverLocatorListBoardView)
+                    PreFlourishCaregiverLocatorListBoardView, ChildDashboardView)
 
 child_listboard_url_config = UrlConfig(
     url_name='pre_flourish_child_listboard_url',
@@ -42,6 +42,13 @@ pre_flourish_subject_dashboard_url_config = UrlConfig(
     identifier_label='subject_identifier',
     identifier_pattern=subject_identifier)
 
+pre_flourish_child_dashboard_url_config = UrlConfig(
+    url_name='pre_flourish_child_dashboard_url',
+    view_class=ChildDashboardView,
+    label='pre_flourish_subject_dashboard',
+    identifier_label='subject_identifier',
+    identifier_pattern=subject_identifier)
+
 urlpatterns = []
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -49,5 +56,6 @@ urlpatterns += child_listboard_url_config.listboard_urls
 urlpatterns += pre_flourish_screening_listboard_url_config.listboard_urls
 urlpatterns += pre_flourish_consent_listboard_url_config.listboard_urls
 urlpatterns += pre_flourish_subject_dashboard_url_config.dashboard_urls
+urlpatterns += pre_flourish_child_dashboard_url_config.dashboard_urls
 urlpatterns += pre_flourish_caregiver_locator_listboard_url_config.listboard_urls
 
