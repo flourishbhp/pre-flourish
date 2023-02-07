@@ -185,7 +185,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
         """
         subject_identifier = self.kwargs.get('subject_identifier')
         try:
-            registered_subject = RegisteredSubject.objects.filter(
+            registered_subject = RegisteredSubject.objects.get(
                 relative_identifier=subject_identifier)
         except RegisteredSubject.DoesNotExist:
             return None
