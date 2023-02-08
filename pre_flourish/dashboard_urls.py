@@ -45,7 +45,7 @@ pre_flourish_subject_dashboard_url_config = UrlConfig(
 pre_flourish_child_dashboard_url_config = UrlConfig(
     url_name='pre_flourish_child_dashboard_url',
     view_class=ChildDashboardView,
-    label='pre_flourish_subject_dashboard',
+    label='pre_flourish_child_dashboard',
     identifier_label='subject_identifier',
     identifier_pattern=subject_identifier)
 

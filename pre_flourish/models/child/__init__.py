@@ -3,3 +3,5 @@ from .pre_flourish_child_appointment import Appointment
 from .pre_flourish_child_assent import PreFlourishChildAssent
 from .pre_flourish_child_consent import PreFlourishCaregiverChildConsent
 from .pre_flourish_child_visit import PreFlourishChildVisit
+from .signals import child_assent_on_post_save, \
+    pre_flourish_caregiver_child_consent_on_post_save

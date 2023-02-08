@@ -6,7 +6,8 @@ from edc_dashboard.view_mixins import ListboardFilterViewMixin, SearchFormViewMi
 from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
 
-from ...model_wrappers import ChildConsentModelWrapper
+from ...model_wrappers import CaregiverChildConsentModelWrapper
+from ...model_wrappers.child.child_consent_model_wrapper import ChildConsentModelWrapper
 
 
 class ChildListboardView(EdcBaseViewMixin, NavbarViewMixin,
@@ -19,7 +20,7 @@ class ChildListboardView(EdcBaseViewMixin, NavbarViewMixin,
     listboard_fa_icon = "far fa-user-circle"
 
     model = 'pre_flourish.preflourishcaregiverchildconsent'
-    model_wrapper_cls = ChildConsentModelWrapper
+    model_wrapper_cls = CaregiverChildConsentModelWrapper
     navbar_name = 'pre_flourish_dashboard'
     navbar_selected_item = 'child_subjects'
     search_form_url = 'pre_flourish_child_listboard_url'

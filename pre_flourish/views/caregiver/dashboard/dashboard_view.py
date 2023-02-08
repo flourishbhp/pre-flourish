@@ -186,12 +186,9 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
         """Returns an infant registered subjects.
         """
         subject_identifier = self.kwargs.get('subject_identifier')
-        try:
-            registered_subject = RegisteredSubject.objects.filter(
-                relative_identifier=subject_identifier)
-        except RegisteredSubject.DoesNotExist:
-            return None
-        else:
+        registered_subject = RegisteredSubject.objects.filter(
+            relative_identifier=subject_identifier)
+        if registered_subject:
             return registered_subject
 
     def get_subject_locator_or_message(self):

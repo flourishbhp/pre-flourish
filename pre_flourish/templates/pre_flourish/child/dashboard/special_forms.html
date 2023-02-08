@@ -1,0 +1,56 @@
+{% load flourish_dashboard_extras %}
+<table class="table table-condensed">
+    <thead></thead>
+    <tbody>
+
+    {% if child_dataset %}
+        <tr>
+            <td>
+                {% child_dataset_button child_dataset %}
+            </td>
+        </tr>
+    {% endif %}
+
+
+    <tr>
+        <td>
+            {% child_birth_button caregiver_child_consent %}
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            {% assent_button caregiver_child_consent %}
+        </td>
+
+    </tr>
+    <tr>
+        <td>
+            {% tb_adol_assent_button caregiver_child_consent %}
+        </td>
+    </tr>
+    {% if caregiver_child_consent.child_offstudy %}
+        <tr>
+            <td>
+                {% child_off_study_button caregiver_child_consent %}
+            </td>
+        </tr>
+    {% endif %}
+
+    {% if tb_adol_referal %}
+        <tr>
+            <td>
+                {% tb_adol_referal_button tb_adol_referal %}
+            </td>
+        </tr>
+    {% endif %}
+
+    {% if caregiver_child_consent.child_death_report %}
+        <tr>
+            <td>
+                {% child_death_report_button caregiver_child_consent %}
+            </td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>
