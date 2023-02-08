@@ -34,7 +34,7 @@ pre_flourish_dashboard.append_item(
 
 pre_flourish_dashboard.append_item(
     NavbarItem(
-        name='child_subjects',
+        name='pre_flourish_child_subjects',
         title='Child Subjects',
         label='child subjects',
         fa_icon='far fa-user-circle',

@@ -1,6 +1,6 @@
 {% extends "edc_dashboard/listboard.html" %}
 {% load edc_base_extras %}
-
+{% load pre_flourish_dashboard_extras %}
 
 {% block listboard_table_header %}
 
@@ -17,11 +17,27 @@
 {% endblock listboard_table_header %}
 
 {% block listboard_table_button_column %}
-
+    <td style="white-space: nowrap">
+        <div class="btn-group">
+            {% child_dashboard_button result %}
+        </div>
+    </td>
 {% endblock listboard_table_button_column %}
 
 {% block listboard_table_columns %}
 
-
-
+    <td>{{ result.object.subject_identifier }}
+    </td>
+    <td>
+        {% if result.gender == 'M' %}
+            <i class="fa fa-male fa-lg"></i>
+        {% else %}
+            <i class="fa fa-female fa-lg"></i>
+        {% endif %}
+        {{ result.child_name_initial }}
+    </td>
+    <td>{{ result.child_age }} Yrs</td>
+    <td>{{ result.assent_date }}</td>
+    <td>{{ result.object.modified|date:"SHORT_DATETIME_FORMAT" }}</td>
+    <td>{{ result.hostname_created }}</td>
 {% endblock listboard_table_columns %}

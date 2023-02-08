@@ -1,6 +1,6 @@
-from edc_model_wrapper import ModelWrapper
 from django.conf import settings
-from ...models  import PreFlourishChildAssent
+from edc_model_wrapper import ModelWrapper
+
 
 class PreFlourishChildAssentModelWrapper(ModelWrapper):
     model = 'pre_flourish.preflourishchildassent'
