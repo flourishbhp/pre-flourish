@@ -5,6 +5,7 @@ from edc_base.view_mixins import EdcBaseViewMixin
 from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_data_manager.models import DataActionItem
 from edc_navbar import NavbarViewMixin
+from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
 from ....action_items import PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
@@ -13,7 +14,6 @@ from ....model_wrappers import (
 from ....model_wrappers import (MaternalVisitModelWrapper,
                                 PreflourishCaregiverLocatorModelWrapper,
                                 PreFlourishDataActionItemModelWrapper)
-from ....models import PreFlourishCaregiverLocator
 
 
 class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -30,6 +30,10 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     subject_locator_model = 'flourish_caregiver.caregiverlocator'
     subject_locator_model_wrapper_cls = PreflourishCaregiverLocatorModelWrapper
     visit_model_wrapper_cls = MaternalVisitModelWrapper
+    mother_infant_study = True
+    infant_links = True
+    infant_subject_dashboard_url = 'pre_flourish_child_dashboard_url'
+    infant_dashboard_include_value = 'pre_flourish/caregiver/dashboard/infant_dashboard_links.html'
     special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
 
     @property
@@ -110,6 +114,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
         context = super().get_context_data(**kwargs)
         locator_obj = self.get_locator_info()
         context.update(
+            infant_registered_subjects=self.infant_registered_subjects,
             locator_obj=locator_obj,
             data_action_item_add_url=self.data_action_item.href,
             subject_consent=self.consent_wrapped,
@@ -175,3 +180,20 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
         except ObjectDoesNotExist:
             action_cls(
                 subject_identifier=subject_identifier)
+
+    @property
+    def infant_registered_subjects(self):
+        """Returns an infant registered subjects.
+        """
+        subject_identifier = self.kwargs.get('subject_identifier')
+        registered_subject = RegisteredSubject.objects.filter(
+            relative_identifier=subject_identifier)
+        if registered_subject:
+            return registered_subject
+
+    def get_subject_locator_or_message(self):
+        """
+        Overridden to stop system from generating subject locator
+        action items for child.
+        """
+        pass
