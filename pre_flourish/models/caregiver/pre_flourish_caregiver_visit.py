@@ -8,13 +8,12 @@ from edc_consent.model_mixins import RequiresConsentFieldsModelMixin
 from edc_constants.constants import ALIVE, PARTICIPANT
 from edc_metadata.model_mixins.creates import CreatesMetadataModelMixin
 from edc_protocol.validators import date_not_before_study_start
-
-from edc_appointment.models import Appointment
 from edc_reference.model_mixins import ReferenceModelMixin
 from edc_visit_tracking.constants import MISSED_VISIT
 from edc_visit_tracking.managers import VisitModelManager
 from edc_visit_tracking.model_mixins import VisitModelMixin, CaretakerFieldsMixin
 
+from .caregiver_appointment import CaregiverAppointment
 from ...caregiver_choices import MATERNAL_VISIT_STUDY_STATUS, VISIT_REASON
 from ...caregiver_choices import VISIT_INFO_SOURCE, ALIVE_DEAD_UNKNOWN
 
@@ -30,7 +29,7 @@ class PreFlourishCaregiverVisit(VisitModelMixin, CreatesMetadataModelMixin,
     """ Maternal visit form that links all antenatal/ postnatal follow-up forms
     """
 
-    appointment = models.OneToOneField(Appointment, on_delete=models.PROTECT)
+    appointment = models.OneToOneField(CaregiverAppointment, on_delete=models.PROTECT)
 
     reason = models.CharField(
         verbose_name='Reason for visit',

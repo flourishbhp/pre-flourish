@@ -34,7 +34,7 @@ if settings.APP_NAME == 'pre_flourish':
     class EdcAppointmentAppConfig(BaseEdcAppointmentAppConfig):
         configurations = [
             AppointmentConfig(
-                model='edc_appointment.appointment',
+                model='pre_flourish.caregiverappointment',
                 related_visit_model='pre_flourish.preflourishcaregivervisit',
                 appt_type='clinic')]
 

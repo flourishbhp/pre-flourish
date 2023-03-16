@@ -1,10 +1,12 @@
 from django.apps import apps as django_apps
+from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
 from .pre_flourish_consent import PreFlourishConsent
 from .pre_flourish_subject_screening import PreFlourishSubjectScreening
+from ..child.pre_flourish_child_assent import PreFlourishChildAssent
 
 
 class PreFlourishSubjectScreeningError(Exception):
@@ -51,11 +53,32 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
                 caregiver_screening.subject_identifier = instance.subject_identifier
                 caregiver_screening.save()
 
-            put_on_schedule(instance, instance.subject_identifier,
+                put_on_schedule(instance,
+                                instance.subject_identifier,
+                                'pre_flourish.onschedulepreflourish',
+                                'pre_flourish_schedule1')
+
+
+@receiver(post_save, weak=False, sender=PreFlourishChildAssent,
+          dispatch_uid='pre_flourish_assent_post_save')
+def pre_flourish_assent_post_save(sender, instance, raw, created, **kwargs):
+    if not raw:
+        # get caregiver's consent
+        try:
+            caregiver_consent = PreFlourishConsent.objects.get(
+                subject_identifier=instance.subject_identifier[0:17])
+        except PreFlourishConsent.DoesNotExist:
+            raise ValidationError("Missing caregiver consent")
+        else:
+            put_on_schedule(caregiver_consent,
+                            caregiver_consent.subject_identifier,
                             'pre_flourish.onschedulepreflourish',
-                            'pre_flourish_schedule1')
+                            'pre_flourish_schedule1',
+                            child_subject_identifier=instance.subject_identifier, )
+
+
 def put_on_schedule(instance, subject_identifier,
-                    onschedule_model, schedule_name):
+        onschedule_model, schedule_name, child_subject_identifier=None):
     if instance:
         subject_identifier = subject_identifier or instance.subject_identifier
 
@@ -67,6 +90,7 @@ def put_on_schedule(instance, subject_identifier,
         try:
             onschedule_model_cls.objects.get(
                 subject_identifier=instance.subject_identifier,
+                child_subject_identifier=child_subject_identifier,
                 schedule_name=schedule_name)
         except onschedule_model_cls.DoesNotExist:
             schedule.put_on_schedule(
@@ -74,6 +98,15 @@ def put_on_schedule(instance, subject_identifier,
                 onschedule_datetime=instance.created,
                 schedule_name=schedule_name)
         else:
-            schedule.refresh_schedule(
-                subject_identifier=instance.subject_identifier,
-                schedule_name=schedule_name)
+            try:
+                onschedule_obj = schedule.onschedule_model_cls.objects.get(
+                    subject_identifier=subject_identifier,
+                    schedule_name=schedule_name,
+                    child_subject_identifier='')
+            except schedule.onschedule_model_cls.DoesNotExist:
+                schedule.refresh_schedule(
+                    subject_identifier=instance.subject_identifier,
+                    schedule_name=schedule_name)
+            else:
+                onschedule_obj.child_subject_identifier = child_subject_identifier
+                onschedule_obj.save()

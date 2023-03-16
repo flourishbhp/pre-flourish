@@ -10,8 +10,6 @@ class PreFlourishOffStudyForm(FormValidatorMixin, forms.ModelForm):
         self.subject_identifier = self.cleaned_data.get('subject_identifier')
 
         super().clean()
-        self.validate_against_consent_datetime(
-            self.cleaned_data.get('report_datetime'))
 
     class Meta:
         model = PreFlourishOffStudy

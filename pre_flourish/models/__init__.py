@@ -1,3 +1,4 @@
+from .caregiver import CaregiverAppointment
 from .caregiver import CaregiverChildScreeningConsent
 from .caregiver import CyhuuPreEnrollment
 from .caregiver import OnSchedulePreFlourish
