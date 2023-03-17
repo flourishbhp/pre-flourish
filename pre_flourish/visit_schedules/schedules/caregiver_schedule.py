@@ -8,7 +8,7 @@ pre_flourish_schedule1 = Schedule(
     name='pre_flourish_schedule1',
     verbose_name='Pre Flourish Schedule 1',
     onschedule_model='pre_flourish.onschedulepreflourish',
-    offschedule_model='pre_flourish.preflourishoffstudy',
+    offschedule_model='pre_flourish.caregiveroffschedule',
     consent_model='pre_flourish.preflourishconsent',
     appointment_model='pre_flourish.caregiverappointment')
 
@@ -30,9 +30,9 @@ pre_flourish_schedule2 = Schedule(
     name='pre_flourish_schedule2',
     verbose_name='Pre Flourish Schedule 2',
     onschedule_model='pre_flourish.onschedulepreflourish',
-    offschedule_model='pre_flourish.preflourishoffstudy',
+    offschedule_model='pre_flourish.caregiveroffschedule',
     consent_model='pre_flourish.preflourishconsent',
-    appointment_model='edc_appointment.appointment')
+    appointment_model='pre_flourish.caregiverappointment')
 
 pre_flourish_schedule2.add_visit(visit=visit0)
 
@@ -41,8 +41,8 @@ pre_flourish_schedule3 = Schedule(
     name='pre_flourish_schedule3',
     verbose_name='Pre Flourish Schedule 3',
     onschedule_model='pre_flourish.onschedulepreflourish',
-    offschedule_model='pre_flourish.preflourishoffstudy',
+    offschedule_model='pre_flourish.caregiveroffschedule',
     consent_model='pre_flourish.preflourishconsent',
-    appointment_model='edc_appointment.appointment')
+    appointment_model='pre_flourish.caregiverappointment')
 
 pre_flourish_schedule3.add_visit(visit=visit0)

@@ -1,10 +1,10 @@
 from django import forms
 from edc_form_validators import FormValidatorMixin
 
-from ...models import PreFlourishOffStudy
+from ...models import PreFlourishChildOffStudy
 
 
-class PreFlourishOffStudyForm(FormValidatorMixin, forms.ModelForm):
+class PreFlourishChildOffStudyForm(FormValidatorMixin, forms.ModelForm):
 
     def clean(self):
         self.subject_identifier = self.cleaned_data.get('subject_identifier')
@@ -12,5 +12,5 @@ class PreFlourishOffStudyForm(FormValidatorMixin, forms.ModelForm):
 
 
     class Meta:
-        model = PreFlourishOffStudy
+        model = PreFlourishChildOffStudy
         fields = '__all__'

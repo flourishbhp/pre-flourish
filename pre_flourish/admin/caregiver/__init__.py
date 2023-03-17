@@ -1,5 +1,6 @@
 from .caregiver_appointment_admin import CaregiverAppointmentAdmin
 from .cyhuu_pre_enrollment_admin import CyhuuPreEnrollmentAdmin
+from .offschedule_admin import CaregiverOffScheduleAdmin
 from .pre_flourish_caregiver_locator_admin import PreFlourishCaregiverLocatorAdmin
 from .pre_flourish_caregiver_visit_admin import PreFlourishCaregiverVisitAdmin
 from .pre_flourish_consent_admin import PreFlourishConsentAdmin

@@ -8,8 +8,8 @@ pre_flourish_child_schedule1 = Schedule(
     name='pre_flourish_child_schedule1',
     verbose_name='Pre Flourish Schedule 1',
     onschedule_model='pre_flourish.onschedulechildpreflourish',
-    offschedule_model='pre_flourish.preflourishoffstudy',
-    consent_model='pre_flourish.caregiverchildscreeningconsent',
+    offschedule_model='pre_flourish.childoffschedule',
+    consent_model='pre_flourish.preflourishcaregiverchildconsent',
     appointment_model='edc_appointment.appointment')
 
 visit0 = Visit(

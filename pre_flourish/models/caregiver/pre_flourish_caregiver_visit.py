@@ -23,9 +23,8 @@ class CurrentSiteManager(VisitModelManager, BaseCurrentSiteManager):
 
 
 class PreFlourishCaregiverVisit(VisitModelMixin, CreatesMetadataModelMixin,
-                    ReferenceModelMixin, RequiresConsentFieldsModelMixin,
-                    CaretakerFieldsMixin, SiteModelMixin, BaseUuidModel):
-
+                                ReferenceModelMixin, RequiresConsentFieldsModelMixin,
+                                CaretakerFieldsMixin, SiteModelMixin, BaseUuidModel):
     """ Maternal visit form that links all antenatal/ postnatal follow-up forms
     """
 
@@ -50,7 +49,7 @@ class PreFlourishCaregiverVisit(VisitModelMixin, CreatesMetadataModelMixin,
             'the unscheduled visit'),
         blank=True,
         null=True,
-        max_length=25,)
+        max_length=25, )
 
     study_status = models.CharField(
         verbose_name="What is the participant's current study status",
@@ -99,6 +98,7 @@ class PreFlourishCaregiverVisit(VisitModelMixin, CreatesMetadataModelMixin,
             metadata_rule_evaluator = self.metadata_rule_evaluator_cls(
                 visit=visit)
             metadata_rule_evaluator.evaluate_rules()
+
 
     class Meta(VisitModelMixin.Meta):
         app_label = 'pre_flourish'

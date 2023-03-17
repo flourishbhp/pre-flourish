@@ -26,12 +26,14 @@ class CrfModelMixin(BaseCrfModelMixin, SubjectScheduleCrfModelMixin,
 
     @property
     def subject_identifier(self):
-        return self.maternal_visit.appointment.subject_identifier
+        return self.pre_flourish_caregiver_visit.appointment.subject_identifier
 
     def natural_key(self):
-        return self.maternal_visit.natural_key()
+        return self.pre_flourish_caregiver_visit.natural_key()
 
     natural_key.dependencies = ['pre_flourish.preflourishcaregivervisit']
+
+
 
     class Meta:
         abstract = True

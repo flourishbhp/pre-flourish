@@ -1,4 +1,5 @@
 from .caregiver import CaregiverAppointmentAdmin
+from .caregiver import CaregiverOffScheduleAdmin
 from .caregiver import CyhuuPreEnrollmentAdmin
 from .caregiver import PreFlourishCaregiverLocatorAdmin
 from .caregiver import PreFlourishCaregiverVisitAdmin
@@ -7,8 +8,10 @@ from .caregiver import PreFlourishDeathReportAdmin
 from .caregiver import PreFlourishLogEntryAdmin
 from .caregiver import PreFlourishOffStudyAdmin
 from .caregiver import PreFlourishSubjectScreeningAdmin
+from .child import ChildOffScheduleAdmin
 from .child import HuuPreEnrollmentAdmin
 from .child import PreFlourishCaregiverChildConsentAdmin
 from .child import PreFlourishChildAssentAdmin
+from .child import PreFlourishChildOffStudyAdmin
 from .child import PreFlourishChildVisitAdmin
 from .pre_flourish_action_item_admin import PreFlourishActionItemAdmin
