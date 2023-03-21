@@ -2,9 +2,9 @@ from edc_action_item import Action, site_action_items, HIGH_PRIORITY
 
 from edc_locator.action_items import SubjectLocatorAction
 
-MATERNAL_OFF_STUDY_ACTION = 'submit-caregiver-study'
-CHILD_OFF_STUDY_ACTION = 'submit-child-study'
-PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION = 'pre-flourish-submit-caregiver-locator'
+MATERNAL_OFF_STUDY_ACTION = 'submit-pf-caregiver-study'
+CHILD_OFF_STUDY_ACTION = 'submit-pf-child-study'
+PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION = 'submit-pf-caregiver-locator'
 
 
 class MaternalOffStudyAction(Action):
