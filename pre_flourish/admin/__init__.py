@@ -10,3 +10,4 @@ from .child import PreFlourishChildVisitAdmin
 from .child import HuuPreEnrollmentAdmin
 from .child import PreFlourishChildAssentAdmin
 from .child import PreFlourishCaregiverChildConsentAdmin
+from .pre_flourish_action_item_admin import PreFlourishActionItemAdmin
