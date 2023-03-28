@@ -2,17 +2,16 @@ from django.db import models
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.sites import SiteModelMixin
-from edc_constants.choices import YES_NO
-from edc_identifier.model_mixins import NonUniqueSubjectIdentifierModelMixin
-from edc_registration.model_mixins import (
-    UpdatesOrCreatesRegistrationModelMixin)
-from edc_search.model_mixins import SearchSlugManager
-
 from edc_consent.field_mixins import IdentityFieldsMixin, CitizenFieldsMixin
 from edc_consent.field_mixins import (PersonalFieldsMixin, ReviewFieldsMixin,
                                       VulnerabilityFieldsMixin)
 from edc_consent.managers import ConsentManager
 from edc_consent.model_mixins import ConsentModelMixin
+from edc_identifier.model_mixins import NonUniqueSubjectIdentifierModelMixin
+from edc_registration.model_mixins import (
+    UpdatesOrCreatesRegistrationModelMixin)
+from edc_search.model_mixins import SearchSlugManager
+
 from .eligibility import ConsentEligibility
 from .model_mixins import SearchSlugModelMixin
 

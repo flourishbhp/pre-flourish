@@ -126,6 +126,12 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin,
     def registration_status(self):
         return 'REGISTERED'
 
+    version = models.CharField(
+        verbose_name='Consent version',
+        max_length=10,
+        help_text='See \'Consent Type\' for consent versions by period.',
+        editable=False)
+
     @property
     def child_subject_identifier_postfix(self):
 

@@ -20,7 +20,7 @@ site_visit_schedules.register(pre_flourish_visit_schedule)
 pre_flourish_child_visit_schedule = VisitSchedule(
     name='child_visit_schedule1',
     verbose_name='Pre Flourish Child Visit Schedule',
-    offstudy_model='pre_flourish.preflourishoffstudy',
+    offstudy_model='pre_flourish.preflourishchildoffstudy',
     locator_model='',
     death_report_model='pre_flourish.preflourishdeathreport',
     previous_visit_schedule=None)

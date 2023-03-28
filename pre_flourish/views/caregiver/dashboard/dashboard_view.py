@@ -10,7 +10,8 @@ from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
 from ....action_items import PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
 from ....model_wrappers import (
-    AppointmentModelWrapper, PreFlourishSubjectConsentModelWrapper)
+    AppointmentModelWrapper, PreFlourishSubjectConsentModelWrapper,
+    MaternalCrfModelWrapper)
 from ....model_wrappers import (MaternalVisitModelWrapper,
                                 PreflourishCaregiverLocatorModelWrapper,
                                 PreFlourishDataActionItemModelWrapper)
@@ -20,8 +21,9 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
                     NavbarViewMixin, BaseDashboardView):
     dashboard_url = 'pre_flourish_subject_dashboard_url'
     dashboard_template = 'pre_flourish_subject_dashboard_template'
-    appointment_model = 'edc_appointment.appointment'
+    appointment_model = 'pre_flourish.caregiverappointment'
     appointment_model_wrapper_cls = AppointmentModelWrapper
+    crf_model_wrapper_cls = MaternalCrfModelWrapper
     consent_model = 'pre_flourish.preflourishconsent'
     consent_model_wrapper_cls = PreFlourishSubjectConsentModelWrapper
     screening_model = 'pre_flourish.preflourishsubjectscreening'
@@ -35,6 +37,8 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     infant_subject_dashboard_url = 'pre_flourish_child_dashboard_url'
     infant_dashboard_include_value = 'pre_flourish/caregiver/dashboard/infant_dashboard_links.html'
     special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
+    visit_attr = 'preflourishcaregivervisit'
+
 
     @property
     def appointments(self):
@@ -118,6 +122,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
             locator_obj=locator_obj,
             data_action_item_add_url=self.data_action_item.href,
             subject_consent=self.consent_wrapped,
+            pre_flourish_subject_dashboard_url=self.dashboard_url,
             schedule_names=[model.schedule_name for model in self.onschedule_models], )
         return context
 

@@ -15,6 +15,10 @@ class OnScheduleModelMixin(BaseOnScheduleModelMixin, BaseUuidModel):
         verbose_name="Subject Identifier",
         max_length=50)
 
+    child_subject_identifier = models.CharField(
+        verbose_name="Associated Child Identifier",
+        max_length=50)
+
     schedule_name = models.CharField(max_length=25, blank=True, null=True)
 
     on_site = CurrentSiteManager()

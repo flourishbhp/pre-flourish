@@ -1,14 +1,17 @@
 from django.apps import apps as django_apps
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-
 from edc_subject_dashboard import AppointmentModelWrapper as BaseAppointmentModelWrapper
 
 from .maternal_visit_model_wrapper import MaternalVisitModelWrapper
 
 
 class AppointmentModelWrapper(BaseAppointmentModelWrapper):
-
+    model = 'pre_flourish.caregiverappointment'
+    dashboard_url_name = settings.DASHBOARD_URL_NAMES.get(
+        'pre_flourish_subject_dashboard_url')
     visit_model_wrapper_cls = MaternalVisitModelWrapper
+    next_url_name = settings.DASHBOARD_URL_NAMES.get('pre_flourish_subject_dashboard_url')
 
     @property
     def wrapped_visit(self):
