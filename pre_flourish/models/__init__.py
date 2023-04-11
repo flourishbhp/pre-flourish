@@ -15,6 +15,7 @@ from .child import ChildOffSchedule as PreFlourishChildOffSchedule
 from .child import HuuPreEnrollment
 from .child import PreFlourishCaregiverChildConsent
 from .child import PreFlourishChildAssent
+from .child import PreFlourishChildDummySubjectConsent
 from .child import PreFlourishChildOffStudy
 from .child import PreFlourishChildVisit
 from .child import child_assent_on_post_save, \

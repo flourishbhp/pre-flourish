@@ -1,13 +1,13 @@
 from django import forms
 from edc_base.sites import SiteModelFormMixin
 from edc_form_validators import FormValidatorMixin
-from ...models import PreFlourishChildAssent
+from ...models import PreFlourishChildDummySubjectConsent
 from ...form_validators import PreFlourishChildAssentFormValidator
 
-class PreFlourishChildAssentForm(
+class PreFlourishChildDummySubjectConsentForm(
         SiteModelFormMixin, FormValidatorMixin, forms.ModelForm):
     
-    form_validator_cls = PreFlourishChildAssentFormValidator
+    #form_validator_cls = PreFlourishChildAssentFormValidator
 
     subject_identifier = forms.CharField(
         label='Subject Identifier',
@@ -15,5 +15,5 @@ class PreFlourishChildAssentForm(
         required=False)
     
     class Meta:
-        model = PreFlourishChildAssent
+        model = PreFlourishChildDummySubjectConsent
         fields = '__all__'
