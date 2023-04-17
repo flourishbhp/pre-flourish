@@ -53,7 +53,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     infant_links = False
     maternal_links = True
     maternal_dashboard_include_value = 'pre_flourish/child/dashboard/caregiver_dashboard_links.html'
-    special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
+    special_forms_include_value = 'pre_flourish/child/dashboard/special_forms.html'
 
     def get_subject_locator_or_message(self):
         """
