@@ -7,4 +7,4 @@ from .pre_flourish_child_off_study import PreFlourishChildOffStudy
 from .pre_flourish_child_visit import PreFlourishChildVisit
 from .pre_flourish_child_dummy_consent import PreFlourishChildDummySubjectConsent
 from .signals import child_assent_on_post_save, \
-    pre_flourish_caregiver_child_consent_on_post_save
+    child_assent_on_post_save

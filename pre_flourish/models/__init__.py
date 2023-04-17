@@ -19,4 +19,4 @@ from .child import PreFlourishChildDummySubjectConsent
 from .child import PreFlourishChildOffStudy
 from .child import PreFlourishChildVisit
 from .child import child_assent_on_post_save, \
-    pre_flourish_caregiver_child_consent_on_post_save
+    child_assent_on_post_save
