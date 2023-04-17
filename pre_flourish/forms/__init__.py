@@ -14,3 +14,4 @@ from .child import PreFlourishCaregiverChildConsentForm
 from .child import PreFlourishChildAssentForm
 from .child import PreFlourishChildOffStudyForm
 from .child import PreFlourishChildVisitForm
+from .child import PreFlourishChildDummySubjectConsentForm

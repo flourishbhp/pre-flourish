@@ -24,5 +24,15 @@ child_consent_v1 = Consent(
     age_max=18,
     gender=[MALE, FEMALE])
 
+child_consent_dummy_v1 = Consent(
+    'pre_flourish.preflourishchilddummysubjectconsent',
+    version='1',
+    start=edc_protocol.study_open_datetime,
+    end=edc_protocol.study_close_datetime,
+    age_min=0,
+    age_max=18,
+    gender=[MALE, FEMALE])
+
 site_consents.register(v1)
 site_consents.register(child_consent_v1)
+site_consents.register(child_consent_dummy_v1)
