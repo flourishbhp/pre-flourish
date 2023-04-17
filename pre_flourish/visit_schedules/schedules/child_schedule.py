@@ -5,7 +5,7 @@ from pre_flourish.visit_schedules.crfs import child_crfs
 
 # schedule for new participants
 pre_flourish_child_schedule1 = Schedule(
-    name='pre_flourish_child_schedule1',
+    name='pf_child_schedule1',
     verbose_name='Pre Flourish Schedule 1',
     onschedule_model='pre_flourish.onschedulechildpreflourish',
     offschedule_model='pre_flourish.childoffschedule',
