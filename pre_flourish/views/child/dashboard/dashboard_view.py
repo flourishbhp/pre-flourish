@@ -41,7 +41,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     dashboard_template = 'pre_flourish_child_dashboard_template'
     appointment_model = 'pre_flourish.appointment'
     appointment_model_wrapper_cls = ChildAppointmentModelWrapper
-    consent_model = 'flourish_child.childdummysubjectconsent'
+    consent_model = 'pre_flourish.childdummysubjectconsent'
     consent_model_wrapper_cls = ChildConsentModelWrapper
     action_item_model_wrapper_cls = ActionItemModelWrapper
     navbar_name = 'pre_flourish_dashboard'
@@ -54,6 +54,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     maternal_links = True
     maternal_dashboard_include_value = 'pre_flourish/child/dashboard/caregiver_dashboard_links.html'
     special_forms_include_value = 'pre_flourish/child/dashboard/special_forms.html'
+    visit_attr = 'preflourishvisit'
 
     def get_subject_locator_or_message(self):
         """

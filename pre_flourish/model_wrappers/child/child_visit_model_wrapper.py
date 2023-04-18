@@ -5,6 +5,6 @@ from flourish_dashboard.model_wrappers.child_visit_model_wrapper import \
 
 
 class ChildVisitModelWrapper(VisitModelWrapper):
-    model = 'pre_flourish.preflourishcaregivervisit'
+    model = 'pre_flourish.preflourishvisit'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
         'pre_flourish_child_dashboard_url')

@@ -9,7 +9,7 @@ from edc_base.sites import CurrentSiteManager, SiteModelMixin
 from edc_protocol.validators import datetime_not_before_study_start
 
 
-class CaregiverAppointment(AppointmentModelMixin, SiteModelMixin, BaseUuidModel):
+class Appointment(AppointmentModelMixin, SiteModelMixin, BaseUuidModel):
 
     appt_datetime = models.DateTimeField(
         verbose_name=('Appointment date and time'),

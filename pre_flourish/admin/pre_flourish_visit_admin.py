@@ -13,11 +13,11 @@ from edc_model_admin import audit_fieldset_tuple
 
 from edc_visit_tracking.modeladmin_mixins import VisitModelAdminMixin
 
-from ...admin_site import pre_flourish_admin
-from ...constants import INFANT
-from ...forms import PreFlourishChildVisitForm
-from ...models import PreFlourishChildVisit
-from .exportaction_mixin import ExportActionMixin
+from pre_flourish.admin_site import pre_flourish_admin
+from pre_flourish.constants import INFANT
+from ..forms import PreFlourishVisitForm
+from ..models import PreFlourishVisit
+from pre_flourish.admin.child.exportaction_mixin import ExportActionMixin
 
 
 class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormAutoNumberMixin,
@@ -47,11 +47,11 @@ class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormAutoNumberMi
         return redirect_url
 
 
-@admin.register(PreFlourishChildVisit, site=pre_flourish_admin)
-class PreFlourishChildVisitAdmin(
+@admin.register(PreFlourishVisit, site=pre_flourish_admin)
+class PreFlourishVisitAdmin(
         ModelAdminMixin, VisitModelAdminMixin, admin.ModelAdmin):
 
-    form = PreFlourishChildVisitForm
+    form = PreFlourishVisitForm
     dashboard_type = INFANT
     fieldsets = (
         (None, {
@@ -80,7 +80,7 @@ class PreFlourishChildVisitAdmin(
         'study_status': admin.VERTICAL,
         'require_crfs': admin.VERTICAL,
         'info_source': admin.VERTICAL,
-        'information_provider': admin.VERTICAL,
+        #'information_provider': admin.VERTICAL,
         'is_present': admin.VERTICAL,
         'survival_status': admin.VERTICAL
     }

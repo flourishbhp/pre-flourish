@@ -1,13 +1,12 @@
 from django import forms
 from edc_base.sites import SiteModelFormMixin
 from edc_form_validators import FormValidatorMixin
+from ..models import PreFlourishVisit
 
-from ...models import PreFlourishChildVisit
 
-
-class PreFlourishChildVisitForm(
+class PreFlourishVisitForm(
         SiteModelFormMixin, FormValidatorMixin, forms.ModelForm):
 
     class Meta:
-        model = PreFlourishChildVisit
+        model = PreFlourishVisit
         fields = '__all__'

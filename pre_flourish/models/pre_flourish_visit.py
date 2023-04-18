@@ -13,22 +13,22 @@ from edc_visit_tracking.constants import MISSED_VISIT
 from edc_visit_tracking.managers import VisitModelManager
 from edc_visit_tracking.model_mixins import VisitModelMixin, CaretakerFieldsMixin
 
-from .caregiver_appointment import CaregiverAppointment
-from ...caregiver_choices import MATERNAL_VISIT_STUDY_STATUS, VISIT_REASON
-from ...caregiver_choices import VISIT_INFO_SOURCE, ALIVE_DEAD_UNKNOWN
+from .appointment import Appointment
+from ..caregiver_choices import MATERNAL_VISIT_STUDY_STATUS, VISIT_REASON
+from ..caregiver_choices import VISIT_INFO_SOURCE, ALIVE_DEAD_UNKNOWN
 
 
 class CurrentSiteManager(VisitModelManager, BaseCurrentSiteManager):
     pass
 
 
-class PreFlourishCaregiverVisit(VisitModelMixin, CreatesMetadataModelMixin,
+class PreFlourishVisit(VisitModelMixin, CreatesMetadataModelMixin,
                                 ReferenceModelMixin, RequiresConsentFieldsModelMixin,
                                 CaretakerFieldsMixin, SiteModelMixin, BaseUuidModel):
     """ Maternal visit form that links all antenatal/ postnatal follow-up forms
     """
 
-    appointment = models.OneToOneField(CaregiverAppointment, on_delete=models.PROTECT)
+    appointment = models.OneToOneField(Appointment, on_delete=models.PROTECT)
 
     reason = models.CharField(
         verbose_name='Reason for visit',
