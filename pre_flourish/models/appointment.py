@@ -36,4 +36,5 @@ class Appointment(AppointmentModelMixin, SiteModelMixin, BaseUuidModel):
     natural_key.dependencies = ['sites.Site']
 
     class Meta(AppointmentModelMixin.Meta):
-        pass
+        app_label = 'pre_flourish'
+        verbose_name = 'Appointment'

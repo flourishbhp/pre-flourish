@@ -10,7 +10,7 @@ from flourish_dashboard.model_wrappers import MaternalRegisteredSubjectModelWrap
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 from pre_flourish.model_wrappers import ChildAppointmentModelWrapper, \
     ChildConsentModelWrapper, ActionItemModelWrapper, ChildVisitModelWrapper, \
-    PreflourishCaregiverLocatorModelWrapper, CaregiverChildConsentModelWrapper
+    PreflourishCaregiverLocatorModelWrapper, CaregiverChildConsentModelWrapper, ChildCrfModelWrapper
 
 
 class CaregiverRegisteredSubjectCls(ContextMixin):
@@ -43,6 +43,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     appointment_model_wrapper_cls = ChildAppointmentModelWrapper
     consent_model = 'pre_flourish.childdummysubjectconsent'
     consent_model_wrapper_cls = ChildConsentModelWrapper
+    crf_model_wrapper_cls = ChildCrfModelWrapper
     action_item_model_wrapper_cls = ActionItemModelWrapper
     navbar_name = 'pre_flourish_dashboard'
     navbar_selected_item = 'pre_flourish_child_subjects'

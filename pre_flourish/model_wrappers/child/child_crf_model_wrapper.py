@@ -3,10 +3,12 @@ from edc_visit_schedule.model_wrappers import (
     CrfModelWrapper as BaseCrfModelWrapper)
 
 
-class MaternalCrfModelWrapper(BaseCrfModelWrapper):
+class ChildCrfModelWrapper(BaseCrfModelWrapper):
 
     visit_model_attr = 'pre_flourish_visit'
 
+    next_url_name = settings.DASHBOARD_URL_NAMES.get(
+        'pre_flourish_child_dashboard_url')
     next_url_attrs = ['appointment', 'subject_identifier']
     querystring_attrs = [visit_model_attr]
 

@@ -102,4 +102,4 @@ class PreFlourishVisit(VisitModelMixin, CreatesMetadataModelMixin,
 
     class Meta(VisitModelMixin.Meta):
         app_label = 'pre_flourish'
-        verbose_name = 'Caregiver Visit'
+        verbose_name = 'Preflourish Visit'

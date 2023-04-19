@@ -16,7 +16,7 @@ class HuuPreEnrollmentAdmin(ModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': [
-                'infant_visit',
+                'pre_flourish_visit',
                 'report_datetime',
                 'child_dob',
                 'child_hiv_docs',

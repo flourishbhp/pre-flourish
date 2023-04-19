@@ -5,7 +5,7 @@ from edc_appointment.constants import NEW_APPT, IN_PROGRESS_APPT
 from edc_appointment.form_validators import AppointmentFormValidator
 from edc_base.sites.forms import SiteModelFormMixin
 from edc_form_validators import FormValidatorMixin
-from ..models import Appointment
+from ..models.appointment import Appointment
 
 
 class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormValidator,
