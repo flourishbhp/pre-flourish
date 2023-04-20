@@ -12,7 +12,7 @@ from edc_visit_tracking.model_mixins import PreviousVisitModelMixin
 from edc_consent.model_mixins import RequiresConsentFieldsModelMixin
 from edc_visit_schedule.model_mixins import SubjectScheduleCrfModelMixin
 
-from .pre_flourish_child_visit import PreFlourishChildVisit
+from ..pre_flourish_visit import PreFlourishVisit
 
 
 class ChildCrfModelMixin(
@@ -25,12 +25,12 @@ class ChildCrfModelMixin(
     """
 
     offschedule_compare_dates_as_datetimes = False
-    infant_visit = models.OneToOneField(PreFlourishChildVisit, on_delete=PROTECT)
+    pre_flourish_visit = models.OneToOneField(PreFlourishVisit, on_delete=PROTECT)
 
     def natural_key(self):
-        return self.infant_visit.natural_key()
+        return self.pre_flourish_visit.natural_key()
 
-    natural_key.dependencies = ['flourish_child.infantvisit',]
+    natural_key.dependencies = ['flourish_child.pre_flourish_visit',]
 
     class Meta:
         abstract = True

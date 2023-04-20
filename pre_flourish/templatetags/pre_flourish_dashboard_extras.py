@@ -8,7 +8,6 @@ register = template.Library()
 def get_item(dictionary, key):
     return dictionary.get(key)
 
-
 @register.inclusion_tag('pre_flourish/buttons/consent_button.html')
 def consent_button(model_wrapper):
     title = ['Consent subject to participate.']
@@ -78,9 +77,8 @@ def eligibility_button(model_wrapper):
 def log_entry_button(model_wrapper):
     href = model_wrapper.log_entry_model_wrapper.href
     return dict(
-        href=href,
+        href = href,
     )
-
 
 @register.inclusion_tag('pre_flourish/buttons/edit_screening_button.html')
 def edit_screening_button(model_wrapper):
@@ -96,7 +94,7 @@ def assents_button(model_wrapper):
     title = ['Child Assent(s)']
     return dict(
         wrapped_assents=model_wrapper.wrapped_child_assents,
-        child_assents_exist=model_wrapper.child_assents_exists,
+        child_assents_exist = model_wrapper.child_assents_exist,
         title=' '.join(title), )
 
 

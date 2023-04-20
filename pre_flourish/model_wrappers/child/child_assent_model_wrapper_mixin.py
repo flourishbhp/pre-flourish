@@ -1,5 +1,4 @@
 from django.apps import apps as django_apps
-from django.core.exceptions import ObjectDoesNotExist
 
 from flourish_child.models import ChildAssent
 from flourish_dashboard.model_wrappers.child_assent_model_wrapper_mixin import \
@@ -56,8 +55,7 @@ class ChildAssentModelWrapperMixin(BaseFlourishChildAssentModelWrapperMixin):
                 model_obj = self.child_assent_model_obj(caregiverchildconsent) or \
                             self.assent_model_cls(
                                 **self.create_child_assent_options(caregiverchildconsent))
-                # create options based on caregiverchildconsent, which is either
-                # version 1 or version 2
+                # create options based on caregiverchildconsent, which is either version 1 or version 2
 
                 wrapped_entries.append(self.assent_model_wrapper_cls(model_obj))
         return wrapped_entries
@@ -74,8 +72,7 @@ class ChildAssentModelWrapperMixin(BaseFlourishChildAssentModelWrapperMixin):
         exists_conditions = list()
 
         if getattr(self, 'consent_model_obj', None):
-            caregiverchildconsents = \
-                self.consent_model_obj.preflourishcaregiverchildconsent_set \
+            caregiverchildconsents = self.consent_model_obj.preflourishcaregiverchildconsent_set \
                 .only('child_age_at_enrollment', 'is_eligible') \
                 .filter(is_eligible=True,
                         child_age_at_enrollment__gte=7,
@@ -91,8 +88,7 @@ class ChildAssentModelWrapperMixin(BaseFlourishChildAssentModelWrapperMixin):
     @property
     def child_assents_qs(self):
         if getattr(self, 'consent_model_obj', None):
-            identities = self.consent_model_obj.preflourishcaregiverchildconsent_set\
-                .values_list(
+            identities = self.consent_model_obj.preflourishcaregiverchildconsent_set.values_list(
                 'identity', flat=True)
             return self.assent_model_cls.objects.filter(identity__in=identities)
 
