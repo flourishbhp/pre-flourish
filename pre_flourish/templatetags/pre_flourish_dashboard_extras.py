@@ -124,10 +124,9 @@ def child_dashboard_button(model_wrapper):
     'pre_flourish/buttons/caregiver_dashboard_button.html')
 def caregiver_dashboard_button(model_wrapper):
     subject_dashboard_url = settings.DASHBOARD_URL_NAMES.get(
-        'subject_dashboard_url')
+        'pre_flourish_subject_dashboard_url')
 
-    subject_identifier = model_wrapper.object \
-        .subject_consent.subject_identifier
+    subject_identifier = model_wrapper.object.subject_identifier
 
     return dict(
         subject_dashboard_url=subject_dashboard_url,
