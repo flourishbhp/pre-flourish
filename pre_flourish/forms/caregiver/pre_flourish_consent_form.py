@@ -2,6 +2,7 @@ from django import forms
 from django.apps import apps as django_apps
 from edc_base.sites import SiteModelFormMixin
 from edc_form_validators import FormValidatorMixin
+from django.core.exceptions import ValidationError
 # from flourish_form_validations.form_validators import SubjectConsentFormValidator
 from ...models import PreFlourishConsent
 from ...models import PreFlourishSubjectScreening
@@ -72,9 +73,18 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
                 pass
             else:
                 return locator_obj
-            
-        
-    
+
+    def clean(self):
+        """
+        Raise ValidationError if least one child consent inline form is not added.
+        """
+        clean_data = super().clean()
+
+        child_consent_inlines = int(self.data.get('preflourishcaregiverchildconsent_set-TOTAL_FORMS', 0))
+
+        if child_consent_inlines == 0:
+            raise ValidationError('You must add at least one child consent')
+        return clean_data
 
     class Meta:
         model = PreFlourishConsent
