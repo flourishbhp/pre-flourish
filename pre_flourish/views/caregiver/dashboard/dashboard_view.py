@@ -21,7 +21,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
                     NavbarViewMixin, BaseDashboardView):
     dashboard_url = 'pre_flourish_subject_dashboard_url'
     dashboard_template = 'pre_flourish_subject_dashboard_template'
-    appointment_model = 'pre_flourish.caregiverappointment'
+    appointment_model = 'pre_flourish.appointment'
     appointment_model_wrapper_cls = AppointmentModelWrapper
     crf_model_wrapper_cls = MaternalCrfModelWrapper
     consent_model = 'pre_flourish.preflourishconsent'
@@ -37,7 +37,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     infant_subject_dashboard_url = 'pre_flourish_child_dashboard_url'
     infant_dashboard_include_value = 'pre_flourish/caregiver/dashboard/infant_dashboard_links.html'
     special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
-    visit_attr = 'preflourishcaregivervisit'
+    visit_attr = 'preflourishvisit'
 
 
     @property

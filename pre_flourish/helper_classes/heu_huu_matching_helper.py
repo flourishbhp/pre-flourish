@@ -1,8 +1,6 @@
 from django.apps import apps as django_apps
 from edc_base.utils import age, get_utcnow
 
-import pre_flourish.models.child
-
 
 class HEUHUUMatchingHelper:
     """Helper class to match HIV exposed adolescents based on age and BMI.
@@ -31,12 +29,17 @@ class HEUHUUMatchingHelper:
         None.
     """
 
-    def __init__(self, subject):
-        self.subject = subject
+    def __init__(self, dob=None, child_weight_kg=None, child_height_cm=None,
+                 subject_identifier=None, gender=None):
+        self.subject_identifier = subject_identifier
+        self.dob = dob
+        self.child_weight_kg = child_weight_kg
+        self.child_height_cm = child_height_cm
+        self.gender = gender
 
     @property
     def child_consent_cls(self):
-        return django_apps.get_model('flourish_child.caregiverchildconsent')
+        return django_apps.get_model('flourish_caregiver.caregiverchildconsent')
 
     @property
     def clinical_measurements_cls(self):
@@ -44,11 +47,11 @@ class HEUHUUMatchingHelper:
 
     @property
     def huu_pre_enrollment_cls(self):
-        return django_apps.get_model('flourish_child.huuPreEnrollment')
+        return django_apps.get_model('pre_flourish.huuPreEnrollment')
 
     @property
     def pre_flourish_assents_cls(self):
-        return django_apps.get_model(pre_flourish.preflourishchildassent)
+        return django_apps.get_model('pre_flourish.preflourishchildassent')
 
     @property
     def flourish_hue_parts(self):
@@ -56,16 +59,34 @@ class HEUHUUMatchingHelper:
         child_consents = self.child_consent_cls.objects.all()
         flourish_adolescents = []
         for consent in child_consents:
-            if consent.dob >= 14 and consent.child_dataset.infant_hiv_exposedin[
-                'Exposed', 'exposed']:
+            if not consent.child_dob:
+                continue
+            _age = age(consent.child_dob, get_utcnow()).years
+            if (_age >= 10 and consent.child_dataset.infant_hiv_exposed in [
+                'Exposed', 'exposed'] and
+                    consent.subject_identifier != self.subject_identifier and
+                    consent.gender == self.gender):
                 flourish_adolescents.append(consent)
         return flourish_adolescents
 
     @property
     def pre_flourish_huu_parts(self):
-        return self.pre_flourish_assents_cls.objects.all()
+        pre_flourish_assents = self.pre_flourish_assents_cls.objects.all()
+        pre_flourish_adolescents = []
+        for assent in pre_flourish_assents:
+            if (assent.subject_identifier != self.subject_identifier and
+                    assent.gender == self.gender):
+                pre_flourish_adolescents.append(assent)
+        return pre_flourish_assents
 
-    def prepare_subject(self, subject):
+    @property
+    def subject_of_interest(self):
+        """Returns the subject of interest"""
+        subject = self.prepare_subject(self.subject_identifier, self.child_weight_kg,
+                                       self.child_height_cm, self.dob)
+        return subject
+
+    def prepare_subject(self, subject_identifier, weight_kg, height_cm, dob):
         """Prepare a dictionary of subject information, including their subject
            identifier,
            age in years, and body mass index (BMI) in kg/m^2, using their latest available
@@ -90,38 +111,11 @@ class HEUHUUMatchingHelper:
                      calculated, its value
                      will be set to None.
            """
-        clinical_measurements_obj = None
-        huu_pre_enrollment_obj = None
-
-        try:
-            clinical_measurements_obj = self.clinical_measurements_cls.objects.filter(
-                child_visit__subject_identifier=subject.subject_identifier
-            ).latest('report_datetime')
-        except self.clinical_measurements_cls.DoesNotExist:
-            pass
-
-        try:
-            huu_pre_enrollment_obj = self.huu_pre_enrollment_cls.objects.filter(
-                child_visit__subject_identifier=subject.subject_identifier
-            ).latest('report_datetime')
-        except self.huu_pre_enrollment_cls.DoesNotExist:
-            pass
-
-        bmi = None
-        _age = age(subject.dob, get_utcnow())
-
-        if clinical_measurements_obj:
-            bmi = self.calculate_bmi_adolescents(
-                weight_kg=clinical_measurements_obj.child_weight_kg,
-                height=clinical_measurements_obj.child_height)
-
-        if huu_pre_enrollment_obj:
-            bmi = self.calculate_bmi_adolescents(
-                weight_kg=huu_pre_enrollment_obj.weight,
-                height=huu_pre_enrollment_obj.height)
+        _age = age(dob, get_utcnow()).years
+        bmi = float(self.calculate_bmi_adolescents(weight_kg=weight_kg, height=height_cm))
 
         return {
-            'subject_identifier': subject.subject_identifier,
+            'subject_identifier': subject_identifier,
             'age': _age,
             'bmi': bmi
         }
@@ -132,13 +126,22 @@ class HEUHUUMatchingHelper:
         Returns:
             The matching flourish hue part, or None if no match is found.
         """
-        subject = self.prepare_subject(self.subject)
-
         for flourish_part in self.flourish_hue_parts:
-            prepared_flourish_part = self.prepare_subject(flourish_part)
-            if self.have_matching_age_bmi(subject_1=subject,
-                                          subject_2=prepared_flourish_part):
-                return prepared_flourish_part
+            try:
+                clinical_measurements_obj = self.clinical_measurements_cls.objects.filter(
+                    child_visit__subject_identifier=flourish_part.subject_identifier
+                ).latest('report_datetime')
+            except self.clinical_measurements_cls.DoesNotExist:
+                pass
+            else:
+                prepared_flourish_part = self.prepare_subject(
+                    flourish_part.subject_identifier,
+                    clinical_measurements_obj.child_weight_kg,
+                    clinical_measurements_obj.child_height,
+                    flourish_part.child_dob)
+                if self.have_matching_age_bmi(subject_1=self.subject_of_interest,
+                                              subject_2=prepared_flourish_part):
+                    return prepared_flourish_part
 
         return None
 
@@ -148,13 +151,23 @@ class HEUHUUMatchingHelper:
         Returns:
             The matching pre flourish huu part, or None if no match is found.
         """
-        subject = self.prepare_subject(self.subject)
-
         for pre_flourish_part in self.pre_flourish_huu_parts:
-            prepared_pre_flourish_part = self.prepare_subject(pre_flourish_part)
-            if self.have_matching_age_bmi(subject_1=subject,
-                                          subject_2=prepared_pre_flourish_part):
-                return prepared_pre_flourish_part
+            try:
+                huu_pre_enrollment_obj = self.huu_pre_enrollment_cls.objects.filter(
+                    pre_flourish_visit__subject_identifier=pre_flourish_part
+                    .subject_identifier
+                ).latest('report_datetime')
+            except self.huu_pre_enrollment_cls.DoesNotExist:
+                pass
+            else:
+                prepared_pre_flourish_part = self.prepare_subject(
+                    pre_flourish_part.subject_identifier,
+                    huu_pre_enrollment_obj.weight,
+                    huu_pre_enrollment_obj.height,
+                    pre_flourish_part.dob)
+                if self.have_matching_age_bmi(subject_1=self.subject_of_interest,
+                                              subject_2=prepared_pre_flourish_part):
+                    return prepared_pre_flourish_part
 
         return None
 
@@ -178,12 +191,16 @@ class HEUHUUMatchingHelper:
             return False
         if age_bin != age_dict[subject_2['age']]:
             return False
-        bmi_bins = [(0, 15), (15, 18), (18, 21), (21, 25), (25, float('inf'))]
+        bmi_bins = [(0, 15), (15, 18), (18, float('inf'))]
+        if subject_1['bmi'] is None or subject_2['bmi'] is None:
+            return False
         subject_1_bmi_bin = next(
-            (bmi_bin for bmi_bin in bmi_bins if bmi_bin[0] <= subject_1['bmi'] < bmi_bin[1]),
+            (bmi_bin for bmi_bin in bmi_bins if
+             bmi_bin[0] <= subject_1['bmi'] < bmi_bin[1]),
             None)
         subject_2_bmi_bin = next(
-            (bmi_bin for bmi_bin in bmi_bins if bmi_bin[0] <= subject_2['bmi'] < bmi_bin[1]),
+            (bmi_bin for bmi_bin in bmi_bins if
+             bmi_bin[0] <= subject_2['bmi'] < bmi_bin[1]),
             None)
         if subject_1_bmi_bin is None or subject_2_bmi_bin is None:
             return False

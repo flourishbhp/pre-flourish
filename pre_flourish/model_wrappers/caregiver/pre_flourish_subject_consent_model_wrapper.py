@@ -23,7 +23,7 @@ class PreFlourishSubjectConsentModelWrapper(ModelWrapper):
         return wrapped_assents
 
     @property
-    def child_assents_exist(self):
+    def child_assents_exists(self):
         subject_identifiers = self.children_consent_objs.values_list('subject_identifier',
                                                                      flat=True)
 

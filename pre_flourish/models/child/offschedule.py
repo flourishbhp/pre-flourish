@@ -1,6 +1,6 @@
 from django.forms import forms
 
-from flourish_caregiver.models import CaregiverOffSchedule
+from flourish_caregiver.models.offschedule import CaregiverOffSchedule
 from pre_flourish.models.child.pre_flourish_child_consent import PreFlourishConsent
 
 

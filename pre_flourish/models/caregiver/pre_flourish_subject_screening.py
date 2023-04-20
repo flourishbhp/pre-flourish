@@ -1,4 +1,3 @@
-from statistics import mode
 from django.db import models
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
@@ -10,10 +9,9 @@ from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_protocol.validators import datetime_not_before_study_start
 from edc_search.model_mixins import SearchSlugManager
 
-from ...identifiers import ScreeningIdentifier
 from .eligibility import Eligibility
 from .model_mixins import SearchSlugModelMixin
-from flourish_caregiver.models import CaregiverLocator
+from ...identifiers import ScreeningIdentifier
 
 
 class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):

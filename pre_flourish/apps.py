@@ -34,8 +34,8 @@ if settings.APP_NAME == 'pre_flourish':
     class EdcAppointmentAppConfig(BaseEdcAppointmentAppConfig):
         configurations = [
             AppointmentConfig(
-                model='pre_flourish.caregiverappointment',
-                related_visit_model='pre_flourish.preflourishcaregivervisit',
+                model='pre_flourish.appointment',
+                related_visit_model='pre_flourish.preflourishvisit',
                 appt_type='clinic')]
 
     class EdcTimepointAppConfig(BaseEdcTimepointAppConfig):
@@ -56,7 +56,7 @@ if settings.APP_NAME == 'pre_flourish':
     class EdcVisitTrackingAppConfig(BaseEdcVisitTrackingAppConfig):
         visit_models = {
             'pre_flourish': (
-                'maternal_visit', 'pre_flourish.preflourishcaregivervisit'), }
+                'maternal_visit', 'pre_flourish.preflourishvisit'), }
 
     class EdcFacilityAppConfig(BaseEdcFacilityAppConfig):
         country = 'botswana'
