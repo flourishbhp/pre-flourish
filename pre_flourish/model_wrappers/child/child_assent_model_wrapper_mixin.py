@@ -26,7 +26,7 @@ class ChildAssentModelWrapperMixin(BaseFlourishChildAssentModelWrapperMixin):
     def child_assent(self):
         """"Returns a wrapped saved or unsaved child assent
         """
-        if not self.child_age >= 7:
+        if self.child_age >= 7:
             model_obj = self.assent_model_obj or self.assent_model_cls(
                 **self.create_child_assent_options(self.caregiverchildconsent_obj))
 
