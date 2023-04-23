@@ -1,5 +1,6 @@
 from django import template
 from django.conf import settings
+from edc_base.utils import age, get_utcnow
 
 register = template.Library()
 
@@ -131,3 +132,17 @@ def caregiver_dashboard_button(model_wrapper):
     return dict(
         subject_dashboard_url=subject_dashboard_url,
         subject_identifier=subject_identifier)
+
+
+@register.simple_tag(takes_context=True)
+def get_age(context, born=None):
+    if born:
+        reference_datetime = context.get('reference_datetime', get_utcnow())
+        participant_age = age(born, reference_datetime)
+        age_str = ''
+        age_months = participant_age.months % 12
+        if participant_age.years > 0:
+            age_str += str(participant_age.years) + ' yrs '
+        if age_months > 0:
+            age_str += str(age_months) + ' months'
+        return age_str
