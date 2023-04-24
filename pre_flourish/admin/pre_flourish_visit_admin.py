@@ -64,8 +64,6 @@ class PreFlourishVisitAdmin(
                 'require_crfs',
                 'info_source',
                 'info_source_other',
-                'information_provider',
-                'information_provider_other',
                 'is_present',
                 'survival_status',
                 'last_alive_date',
@@ -80,7 +78,6 @@ class PreFlourishVisitAdmin(
         'study_status': admin.VERTICAL,
         'require_crfs': admin.VERTICAL,
         'info_source': admin.VERTICAL,
-        #'information_provider': admin.VERTICAL,
         'is_present': admin.VERTICAL,
         'survival_status': admin.VERTICAL
     }

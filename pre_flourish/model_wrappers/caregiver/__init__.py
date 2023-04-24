@@ -7,3 +7,4 @@ from .maternal_screening_model_wrapper import PreFlourishMaternalScreeningModelW
 from .maternal_visit_model_wrapper import MaternalVisitModelWrapper
 from .pre_flourish_subject_consent_model_wrapper import \
     PreFlourishSubjectConsentModelWrapper
+from .maternal_registered_subject_model_wrapper import MaternalRegisteredSubjectModelWrapper
