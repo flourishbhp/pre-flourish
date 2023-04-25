@@ -26,7 +26,7 @@ class ChildAssentModelWrapperMixin(BaseFlourishChildAssentModelWrapperMixin):
     def child_assent(self):
         """"Returns a wrapped saved or unsaved child assent
         """
-        if self.child_age >= 7:
+        if not self.child_age >= 7:
             model_obj = self.assent_model_obj or self.assent_model_cls(
                 **self.create_child_assent_options(self.caregiverchildconsent_obj))
 
@@ -49,6 +49,13 @@ class ChildAssentModelWrapperMixin(BaseFlourishChildAssentModelWrapperMixin):
 
                 wrapped_entries.append(self.assent_model_wrapper_cls(model_obj))
         return wrapped_entries
+
+    @property
+    def wrapped_child_assents(self):
+        wrapped_assents = []
+        for assent in self.child_assents:
+            wrapped_assents.append(PreFlourishChildAssentModelWrapper(model_obj=assent))
+        return wrapped_assents
 
     def child_assents_exists(self) -> bool:
 
@@ -74,3 +81,50 @@ class ChildAssentModelWrapperMixin(BaseFlourishChildAssentModelWrapperMixin):
             identities = self.consent_model_obj.preflourishcaregiverchildconsent_set.values_list(
                 'identity', flat=True)
             return self.assent_model_cls.objects.filter(identity__in=identities)
+
+    def create_child_assent_options(self, caregiverchildconsent):
+        """Returns a dictionary of options to create a new assent model instance."""
+
+        first_name = caregiverchildconsent.first_name
+        last_name = caregiverchildconsent.last_name
+        initials = self.set_initials(first_name, last_name)
+
+        options = dict(
+            subject_identifier=caregiverchildconsent.subject_identifier,
+            first_name=first_name,
+            last_name=last_name,
+            initials=initials,
+            gender=caregiverchildconsent.gender,
+            identity=caregiverchildconsent.identity,
+            identity_type=caregiverchildconsent.identity_type,
+            confirm_identity=caregiverchildconsent.confirm_identity,
+            dob=caregiverchildconsent.child_dob)
+        return options
+
+    @property
+    def caregiver_childconsent_cls(self):
+        return django_apps.get_model(self.model)
+
+    @property
+    def caregiverchildconsent_obj(self):
+        """Returns a caregiver child consent model instance or None.
+        """
+        try:
+            # was returning non with caregiverchildconsent_options, so subject identifier
+            # and version was used instead
+            return self.caregiver_childconsent_cls.objects.get(
+                subject_identifier=self.subject_identifier,
+            )
+        except self.caregiver_childconsent_cls.DoesNotExist:
+            return None
+
+    def set_initials(self, first_name=None, last_name=None):
+        initials = ''
+        if first_name and last_name:
+            if (len(first_name.split(' ')) > 1):
+                first = first_name.split(' ')[0]
+                middle = first_name.split(' ')[1]
+                initials = f'{first[:1]}{middle[:1]}{last_name[:1]}'
+            else:
+                initials = f'{first_name[:1]}{last_name[:1]}'
+        return initials
