@@ -30,8 +30,7 @@ def child_assent_on_post_save(sender, instance, raw, created, **kwargs):
             raise CaregiverConsentError('Associated caregiver consent on behalf of '
                                         'child for this participant not found')
         else:
-            if caregiver_child_consent_obj.is_eligible:
-                create_child_dummy_consent(instance, caregiver_child_consent_obj)
+            create_child_dummy_consent(instance, caregiver_child_consent_obj)
 
 
 @receiver(post_save, weak=False, sender=PreFlourishChildDummySubjectConsent,
@@ -39,13 +38,13 @@ def child_assent_on_post_save(sender, instance, raw, created, **kwargs):
 def pre_flourish_child_dummy_consent_on_post_save(sender, instance, raw, created, **kwargs):
     """Put subject on schedule after consenting.
     """
-    if not raw and instance.is_eligible:
-        put_on_schedule(instance=instance,
-                        subject_identifier=instance.subject_identifier,
-                        onschedule_model='pre_flourish.onschedulechildpreflourish',
-                        schedule_name='pf_child_schedule1',
-                        base_appt_datetime=instance.consent_datetime
-                        )
+    if not raw:
+        put_on_schedule(
+            subject_identifier=instance.subject_identifier,
+            onschedule_model='pre_flourish.onschedulechildpreflourish',
+            schedule_name='pf_child_schedule1',
+            base_appt_datetime=instance.consent_datetime
+        )
 
 
 def create_child_dummy_consent(instance, caregiver_child_consent_obj=None):

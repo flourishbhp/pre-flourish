@@ -8,20 +8,20 @@ from edc_navbar import NavbarViewMixin
 from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
-from ....action_items import PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
-from ....model_wrappers import (
+from pre_flourish.action_items import PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
+from pre_flourish.model_wrappers import (
     AppointmentModelWrapper, PreFlourishSubjectConsentModelWrapper,
     MaternalCrfModelWrapper)
-from ....model_wrappers import (MaternalVisitModelWrapper,
-                                PreflourishCaregiverLocatorModelWrapper,
-                                PreFlourishDataActionItemModelWrapper)
+from pre_flourish.model_wrappers import (MaternalVisitModelWrapper,
+                                         PreflourishCaregiverLocatorModelWrapper,
+                                         PreFlourishDataActionItemModelWrapper)
 
 
 class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
                     NavbarViewMixin, BaseDashboardView):
     dashboard_url = 'pre_flourish_subject_dashboard_url'
     dashboard_template = 'pre_flourish_subject_dashboard_template'
-    appointment_model = 'pre_flourish.caregiverappointment'
+    appointment_model = 'pre_flourish.appointment'
     appointment_model_wrapper_cls = AppointmentModelWrapper
     crf_model_wrapper_cls = MaternalCrfModelWrapper
     consent_model = 'pre_flourish.preflourishconsent'
@@ -37,8 +37,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     infant_subject_dashboard_url = 'pre_flourish_child_dashboard_url'
     infant_dashboard_include_value = 'pre_flourish/caregiver/dashboard/infant_dashboard_links.html'
     special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
-    visit_attr = 'preflourishcaregivervisit'
-
+    visit_attr = 'preflourishvisit'
 
     @property
     def appointments(self):
@@ -127,8 +126,8 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
         return context
 
     def set_current_schedule(self, onschedule_model_obj=None,
-            schedule=None, visit_schedule=None,
-            is_onschedule=True):
+                             schedule=None, visit_schedule=None,
+                             is_onschedule=True):
         if onschedule_model_obj:
             if is_onschedule:
                 self.current_schedule = schedule

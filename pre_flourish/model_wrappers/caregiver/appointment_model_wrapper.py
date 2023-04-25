@@ -7,7 +7,7 @@ from .maternal_visit_model_wrapper import MaternalVisitModelWrapper
 
 
 class AppointmentModelWrapper(BaseAppointmentModelWrapper):
-    model = 'pre_flourish.caregiverappointment'
+    model = 'pre_flourish.appointment'
     dashboard_url_name = settings.DASHBOARD_URL_NAMES.get(
         'pre_flourish_subject_dashboard_url')
     visit_model_wrapper_cls = MaternalVisitModelWrapper
@@ -18,7 +18,7 @@ class AppointmentModelWrapper(BaseAppointmentModelWrapper):
         """Returns a wrapped persistent or non-persistent visit instance.
         """
         try:
-            model_obj = self.object.preflourishcaregivervisit
+            model_obj = self.object.preflourishvisit
         except ObjectDoesNotExist:
             visit_model = django_apps.get_model(
                 self.visit_model_wrapper_cls.model)

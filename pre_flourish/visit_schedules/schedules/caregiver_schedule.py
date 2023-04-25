@@ -10,7 +10,7 @@ pre_flourish_schedule1 = Schedule(
     onschedule_model='pre_flourish.onschedulepreflourish',
     offschedule_model='pre_flourish.caregiveroffschedule',
     consent_model='pre_flourish.preflourishconsent',
-    appointment_model='pre_flourish.caregiverappointment')
+    appointment_model='pre_flourish.appointment')
 
 visit0 = Visit(
     code='1000',
@@ -32,7 +32,7 @@ pre_flourish_schedule2 = Schedule(
     onschedule_model='pre_flourish.onschedulepreflourish',
     offschedule_model='pre_flourish.caregiveroffschedule',
     consent_model='pre_flourish.preflourishconsent',
-    appointment_model='pre_flourish.caregiverappointment')
+    appointment_model='pre_flourish.appointment')
 
 pre_flourish_schedule2.add_visit(visit=visit0)
 
@@ -43,6 +43,6 @@ pre_flourish_schedule3 = Schedule(
     onschedule_model='pre_flourish.onschedulepreflourish',
     offschedule_model='pre_flourish.caregiveroffschedule',
     consent_model='pre_flourish.preflourishconsent',
-    appointment_model='pre_flourish.caregiverappointment')
+    appointment_model='pre_flourish.appointment')
 
 pre_flourish_schedule3.add_visit(visit=visit0)
