@@ -8,7 +8,7 @@ from .child_consent_model_wrapper_mixin import ChildConsentModelWrapperMixin
 class ChildConsentModelWrapper(ChildConsentModelWrapperMixin,
                                ChildAssentModelWrapperMixin,
                                ModelWrapper):
-    model = 'flourish_child.childdummysubjectconsent'
+    model = 'pre_flourish.preflourishchilddummysubjectconsent'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
         'pre_flourish_child_dashboard_url')
     next_url_attrs = ['subject_identifier', 'screening_identifier']
