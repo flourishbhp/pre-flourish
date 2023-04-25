@@ -29,6 +29,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     screening_model = 'pre_flourish.preflourishsubjectscreening'
     navbar_name = 'pre_flourish_dashboard'
     navbar_selected_item = 'pre_flourish_consent'
+    subject_locator_model = 'flourish_caregiver.caregiverlocator'
     subject_locator_model_wrapper_cls = PreflourishCaregiverLocatorModelWrapper
     visit_model_wrapper_cls = MaternalVisitModelWrapper
     mother_infant_study = True

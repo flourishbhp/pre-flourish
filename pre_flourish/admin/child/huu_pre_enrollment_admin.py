@@ -1,7 +1,7 @@
 from django.contrib import admin
 from edc_model_admin import audit_fieldset_tuple
 
-from .model_admin_mixins import ModelAdminMixin
+from .model_admin_mixins import ChildCrfModelAdminMixin
 
 from ...admin_site import pre_flourish_admin
 from ...forms import HuuPreEnrollmentForm
@@ -9,7 +9,7 @@ from ...models import HuuPreEnrollment
 
 
 @admin.register(HuuPreEnrollment, site=pre_flourish_admin)
-class HuuPreEnrollmentAdmin(ModelAdminMixin, admin.ModelAdmin):
+class HuuPreEnrollmentAdmin(ChildCrfModelAdminMixin, admin.ModelAdmin):
 
     form = HuuPreEnrollmentForm
 

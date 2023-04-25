@@ -49,6 +49,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     appointment_model_wrapper_cls = AppointmentModelWrapper
     consent_model = 'pre_flourish.preflourishchilddummysubjectconsent'
     consent_model_wrapper_cls = ChildConsentModelWrapper
+    subject_locator_model = 'flourish_caregiver.caregiverlocator'
     crf_model_wrapper_cls = ChildCrfModelWrapper
     action_item_model_wrapper_cls = ActionItemModelWrapper
     navbar_name = 'pre_flourish_dashboard'
