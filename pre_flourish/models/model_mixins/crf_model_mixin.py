@@ -9,7 +9,7 @@ from edc_visit_schedule.model_mixins import SubjectScheduleCrfModelMixin
 from edc_visit_tracking.model_mixins import CrfModelMixin as BaseCrfModelMixin
 from edc_visit_tracking.model_mixins import PreviousVisitModelMixin
 
-from ..pre_flourish_caregiver_visit import PreFlourishCaregiverVisit
+from ..pre_flourish_visit import PreFlourishVisit
 
 
 class CrfModelMixin(BaseCrfModelMixin, SubjectScheduleCrfModelMixin,
@@ -20,18 +20,17 @@ class CrfModelMixin(BaseCrfModelMixin, SubjectScheduleCrfModelMixin,
     """ Base model for all scheduled models
     """
     offschedule_compare_dates_as_datetimes = True
-    pre_flourish_caregiver_visit = models.OneToOneField(PreFlourishCaregiverVisit,
-                                                        on_delete=PROTECT)
+    pre_flourish_visit = models.OneToOneField(PreFlourishVisit, on_delete=PROTECT)
     crf_date_validator_cls = None
 
     @property
     def subject_identifier(self):
-        return self.pre_flourish_caregiver_visit.appointment.subject_identifier
+        return self.pre_flourish_visit.appointment.subject_identifier
 
     def natural_key(self):
-        return self.pre_flourish_caregiver_visit.natural_key()
+        return self.pre_flourish_visit.natural_key()
 
-    natural_key.dependencies = ['pre_flourish.preflourishcaregivervisit']
+    natural_key.dependencies = ['pre_flourish.pre_flourish_visit']
 
 
 

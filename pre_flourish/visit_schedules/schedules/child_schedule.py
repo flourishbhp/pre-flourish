@@ -10,7 +10,7 @@ pre_flourish_child_schedule1 = Schedule(
     onschedule_model='pre_flourish.onschedulechildpreflourish',
     offschedule_model='pre_flourish.childoffschedule',
     consent_model='pre_flourish.preflourishchilddummysubjectconsent',
-    appointment_model='pre_flourish.caregiverappointment')
+    appointment_model='pre_flourish.appointment')
 
 visit0 = Visit(
     code='1000',

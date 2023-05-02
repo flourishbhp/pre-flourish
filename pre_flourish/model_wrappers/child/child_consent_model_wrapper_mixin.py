@@ -1,8 +1,7 @@
 from django.apps import apps as django_apps
 from django.core.exceptions import ObjectDoesNotExist
 from edc_base.utils import get_uuid
-from flourish_dashboard.model_wrappers.child_dummy_consent_model_wrapper_mixin import \
-    ChildDummyConsentModelWrapperMixin
+from .child_dummy_consent_model_wrapper_mixin import ChildDummyConsentModelWrapperMixin
 
 
 class ChildConsentModelWrapperMixin(ChildDummyConsentModelWrapperMixin):

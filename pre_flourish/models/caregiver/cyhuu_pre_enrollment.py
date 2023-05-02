@@ -3,7 +3,7 @@ from edc_base.model_validators import datetime_not_future
 from edc_base.utils import get_utcnow
 from edc_constants.choices import YES_NO
 
-from .model_mixins import CrfModelMixin
+from ..model_mixins import CrfModelMixin
 from ...caregiver_choices import POS_NEG_IND
 
 

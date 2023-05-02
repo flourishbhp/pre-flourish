@@ -47,8 +47,8 @@ class CrfModelAdminMixin(VisitTrackingCrfModelAdminMixin,
 
     def post_url_on_delete_kwargs(self, request, obj):
         return dict(
-            subject_identifier=obj.pre_flourish_caregiver_visit.subject_identifier,
-            appointment=str(obj.pre_flourish_caregiver_visit.appointment.id))
+            subject_identifier=obj.pre_flourish_visit.subject_identifier,
+            appointment=str(obj.pre_flourish_visit.appointment.id))
 
     def view_on_site(self, obj):
         dashboard_url_name = settings.DASHBOARD_URL_NAMES.get(
@@ -56,8 +56,8 @@ class CrfModelAdminMixin(VisitTrackingCrfModelAdminMixin,
         try:
             url = reverse(
                 dashboard_url_name, kwargs=dict(
-                    subject_identifier=obj.pre_flourish_caregiver_visit.subject_identifier,
-                    appointment=str(obj.pre_flourish_caregiver_visit.appointment.id)))
+                    subject_identifier=obj.pre_flourish_visit.subject_identifier,
+                    appointment=str(obj.pre_flourish_visit.appointment.id)))
         except NoReverseMatch:
             url = super().view_on_site(obj)
         return url
@@ -80,6 +80,6 @@ class CrfModelAdminMixin(VisitTrackingCrfModelAdminMixin,
             pre_flourish_url = reverse(
                 settings.DASHBOARD_URL_NAMES.get(subject_url),
                 kwargs=dict(
-                    subject_identifier=obj.pre_flourish_caregiver_visit.subject_identifier,
-                    appointment=str(obj.pre_flourish_caregiver_visit.appointment.id)))
+                    subject_identifier=obj.pre_flourish_visit.subject_identifier,
+                    appointment=str(obj.pre_flourish_visit.appointment.id)))
             return HttpResponseRedirect(pre_flourish_url)

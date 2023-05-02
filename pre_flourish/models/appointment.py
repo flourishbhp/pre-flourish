@@ -9,7 +9,7 @@ from edc_base.sites import CurrentSiteManager, SiteModelMixin
 from edc_protocol.validators import datetime_not_before_study_start
 
 
-class CaregiverAppointment(AppointmentModelMixin, SiteModelMixin, BaseUuidModel):
+class Appointment(AppointmentModelMixin, SiteModelMixin, BaseUuidModel):
 
     appt_datetime = models.DateTimeField(
         verbose_name=('Appointment date and time'),
@@ -36,4 +36,5 @@ class CaregiverAppointment(AppointmentModelMixin, SiteModelMixin, BaseUuidModel)
     natural_key.dependencies = ['sites.Site']
 
     class Meta(AppointmentModelMixin.Meta):
-        pass
+        app_label = 'pre_flourish'
+        verbose_name = 'Appointment'
