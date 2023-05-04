@@ -6,11 +6,11 @@ from edc_registration.models import RegisteredSubject
 from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_navbar import NavbarViewMixin
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
-from flourish_dashboard.model_wrappers import MaternalRegisteredSubjectModelWrapper
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 from pre_flourish.model_wrappers import ChildAppointmentModelWrapper, \
     ChildConsentModelWrapper, ActionItemModelWrapper, ChildVisitModelWrapper, \
-    PreflourishCaregiverLocatorModelWrapper, CaregiverChildConsentModelWrapper
+    PreflourishCaregiverLocatorModelWrapper, CaregiverChildConsentModelWrapper, ChildCrfModelWrapper, \
+    AppointmentModelWrapper, MaternalRegisteredSubjectModelWrapper
 
 
 class CaregiverRegisteredSubjectCls(ContextMixin):
@@ -34,19 +34,26 @@ class CaregiverRegisteredSubjectCls(ContextMixin):
         caregiver_subject_identifier = '-'.join(subject_identifier)
         return caregiver_subject_identifier
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            caregiver_registered_subject=self.caregiver_registered_subject)
+        return context
+
 
 class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
                     NavbarViewMixin, BaseDashboardView, CaregiverRegisteredSubjectCls):
     dashboard_url = 'pre_flourish_child_dashboard_url'
     dashboard_template = 'pre_flourish_child_dashboard_template'
     appointment_model = 'pre_flourish.appointment'
-    appointment_model_wrapper_cls = ChildAppointmentModelWrapper
-    consent_model = 'flourish_child.childdummysubjectconsent'
+    appointment_model_wrapper_cls = AppointmentModelWrapper
+    consent_model = 'pre_flourish.preflourishchilddummysubjectconsent'
     consent_model_wrapper_cls = ChildConsentModelWrapper
+    subject_locator_model = 'flourish_caregiver.caregiverlocator'
+    crf_model_wrapper_cls = ChildCrfModelWrapper
     action_item_model_wrapper_cls = ActionItemModelWrapper
     navbar_name = 'pre_flourish_dashboard'
     navbar_selected_item = 'pre_flourish_child_subjects'
-    subject_locator_model = 'flourish_caregiver.caregiverlocator'
     visit_model_wrapper_cls = ChildVisitModelWrapper
     subject_locator_model_wrapper_cls = PreflourishCaregiverLocatorModelWrapper
     mother_infant_study = True
@@ -54,6 +61,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     maternal_links = True
     maternal_dashboard_include_value = 'pre_flourish/child/dashboard/caregiver_dashboard_links.html'
     special_forms_include_value = 'pre_flourish/child/dashboard/special_forms.html'
+    visit_attr = 'preflourishvisit'
 
     def get_subject_locator_or_message(self):
         """

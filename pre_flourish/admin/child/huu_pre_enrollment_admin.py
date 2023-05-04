@@ -1,7 +1,7 @@
 from django.contrib import admin
 from edc_model_admin import audit_fieldset_tuple
 
-from .model_admin_mixins import ModelAdminMixin
+from .model_admin_mixins import ChildCrfModelAdminMixin
 
 from ...admin_site import pre_flourish_admin
 from ...forms import HuuPreEnrollmentForm
@@ -9,14 +9,14 @@ from ...models import HuuPreEnrollment
 
 
 @admin.register(HuuPreEnrollment, site=pre_flourish_admin)
-class HuuPreEnrollmentAdmin(ModelAdminMixin, admin.ModelAdmin):
+class HuuPreEnrollmentAdmin(ChildCrfModelAdminMixin, admin.ModelAdmin):
 
     form = HuuPreEnrollmentForm
 
     fieldsets = (
         (None, {
             'fields': [
-                'infant_visit',
+                'pre_flourish_visit',
                 'report_datetime',
                 'child_dob',
                 'child_hiv_docs',

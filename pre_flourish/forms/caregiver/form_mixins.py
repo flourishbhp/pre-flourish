@@ -6,13 +6,13 @@ from edc_visit_tracking.crf_date_validator import (
     CrfReportDateAllowanceError, CrfReportDateBeforeStudyStart)
 from edc_visit_tracking.crf_date_validator import CrfReportDateIsFuture
 
-from ...models import PreFlourishCaregiverVisit
+from ...models import PreFlourishVisit
 
 
 class SubjectModelFormMixin(SiteModelFormMixin, FormValidatorMixin,
                             forms.ModelForm):
 
-    visit_model = PreFlourishCaregiverVisit
+    visit_model = PreFlourishVisit
 
     visit_attr = None
 
