@@ -11,7 +11,7 @@ class Eligibility:
         """checks if mother is eligible otherwise'
         ' error message is the reason for'
         ' eligibility test failed."""
-        self.caregiver_age = caregiver_omang
+        self.caregiver_age = caregiver_age
         self.error_message = []
         if willing_consent == NO:
             self.error_message.append('Not willing to consent')
