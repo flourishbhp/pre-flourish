@@ -10,6 +10,8 @@ class PreFlourishCaregiverChildConsentForm(
         SiteModelFormMixin, FormValidatorMixin, forms.ModelForm):
 
     # form_validator_cls = HuuPreEnrollmentFormValidator
+    def has_changed(self):
+        return True
 
     class Meta:
         model = PreFlourishCaregiverChildConsent
