@@ -3,7 +3,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from edc_action_item.site_action_items import site_action_items
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_dashboard.views import DashboardView as BaseDashboardView
-from edc_data_manager.models import DataActionItem
 from edc_navbar import NavbarViewMixin
 from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
@@ -15,6 +14,7 @@ from pre_flourish.model_wrappers import (
 from pre_flourish.model_wrappers import (MaternalVisitModelWrapper,
                                          PreflourishCaregiverLocatorModelWrapper,
                                          PreFlourishDataActionItemModelWrapper)
+from ....models import PFDataActionItem
 
 
 class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -87,7 +87,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
             screening_obj = self.screening_model_cls.objects.get(
                 screening_identifier=screening_identifier
             )
-        except  self.screening_model_cls.ObjectDoesNotExist:
+        except self.screening_model_cls.ObjectDoesNotExist:
             pass
         else:
             subject_locator_objs = self.subject_locator_model_cls.objects.filter(
@@ -110,7 +110,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     def data_action_item(self):
         """Returns a wrapped saved or unsaved consent version.
         """
-        model_obj = DataActionItem(subject_identifier=self.subject_identifier)
+        model_obj = PFDataActionItem(subject_identifier=self.subject_identifier)
         return PreFlourishDataActionItemModelWrapper(model_obj=model_obj)
 
     def get_context_data(self, **kwargs):
