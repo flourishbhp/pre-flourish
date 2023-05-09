@@ -3,11 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
-from pre_flourish.action_items import MATERNAL_OFF_STUDY_ACTION
-from django.db.models import Q
-from edc_action_item import site_action_items
-from edc_constants.constants import OPEN, NEW, YES, POS
-from pre_flourish.models.caregiver import CyhuuPreEnrollment
+
 from .pre_flourish_consent import PreFlourishConsent
 from .pre_flourish_subject_screening import PreFlourishSubjectScreening
 from ..child.pre_flourish_child_assent import PreFlourishChildAssent
@@ -81,57 +77,8 @@ def pre_flourish_assent_post_save(sender, instance, raw, created, **kwargs):
                             child_subject_identifier=instance.subject_identifier, )
 
 
-@receiver(post_save, weak=False, sender=CyhuuPreEnrollment,
-          dispatch_uid='cyhuu_pre_enrollment_post_save')
-def cyhuu_pre_enrollment_post_save(sender, instance, raw, created, **kwargs):
-    caregiver_off_study_cls = django_apps.get_model('pre_flourish.preflourishoffstudy')
-    if not raw:
-        if instance.biological_mother == YES and instance.hiv_test_result == POS:
-            trigger_action_item(
-                model_cls=caregiver_off_study_cls,
-                action_name=MATERNAL_OFF_STUDY_ACTION,
-                subject_identifier=instance.subject_identifier,
-            )
-
-
-def trigger_action_item(model_cls, action_name, subject_identifier,
-                        repeat=False, opt_trigger=True):
-    action_cls = site_action_items.get(
-        model_cls.action_name)
-    action_item_model_cls = action_cls.action_item_model_cls()
-
-    try:
-        model_cls.objects.get(subject_identifier=subject_identifier)
-    except model_cls.DoesNotExist:
-        trigger = opt_trigger and True
-    else:
-        trigger = repeat
-
-    if trigger:
-        try:
-            action_item_obj = action_item_model_cls.objects.get(
-                subject_identifier=subject_identifier,
-                action_type__name=action_name)
-        except action_item_model_cls.DoesNotExist:
-            action_cls = site_action_items.get(action_name)
-            action_cls(subject_identifier=subject_identifier)
-        else:
-            action_item_obj.status = OPEN
-            action_item_obj.save()
-    else:
-        try:
-            action_item = action_item_model_cls.objects.get(
-                Q(status=NEW) | Q(status=OPEN),
-                subject_identifier=subject_identifier,
-                action_type__name=action_name)
-        except action_item_model_cls.DoesNotExist:
-            pass
-        else:
-            action_item.delete()
-
-
 def put_on_schedule(instance, subject_identifier,
-                    onschedule_model, schedule_name, child_subject_identifier=None):
+        onschedule_model, schedule_name, child_subject_identifier=None):
     if instance:
         subject_identifier = subject_identifier or instance.subject_identifier
 
