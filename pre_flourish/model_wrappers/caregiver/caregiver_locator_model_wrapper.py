@@ -65,7 +65,12 @@ class PreflourishCaregiverLocatorModelWrapper(MaternalScreeningModelWrapperMixin
         except self.log_entry_cls.DoesNotExist:
             return False
         else:
-            return log_entry.has_biological_child == YES
+            return log_entry.willing_consent == YES \
+                and log_entry.has_child == YES \
+                and log_entry.caregiver_age == YES \
+                and log_entry.caregiver_omang == YES \
+                and log_entry.willing_assent == YES \
+                and log_entry.study_interest == YES
 
     @property
     def call_log_model_wrappers(self):
