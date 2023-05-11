@@ -13,8 +13,6 @@ fake = Faker()
 
 preflourishsubjectscreening = Recipe(
     PreFlourishSubjectScreening,
-    age_in_years=25,
-    has_omang=YES,
     has_child=YES,
 )
 
@@ -75,3 +73,11 @@ preflourishchildassent = Recipe(
 huupreenrollment = Recipe(
     HuuPreEnrollment,
 )
+
+preflourishvisit = Recipe(
+    PreFlourishVisit,
+    report_datetime=get_utcnow(),
+    reason=SCHEDULED,
+    study_status=ON_STUDY,
+    survival_status=ALIVE,
+    info_source=PARTICIPANT)

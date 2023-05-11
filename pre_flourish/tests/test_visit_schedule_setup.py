@@ -72,15 +72,10 @@ class TestVisitScheduleSetup(TestCase):
             subject_identifier=caregiver_child_consent.subject_identifier).count(), 1)
 
     def test_child_off_study_required(self):
-        subject_id = '11111111111111111'
-        child_subject_id = '11111111111111111123'
-        screening_identifier = '28941'
 
         subject_consent = mommy.make_recipe(
             'pre_flourish.preflourishconsent',
             screening_identifier=self.caregiver_screening.screening_identifier)
-
-        subject_consent.save()
 
         caregiver_child_consent = mommy.make_recipe(
             'pre_flourish.preflourishcaregiverchildconsent',
@@ -99,9 +94,8 @@ class TestVisitScheduleSetup(TestCase):
             dob=caregiver_child_consent.child_dob,
         )
 
-        appointment = Appointment.objects.get_or_create(
-            subject_identifier=caregiver_child_consent.subject_identifier,
-            appt_datetime=get_utcnow(),
+        appointment = Appointment.objects.get(
+            subject_identifier=child_assent.subject_identifier,
             visit_code='1000')
 
         pre_flourish_visit = mommy.make_recipe(
@@ -121,11 +115,9 @@ class TestVisitScheduleSetup(TestCase):
         action_item_model_cls = action_cls.action_item_model_cls()
 
         try:
-            action_item_obj = action_item_model_cls.objects.get(
-                subject_identifier=caregiver_child_consent.subject_identifier,
+            action_item_model_cls.objects.get(
+                subject_identifier=self.child_subject_identifier,
                 action_type__name=child_off_study_cls.action_name,
                 status=NEW)
         except action_item_model_cls.DoesNotExist:
-            self.fail('Action Item to created')
-        else:
-            self.assertNotIsInstance(obj=action_item_obj, cls=action_item_model_cls)
+            self.fail('Action Item not created')
