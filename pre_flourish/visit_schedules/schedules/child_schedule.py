@@ -18,7 +18,7 @@ visit0 = Visit(
     timepoint=0,
     rbase=relativedelta(days=0),
     rlower=relativedelta(days=0),
-    rupper=relativedelta(days=0),
+    rupper=relativedelta(months=3),
     requisitions=None,
     crfs=child_crfs.get(1000),
     facility_name='5-day clinic')
