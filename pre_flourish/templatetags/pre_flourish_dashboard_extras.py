@@ -1,6 +1,10 @@
+from urllib.parse import urlencode, unquote
+
 from django import template
 from django.conf import settings
 from edc_base.utils import age, get_utcnow
+from django.utils.safestring import mark_safe
+from edc_visit_schedule.models import SubjectScheduleHistory
 
 register = template.Library()
 
@@ -146,3 +150,69 @@ def get_age(context, born=None):
         if age_months > 0:
             age_str += str(age_months) + ' months'
         return age_str
+
+
+@register.inclusion_tag('pre_flourish/buttons/off_study_button.html')
+def caregiver_off_study_button(model_wrapper):
+    title = 'Caregiver Off Study'
+    return dict(
+        title=title,
+        href=model_wrapper.caregiver_offstudy.href,
+        subject_identifier=model_wrapper.subject_identifier
+    )
+
+
+@register.inclusion_tag('edc_visit_schedule/subject_schedule_footer_row.html')
+def subject_schedule_footer_row(subject_identifier, visit_schedule, schedule,
+                                subject_dashboard_url):
+    context = {}
+    try:
+        history_obj = SubjectScheduleHistory.objects.get(
+            visit_schedule_name=visit_schedule.name,
+            schedule_name=schedule.name,
+            subject_identifier=subject_identifier,
+            offschedule_datetime__isnull=False)
+    except SubjectScheduleHistory.DoesNotExist:
+        onschedule_model_obj = schedule.onschedule_model_cls.objects.get(
+            subject_identifier=subject_identifier,
+            schedule_name=schedule.name, )
+        options = dict(subject_identifier=subject_identifier)
+        query = unquote(urlencode(options))
+        href = (
+            f'{visit_schedule.offstudy_model_cls().get_absolute_url()}?next='
+            f'{subject_dashboard_url},subject_identifier')
+        href = '&'.join([href, query])
+        context = dict(
+            offschedule_datetime=None,
+            onschedule_datetime=onschedule_model_obj.onschedule_datetime,
+            href=mark_safe(href))
+    else:
+        onschedule_model_obj = schedule.onschedule_model_cls.objects.get(
+            subject_identifier=subject_identifier,
+            schedule_name=schedule.name)
+        options = dict(subject_identifier=subject_identifier)
+        query = unquote(urlencode(options))
+        offstudy_model_obj = None
+        try:
+            offstudy_model_obj = visit_schedule.offstudy_model_cls.objects.get(
+                subject_identifier=subject_identifier)
+        except visit_schedule.offstudy_model_cls.DoesNotExist:
+            href = (f'{visit_schedule.offstudy_model_cls().get_absolute_url()}'
+                    f'?next={subject_dashboard_url},subject_identifier')
+        else:
+            href = (f'{offstudy_model_obj.get_absolute_url()}?next='
+                    f'{subject_dashboard_url},subject_identifier')
+
+        href = '&'.join([href, query])
+
+        context = dict(
+            offschedule_datetime=history_obj.offschedule_datetime,
+            onschedule_datetime=onschedule_model_obj.onschedule_datetime,
+            href=mark_safe(href))
+        if offstudy_model_obj:
+            context.update(offstudy_date=offstudy_model_obj.offstudy_date)
+    context.update(
+        visit_schedule=visit_schedule,
+        schedule=schedule,
+        verbose_name=visit_schedule.offstudy_model_cls._meta.verbose_name)
+    return context
