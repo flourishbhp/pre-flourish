@@ -10,5 +10,5 @@ class PreFlourishOffStudy(OffStudyMixin):
 
     class Meta:
         app_label = 'pre_flourish'
-        verbose_name = 'Maternal Off Study'
-        verbose_name_plural = 'Maternal Off Studies'
+        verbose_name = 'Off Study'
+        verbose_name_plural = 'Off Studies'
