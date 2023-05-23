@@ -4,11 +4,11 @@ from django.db import models
 from edc_base.model_validators import date_not_future, dob_not_today
 from edc_constants.choices import YES_NO, GENDER
 
-from .child_crf_model_mixin import ChildCrfModelMixin
+from ..model_mixins import CrfModelMixin
 from ...choices import POS_NEG_IND, YES_NO_UNKNOWN
 
 
-class HuuPreEnrollment(ChildCrfModelMixin):
+class HuuPreEnrollment(CrfModelMixin):
 
     screening_identifier = models.CharField(
         verbose_name='Eligibility Identifier',
@@ -39,10 +39,14 @@ class HuuPreEnrollment(ChildCrfModelMixin):
         null=True)
 
     weight = models.IntegerField(
-        verbose_name='Weight (kg)')
+        verbose_name='Weight (kg)',
+        validators=[MinValueValidator(15), MaxValueValidator(140), ],
+    )
 
     height = models.IntegerField(
-        verbose_name='Height (cm)')
+        verbose_name='Height (cm)',
+        validators=[MinValueValidator(40), MaxValueValidator(210), ],
+    )
 
     bmi = models.IntegerField(blank=True, null=True)
 

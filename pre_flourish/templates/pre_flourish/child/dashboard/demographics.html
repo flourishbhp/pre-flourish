@@ -1,26 +1,21 @@
 {% load edc_base_extras %}
-{% load flourish_dashboard_extras %}
+{% load pre_flourish_dashboard_extras %}
 
 <div class="list-group">
     <a class="list-group-item"><i class="fa fa-birthday-cake fa-fw"></i>
-        {{ consent.child_dob| date:"Y-m-d" }}
-        {% get_age consent.child_dob %}
+        {{ caregiver_child_consent.child_dob }}
+        {%    get_age caregiver_child_consent.child_dob %}
 
     </a>
     <a class="list-group-item"><i class="far fa-address-card fa-fw"></i>
-        {{ identity|default:'?? identity' }}
+        {{ caregiver_child_consent.identity|default:'?? identity' }}
         <span data-toggle="tooltip" data-placement="right"
-              title="{{ firstname }} {{ lastname }}"
+              title="{{ caregiver_child_consent.first_name }} {{ caregiver_child_consent.last_name }}"
               class="text text-default">
-            {% if caregiver_child_consent.child_birth %}
+            {% if caregiver_child_consent %}
 
-                {{ caregiver_child_consent.child_birth.first_name }}
-                {{ caregiver_child_consent.child_birth.initials }}
-
-            {% else %}
-
-                {{ consent.child_name_initial }}
-
+                {{ caregiver_child_consent.first_name }}
+                {{ caregiver_child_consent.initials }}
             {% endif %}
 
             <sup>

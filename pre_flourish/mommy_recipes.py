@@ -1,21 +1,18 @@
 from dateutil.relativedelta import relativedelta
 from edc_base.utils import get_utcnow
-from edc_constants.constants import ALIVE, NOT_APPLICABLE, ON_STUDY, PARTICIPANT, YES
-from edc_visit_tracking.constants import SCHEDULED
+from edc_constants.constants import YES, NOT_APPLICABLE
 from faker import Faker
 from model_mommy.recipe import Recipe, seq
+from edc_visit_tracking.constants import SCHEDULED
+from edc_constants.constants import ALIVE, YES, ON_STUDY, PARTICIPANT, \
+    NOT_APPLICABLE
 
-from .models import HuuPreEnrollment, PreFlourishCaregiverChildConsent, \
-    PreFlourishChildAssent, PreFlourishConsent, \
-    PreFlourishSubjectScreening, PreFlourishVisit
-from .models.child.pre_flourish_child_visit import PreFlourishChildVisit
+from .models import PreFlourishConsent, PreFlourishSubjectScreening, PreFlourishCaregiverChildConsent, PreFlourishChildAssent
 
 fake = Faker()
 
 preflourishsubjectscreening = Recipe(
     PreFlourishSubjectScreening,
-    age_in_years=25,
-    has_omang=YES,
     has_child=YES,
 )
 
@@ -38,7 +35,6 @@ preflourishconsent = Recipe(
     assessment_score=YES,
     consent_signature=YES,
     consent_copy=YES,
-
 )
 
 preflourishcaregiverchildconsent = Recipe(
@@ -48,16 +44,15 @@ preflourishcaregiverchildconsent = Recipe(
     subject_identifier='',
     gender='M',
     child_test=YES,
-    child_dob=(get_utcnow() - relativedelta(years=14)).date(),
+    child_dob=(get_utcnow() - relativedelta(years=3)).date(),
     child_remain_in_study=YES,
     child_preg_test=NOT_APPLICABLE,
     child_knows_status=YES,
     identity=seq('234513187'),
     identity_type='birth_cert',
-    confirm_identity=seq('234513187'),
-    is_eligible=True
-
+    confirm_identity=seq('234513187')
 )
+
 
 preflourishchildassent = Recipe(
     PreFlourishChildAssent,

@@ -1,15 +1,13 @@
 from django.apps import apps as django_apps
+from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from edc_base import get_utcnow
-from edc_visit_schedule import site_visit_schedules
-
-from pre_flourish.helper_classes.heu_huu_matching_helper import HEUHUUMatchingHelper
-from pre_flourish.models.child.pre_flourish_child_dummy_consent import \
-    PreFlourishChildDummySubjectConsent
-from pre_flourish.models.child.heu_huu_match import HeuHuuMatch
-from pre_flourish.models.child.huu_pre_enrollment import HuuPreEnrollment
-from pre_flourish.models.child.pre_flourish_child_assent import PreFlourishChildAssent
+from edc_action_item import site_action_items
+from edc_constants.constants import OPEN, NEW, YES, POS
+from pre_flourish.action_items import CHILD_OFF_STUDY_ACTION
+from edc_visit_schedule.site_visit_schedules import site_visit_schedules
+from pre_flourish.models.child import PreFlourishChildAssent, \
+    PreFlourishChildDummySubjectConsent, HuuPreEnrollment
 
 
 class CaregiverConsentError(Exception):
@@ -36,8 +34,7 @@ def child_assent_on_post_save(sender, instance, raw, created, **kwargs):
 
 @receiver(post_save, weak=False, sender=PreFlourishChildDummySubjectConsent,
           dispatch_uid='pre_flourish_child_dummy_consent_on_post_save')
-def pre_flourish_child_dummy_consent_on_post_save(sender, instance, raw, created,
-                                                  **kwargs):
+def pre_flourish_child_dummy_consent_on_post_save(sender, instance, raw, created, **kwargs):
     """Put subject on schedule after consenting.
     """
     if not raw:
@@ -50,58 +47,52 @@ def pre_flourish_child_dummy_consent_on_post_save(sender, instance, raw, created
 
 
 @receiver(post_save, weak=False, sender=HuuPreEnrollment,
-          dispatch_uid='huu_pre_enrollment_on_post_save')
-def huu_pre_enrollment_on_post_save(sender, instance, raw, created, **kwargs):
-    """Create a HEUHUUMatch object when a HuuPreEnrollment object is saved.
-
-    This function is called after a HuuPreEnrollment object is saved to the database.
-    If the object is not newly created, the function fetches a related
-    PreFlourishChildAssent object from the database. If the related object is found,
-    the function creates a new HeuHuuMatch object and saves it to the database.
-
-    Args:
-        sender: The model class of the sender.
-        instance: The actual instance being saved.
-        raw: A boolean indicating whether the model is saved in raw mode.
-        created: A boolean indicating whether the model was created or updated.
-        **kwargs: Additional keyword arguments.
-
-    Raises:
-        CaregiverConsentError: If the associated caregiver consent on behalf of the child
-            for this participant is not found.
-
-    Returns:
-        None
-    """
+          dispatch_uid='huu_pre_enrollment_post_save')
+def huu_pre_enrollment_post_save(sender, instance, raw, created, **kwargs):
+    child_off_study_cls = django_apps.get_model('pre_flourish.preflourishchildoffstudy')
     if not raw:
-        pre_flourish_child_assent_cls = django_apps.get_model(
-            'pre_flourish.preflourishchildassent')
+        if instance.child_hiv_result == POS:
+            trigger_action_item(
+                model_cls=child_off_study_cls,
+                action_name=CHILD_OFF_STUDY_ACTION,
+                subject_identifier=instance.subject_identifier,
+            )
+
+
+def trigger_action_item(model_cls, action_name, subject_identifier,
+                        repeat=False, opt_trigger=True):
+    action_cls = site_action_items.get(
+        model_cls.action_name)
+    action_item_model_cls = action_cls.action_item_model_cls()
+
+    try:
+        model_cls.objects.get(subject_identifier=subject_identifier)
+    except model_cls.DoesNotExist:
+        trigger = opt_trigger and True
+    else:
+        trigger = repeat
+
+    if trigger:
         try:
-            pre_flourish_child_assent_obj = pre_flourish_child_assent_cls.objects.get(
-                subject_identifier=instance.pre_flourish_visit.subject_identifier, )
-        except pre_flourish_child_assent_cls.DoesNotExist:
-            raise CaregiverConsentError('Associated caregiver consent on behalf of '
-                                        'child for this participant not found')
+            action_item_obj = action_item_model_cls.objects.get(
+                subject_identifier=subject_identifier,
+                action_type__name=action_name)
+        except action_item_model_cls.DoesNotExist:
+            action_cls = site_action_items.get(action_name)
+            action_cls(subject_identifier=subject_identifier)
         else:
-            heu_huu_matching_helper = HEUHUUMatchingHelper(
-                dob=pre_flourish_child_assent_obj.dob,
-                child_weight_kg=instance.weight,
-                child_height_cm=instance.height,
-                subject_identifier=instance.pre_flourish_visit.subject_identifier,
-                gender=pre_flourish_child_assent_obj.gender)
-            heu_subject_identifier = heu_huu_matching_helper.find_matching_flourish()
-            if heu_subject_identifier:
-                try:
-                    HeuHuuMatch.objects.get(
-                        huu_prt=instance.pre_flourish_visit.subject_identifier,
-                        heu_prt=heu_subject_identifier.get('subject_identifier'))
-                except HeuHuuMatch.DoesNotExist:
-                    heu_huu_match_obj = HeuHuuMatch.objects.create(
-                        huu_prt=instance.pre_flourish_visit.subject_identifier,
-                        heu_prt=heu_subject_identifier.get('subject_identifier'),
-                        match_datetime=get_utcnow().date()
-                    )
-                    heu_huu_match_obj.save()
+            action_item_obj.status = OPEN
+            action_item_obj.save()
+    else:
+        try:
+            action_item = action_item_model_cls.objects.get(
+                Q(status=NEW) | Q(status=OPEN),
+                subject_identifier=subject_identifier,
+                action_type__name=action_name)
+        except action_item_model_cls.DoesNotExist:
+            pass
+        else:
+            action_item.delete()
 
 
 def create_child_dummy_consent(instance, caregiver_child_consent_obj=None):
@@ -118,8 +109,8 @@ def create_child_dummy_consent(instance, caregiver_child_consent_obj=None):
         )
 
 
-def put_on_schedule(subject_identifier=None, base_appt_datetime=None,
-                    onschedule_model=None, schedule_name=None):
+def put_on_schedule(instance=None, subject_identifier=None,
+                    base_appt_datetime=None, onschedule_model=None, schedule_name=None):
     _, schedule = site_visit_schedules.get_by_onschedule_model_schedule_name(
         onschedule_model=onschedule_model, name=schedule_name)
 

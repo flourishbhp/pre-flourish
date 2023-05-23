@@ -1,3 +1,4 @@
+from statistics import mode
 from django.db import models
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
@@ -9,9 +10,11 @@ from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_protocol.validators import datetime_not_before_study_start
 from edc_search.model_mixins import SearchSlugManager
 
+from pre_flourish_follow.models import EligibilityMixin
+from ...identifiers import ScreeningIdentifier
 from .eligibility import Eligibility
 from .model_mixins import SearchSlugModelMixin
-from ...identifiers import ScreeningIdentifier
+from flourish_caregiver.models import CaregiverLocator
 
 
 class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):
@@ -20,8 +23,8 @@ class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):
         return self.get(screening_identifier=eligibility_identifier)
 
 
-class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin,
-                                  SearchSlugModelMixin, BaseUuidModel):
+class PreFlourishSubjectScreening(EligibilityMixin,NonUniqueSubjectIdentifierFieldMixin,
+                                  SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
     """ A model completed by the user to test and capture the result of
     the pre-consent eligibility checks.
 
@@ -40,7 +43,7 @@ class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteMode
         verbose_name='Prev. Subject Identifier',
         max_length=17,
         null=True, )
-        
+
     report_datetime = models.DateTimeField(
         verbose_name="Report Date and Time",
         default=get_utcnow,
@@ -48,20 +51,10 @@ class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteMode
             datetime_not_before_study_start,
             datetime_not_future],
         help_text='Date and time of assessing eligibility')
-    
-    age_in_years = models.IntegerField(
-        verbose_name='What is the age of the participant?')
 
-    has_omang = models.CharField(
-        verbose_name="Do you have an OMANG?",
-        max_length=3,
-        choices=YES_NO)
+    caregiver_age = models.IntegerField(
+        verbose_name='What is the age of the caregiver?')
 
-    has_child = models.CharField(
-        verbose_name="Do you have a child who is 10 years or older?",
-        max_length=3,
-        choices=YES_NO)
-    
     remain_in_study = models.CharField(
         max_length=3,
         verbose_name='Are you willing to remain in the study area until 2025?',
@@ -95,17 +88,20 @@ class PreFlourishSubjectScreening(NonUniqueSubjectIdentifierFieldMixin, SiteMode
         verbose_name_plural = "Caregiver Eligibility"
 
     def save(self, *args, **kwargs):
-        eligibility_criteria = Eligibility(self.age_in_years, 
-                                           self.has_omang, 
-                                           self.has_child, 
+        eligibility_criteria = Eligibility(self.willing_consent,
+                                           self.has_child,
+                                           self.caregiver_age,
+                                           self.caregiver_omang,
+                                           self.willing_assent,
+                                           self.study_interest,
                                            self.remain_in_study)
-        
+
         self.is_eligible = eligibility_criteria.is_eligible
         self.ineligibility = eligibility_criteria.error_message
-        
+
         if not self.screening_identifier:
             self.screening_identifier = self.identifier_cls().identifier
-            
+
         super(PreFlourishSubjectScreening, self).save(*args, **kwargs)
 
     def natural_key(self):

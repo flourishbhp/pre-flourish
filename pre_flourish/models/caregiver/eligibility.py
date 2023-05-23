@@ -5,34 +5,45 @@ from ...constants import (MAX_AGE_OF_CONSENT, MIN_AGE_OF_CONSENT)
 
 class Eligibility:
 
-    def __init__(self, age_in_years=None, has_omang=None, has_child=None, remain_in_study=None, **kwargs):
+    def __init__(self, willing_consent=None, has_child=None, caregiver_age=None,
+                 caregiver_omang=None, willing_assent=None, study_interest=None,
+                 remain_in_study=None, **kwargs):
         """checks if mother is eligible otherwise'
         ' error message is the reason for'
         ' eligibility test failed."""
+        self.caregiver_age = caregiver_age
         self.error_message = []
-        
-        if age_in_years < MIN_AGE_OF_CONSENT:
+        if willing_consent == NO:
+            self.error_message.append('Not willing to consent')
+
+        if caregiver_age < MIN_AGE_OF_CONSENT:
             self.error_message.append(
                 'Mother is under {}'.format(MIN_AGE_OF_CONSENT))
-            
-        if age_in_years > MAX_AGE_OF_CONSENT:
+
+        if caregiver_age > MAX_AGE_OF_CONSENT:
             self.error_message.append(
                 'Mother is too old (>{})'.format(MAX_AGE_OF_CONSENT))
-            
-        if has_omang == NO:
+
+        if caregiver_omang == NO:
             self.error_message.append('Not a citizen')
-            
+
         if has_child == NO:
             self.error_message.append('Does not have a child > 10 years')
-            
+
+        if willing_assent == NO:
+            self.error_message.append('Child is not willing to assent')
+
+        if study_interest == NO:
+            self.error_message.append('Not interested in study')
+
         if remain_in_study == NO:
             self.error_message.append(
                 'Participant is not willing to remain in study area until 2025.')
-            
+
         self.is_eligible = False if self.error_message else True
 
     def __str__(self):
-        return "Screened, age ({})".format(self.age_in_years)
+        return "Screened, age ({})".format(self.caregiver_age)
 
 
 class ConsentEligibility:

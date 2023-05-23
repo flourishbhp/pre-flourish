@@ -3,18 +3,18 @@ from django.core.exceptions import ObjectDoesNotExist
 from edc_action_item.site_action_items import site_action_items
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_dashboard.views import DashboardView as BaseDashboardView
-from edc_data_manager.models import DataActionItem
 from edc_navbar import NavbarViewMixin
 from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
-from ....action_items import PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
-from ....model_wrappers import (
+from pre_flourish.action_items import PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
+from pre_flourish.model_wrappers import (
     AppointmentModelWrapper, PreFlourishSubjectConsentModelWrapper,
     MaternalCrfModelWrapper)
-from ....model_wrappers import (MaternalVisitModelWrapper,
-                                PreflourishCaregiverLocatorModelWrapper,
-                                PreFlourishDataActionItemModelWrapper)
+from pre_flourish.model_wrappers import (MaternalVisitModelWrapper,
+                                         PreflourishCaregiverLocatorModelWrapper,
+                                         PreFlourishDataActionItemModelWrapper)
+from ....models import PFDataActionItem
 
 
 class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -38,7 +38,6 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     infant_dashboard_include_value = 'pre_flourish/caregiver/dashboard/infant_dashboard_links.html'
     special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
     visit_attr = 'preflourishvisit'
-
 
     @property
     def appointments(self):
@@ -88,7 +87,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
             screening_obj = self.screening_model_cls.objects.get(
                 screening_identifier=screening_identifier
             )
-        except  self.screening_model_cls.ObjectDoesNotExist:
+        except self.screening_model_cls.ObjectDoesNotExist:
             pass
         else:
             subject_locator_objs = self.subject_locator_model_cls.objects.filter(
@@ -111,7 +110,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     def data_action_item(self):
         """Returns a wrapped saved or unsaved consent version.
         """
-        model_obj = DataActionItem(subject_identifier=self.subject_identifier)
+        model_obj = PFDataActionItem(subject_identifier=self.subject_identifier)
         return PreFlourishDataActionItemModelWrapper(model_obj=model_obj)
 
     def get_context_data(self, **kwargs):
@@ -127,8 +126,8 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
         return context
 
     def set_current_schedule(self, onschedule_model_obj=None,
-            schedule=None, visit_schedule=None,
-            is_onschedule=True):
+                             schedule=None, visit_schedule=None,
+                             is_onschedule=True):
         if onschedule_model_obj:
             if is_onschedule:
                 self.current_schedule = schedule

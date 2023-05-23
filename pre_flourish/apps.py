@@ -56,7 +56,7 @@ if settings.APP_NAME == 'pre_flourish':
     class EdcVisitTrackingAppConfig(BaseEdcVisitTrackingAppConfig):
         visit_models = {
             'pre_flourish': (
-                'maternal_visit', 'pre_flourish.preflourishvisit'), }
+                'pre_flourish_visit', 'pre_flourish.preflourishvisit'), }
 
     class EdcFacilityAppConfig(BaseEdcFacilityAppConfig):
         country = 'botswana'

@@ -4,6 +4,7 @@ from .caregiver import MaternalVisitModelWrapper
 from .caregiver import PreFlourishLogEntryModelWrapper
 from .caregiver import PreFlourishMaternalScreeningModelWrapper
 from .caregiver import PreFlourishSubjectConsentModelWrapper
+from .caregiver import MaternalRegisteredSubjectModelWrapper
 from .caregiver import PreflourishCaregiverLocatorModelWrapper
 from .child import CaregiverChildConsentModelWrapper
 from .child import ChildConsentModelWrapper
