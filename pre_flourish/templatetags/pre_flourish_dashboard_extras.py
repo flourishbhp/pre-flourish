@@ -1,3 +1,4 @@
+from datetime import datetime
 from urllib.parse import urlencode, unquote
 
 from django import template
@@ -141,6 +142,7 @@ def caregiver_dashboard_button(model_wrapper):
 @register.simple_tag(takes_context=True)
 def get_age(context, born=None):
     if born:
+        born = datetime.strptime(born, '%Y-%m-%d')
         reference_datetime = context.get('reference_datetime', get_utcnow())
         participant_age = age(born, reference_datetime)
         age_str = ''
