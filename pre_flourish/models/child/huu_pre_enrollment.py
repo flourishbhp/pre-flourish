@@ -39,10 +39,14 @@ class HuuPreEnrollment(CrfModelMixin):
         null=True)
 
     weight = models.IntegerField(
-        verbose_name='Weight (kg)')
+        verbose_name='Weight (kg)',
+        validators=[MinValueValidator(15), MaxValueValidator(140), ],
+    )
 
     height = models.IntegerField(
-        verbose_name='Height (cm)')
+        verbose_name='Height (cm)',
+        validators=[MinValueValidator(40), MaxValueValidator(210), ],
+    )
 
     bmi = models.IntegerField(blank=True, null=True)
 

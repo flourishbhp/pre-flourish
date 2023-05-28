@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from edc_model_admin import audit_fieldset_tuple
+from django.conf import settings
 
 from ..caregiver.pre_flourish_off_study_admin import ModelAdminMixin
 from ...admin_site import pre_flourish_admin
@@ -25,6 +26,10 @@ class PreFlourishChildOffStudyAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'reason_other',
                 'comment']}
          ), audit_fieldset_tuple)
+
+    radio_fields = {
+        'reason': admin.VERTICAL,
+    }
 
     def response_add(self, request, obj, **kwargs):
         response = self._redirector(obj)
