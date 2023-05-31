@@ -7,7 +7,7 @@ from edc_navbar import NavbarViewMixin
 from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
-from pre_flourish.action_items import MATERNAL_DEART_STUDY_ACTION, \
+from pre_flourish.action_items import MATERNAL_DEATH_STUDY_ACTION, \
     PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
 from pre_flourish.model_wrappers import AppointmentModelWrapper, \
     MaternalCrfModelWrapper, \
@@ -127,7 +127,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         self.get_offstudy_or_message(
             visit_cls=caregiver_visit_cls,
             offstudy_cls=caregiver_offstudy_cls,
-            offstudy_action=MATERNAL_DEART_STUDY_ACTION)
+            offstudy_action=MATERNAL_DEATH_STUDY_ACTION)
 
         self.get_offstudy_message(offstudy_cls=caregiver_offstudy_cls)
         context.update(

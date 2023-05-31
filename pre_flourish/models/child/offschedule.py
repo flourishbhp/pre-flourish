@@ -1,7 +1,7 @@
 from django.forms import forms
 from django.apps import apps as django_apps
 
-from flourish_caregiver.models import CaregiverOffSchedule
+from flourish_caregiver.models.offschedule import CaregiverOffSchedule
 
 
 class ChildOffSchedule(CaregiverOffSchedule):

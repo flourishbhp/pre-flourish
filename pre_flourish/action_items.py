@@ -6,7 +6,7 @@ from edc_locator.action_items import SubjectLocatorAction
 MATERNAL_OFF_STUDY_ACTION = 'submit-pf-caregiver-study'
 CHILD_OFF_STUDY_ACTION = 'submit-pf-child-study'
 PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION = 'submit-pf-caregiver-locator'
-MATERNAL_DEART_STUDY_ACTION = 'submit-pf-death-report'
+MATERNAL_DEATH_STUDY_ACTION = 'submit-pf-death-report'
 
 
 class MaternalOffStudyAction(Action):
@@ -32,8 +32,8 @@ class PreFlourishCaregiverLocatorAction(SubjectLocatorAction):
     reference_model = 'pre_flourish.preflourishcaregiverlocator'
     admin_site_name = 'pre_flourish_admin'
 
-class MaternalDearthStudyAction(Action):
-    name = MATERNAL_DEART_STUDY_ACTION
+class MaternalDeathStudyAction(Action):
+    name = MATERNAL_DEATH_STUDY_ACTION
     display_name = 'Submit Caregiver Death Report'
     reference_model = 'pre_flourish.preflourishdeathreport'
     admin_site_name = 'pre_flourish_admin'
@@ -50,20 +50,20 @@ class MaternalDearthStudyAction(Action):
             'edc_action_item.actionitem')
 
         subject_identifier = self.reference_model_obj.subject_identifier
-        offstudy = action_item_cls.objects.filter(
+        action_item_cls.objects.filter(
             subject_identifier=subject_identifier,
-            action_type__name=MATERNAL_DEART_STUDY_ACTION)
+            action_type__name=MATERNAL_DEATH_STUDY_ACTION)
         try:
             deathreport_cls.objects.get(
                 subject_identifier=subject_identifier)
-            if not offstudy:
-                actions = [ChildOffStudyAction]
         except ObjectDoesNotExist:
             pass
+        else:
+            actions = [ChildOffStudyAction]
         return actions
 
 
 site_action_items.register(PreFlourishCaregiverLocatorAction)
 site_action_items.register(ChildOffStudyAction)
 site_action_items.register(MaternalOffStudyAction)
-site_action_items.register(MaternalDearthStudyAction)
+site_action_items.register(MaternalDeathStudyAction)
