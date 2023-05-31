@@ -6,7 +6,13 @@
         <td>
             {% assent_button caregiver_child_consent %}
         </td>
-
     </tr>
+    {% if caregiver_child_consent.child_death_report %}
+        <tr>
+            <td>
+                {% child_death_report_button caregiver_child_consent %}
+            </td>
+        </tr>
+    {% endif %}
     </tbody>
 </table>
