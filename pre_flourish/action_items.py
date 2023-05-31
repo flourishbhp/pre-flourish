@@ -17,6 +17,7 @@ class MaternalOffStudyAction(Action):
     priority = HIGH_PRIORITY
     singleton = True
 
+
 class ChildOffStudyAction(Action):
     name = CHILD_OFF_STUDY_ACTION
     display_name = 'Submit Pre Flourish Child Offstudy'
@@ -32,6 +33,7 @@ class PreFlourishCaregiverLocatorAction(SubjectLocatorAction):
     reference_model = 'pre_flourish.preflourishcaregiverlocator'
     admin_site_name = 'pre_flourish_admin'
 
+
 class MaternalDeathStudyAction(Action):
     name = MATERNAL_DEATH_STUDY_ACTION
     display_name = 'Submit Caregiver Death Report'
@@ -40,27 +42,6 @@ class MaternalDeathStudyAction(Action):
     show_link_to_add = True
     priority = HIGH_PRIORITY
     singleton = True
-
-    def get_next_actions(self):
-        actions = []
-        deathreport_cls = django_apps.get_model(
-            'pre_flourish.preflourishdeathreport')
-
-        action_item_cls = django_apps.get_model(
-            'edc_action_item.actionitem')
-
-        subject_identifier = self.reference_model_obj.subject_identifier
-        action_item_cls.objects.filter(
-            subject_identifier=subject_identifier,
-            action_type__name=MATERNAL_DEATH_STUDY_ACTION)
-        try:
-            deathreport_cls.objects.get(
-                subject_identifier=subject_identifier)
-        except ObjectDoesNotExist:
-            pass
-        else:
-            actions = [ChildOffStudyAction]
-        return actions
 
 
 site_action_items.register(PreFlourishCaregiverLocatorAction)
