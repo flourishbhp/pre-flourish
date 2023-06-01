@@ -1,6 +1,7 @@
 from django import forms
 from edc_base.sites import SiteModelFormMixin
 from edc_form_validators import FormValidatorMixin
+from django.apps import apps as django_apps
 
 from ...models import PreFlourishSubjectScreening
 
@@ -27,6 +28,24 @@ class PreFlourishSubjectScreeningForm(SiteModelFormMixin, FormValidatorMixin,
         required=False,
         label='Prev. Subject Identifier',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+
+    def __init__(self, *args, **kwargs):
+        initial = kwargs.pop('initial', {})
+        call_log_entry_cls = 'pre_flourish_follow.preflourishlogentry'
+        previous_subject_identifier = initial.get('previous_subject_identifier')
+        try:
+            assent = django_apps.get_model(call_log_entry_cls).objects.get(
+                study_maternal_identifier=previous_subject_identifier)
+        except django_apps.get_model(call_log_entry_cls).DoesNotExist:
+            pass
+        else:
+            initial['caregiver_omang'] = getattr(assent, 'caregiver_omang')
+            initial['willing_assent'] = getattr(assent, 'willing_assent')
+            initial['study_interest'] = getattr(assent, 'study_interest')
+            initial['willing_consent'] = getattr(assent, 'willing_consent')
+            initial['has_child'] = getattr(assent, 'has_child')
+        kwargs['initial'] = initial
+        super().__init__(*args, **kwargs)
 
     class Meta:
         model = PreFlourishSubjectScreening
