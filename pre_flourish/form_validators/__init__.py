@@ -1,3 +1,4 @@
 from .cyhuu_pre_enrollment_form_validator import CyhuuPreEnrollmentFormValidator
 from .huu_pre_enrollment_form_validator import HuuPreEnrollmentFormValidator
 from .pre_flourish_child_assent_validator import PreFlourishChildAssentFormValidator
+from .pre_flourish_subject_consent_form_validation import PreFlourishConsentFormValidator
