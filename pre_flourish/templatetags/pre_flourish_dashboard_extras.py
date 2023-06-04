@@ -52,8 +52,8 @@ def screening_button(model_wrapper):
     add_screening_href = ''
     subject_screening_obj = None
     if hasattr(model_wrapper, 'maternal_screening'):
-        add_screening_href = f'{model_wrapper.maternal_screening.href}&previous_subject_identifier={model_wrapper.study_maternal_identifier}'
-    if hasattr(model_wrapper, 'screening_model_obj'):
+        add_screening_href = model_wrapper.maternal_screening.href
+    if model_wrapper.screening_model_obj:
         subject_screening_obj = model_wrapper.screening_model_obj
 
     return dict(
