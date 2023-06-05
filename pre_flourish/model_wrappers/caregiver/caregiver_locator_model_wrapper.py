@@ -29,7 +29,7 @@ class PreflourishCaregiverLocatorModelWrapper(MaternalScreeningModelWrapperMixin
         return django_apps.get_model(self.log_entry_model)
 
     @property
-    def previous_subject_identifier(self):
+    def study_maternal_identifier(self):
         return self.object.study_maternal_identifier
 
     @property

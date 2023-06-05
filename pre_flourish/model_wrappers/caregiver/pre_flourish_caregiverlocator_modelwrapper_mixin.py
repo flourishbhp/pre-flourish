@@ -54,9 +54,10 @@ class PreflourishCaregiverLocatorModelWrapperMixin:
         """Returns a dictionary of options to get an existing
          caregiver locator model instance.
         """
-        options = {}
-        if getattr(self, 'study_maternal_identifier', None):
-            options.update({'study_maternal_identifier': self.study_maternal_identifier})
+        options = dict(
+            study_maternal_identifier=self.object.study_maternal_identifier,
+        )
+
         if (hasattr(self, 'screening_identifier') and
                 getattr(self, 'screening_identifier')):
             options.update({'screening_identifier': self.object.screening_identifier})
@@ -86,7 +87,7 @@ class PreflourishCaregiverLocatorModelWrapperMixin:
     @property
     def create_subject_screening_options(self):
         options = dict(
-            previous_subject_identifier=self.object.study_maternal_identifier)
+            study_maternal_identifier=self.object.study_maternal_identifier)
         if getattr(self, 'screening_identifier', None):
             options.update({'screening_identifier': self.object.screening_identifier})
         if getattr(self, 'subject_identifier', None):

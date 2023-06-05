@@ -16,7 +16,15 @@ class PreFlourishMaternalScreeningModelWrapper(
     PreflourishCaregiverLocatorModelWrapperMixin, ConsentModelWrapperMixin, ModelWrapper):
     consent_model_wrapper_cls = PreFlourishSubjectConsentModelWrapper
     model = 'pre_flourish.preflourishsubjectscreening'
-    querystring_attrs = ['screening_identifier']
+    querystring_attrs = ['screening_identifier',
+                         'study_maternal_identifier',
+                         'willing_assent',
+                         'study_interest',
+                         'willing_consent',
+                         'has_child',
+                         'caregiver_omang'
+                         ]
+
     next_url_attrs = ['screening_identifier']
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
         'pre_flourish_screening_listboard_url')

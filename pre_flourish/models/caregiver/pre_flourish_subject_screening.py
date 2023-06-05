@@ -39,8 +39,8 @@ class PreFlourishSubjectScreening(EligibilityMixin,NonUniqueSubjectIdentifierFie
         null=True,
         unique=True)
 
-    previous_subject_identifier = models.CharField(
-        verbose_name='Prev. Subject Identifier',
+    study_maternal_identifier = models.CharField(
+        verbose_name='Study Maternal Identifier',
         max_length=17,
         null=True, )
 
