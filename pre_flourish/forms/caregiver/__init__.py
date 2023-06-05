@@ -7,3 +7,4 @@ from .pre_flourish_death_report_form import PreFlourishDeathReportForm
 from .pre_flourish_off_study_form import PreFlourishOffStudyForm
 from .pre_flourish_subject_screening_form import PreFlourishSubjectScreeningForm
 from .preflourish_log_entry_form import PreFlourishLogEntryForm
+from .update_caregiver_locator_form import UpdateCaregiverLocatorForm

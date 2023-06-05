@@ -3,6 +3,10 @@ from django.apps import AppConfig as DjangoAppConfig
 from django.conf import settings
 
 from dateutil.tz import gettz
+from edc_constants.constants import FAILED_ELIGIBILITY
+from edc_visit_tracking.constants import COMPLETED_PROTOCOL_VISIT, LOST_VISIT, \
+    MISSED_VISIT, \
+    SCHEDULED, UNSCHEDULED
 
 
 class AppConfig(DjangoAppConfig):
@@ -26,10 +30,13 @@ if settings.APP_NAME == 'pre_flourish':
     from edc_timepoint.timepoint import Timepoint
     from edc_timepoint.timepoint_collection import TimepointCollection
     from edc_visit_tracking.apps import AppConfig as BaseEdcVisitTrackingAppConfig
+    from edc_metadata.apps import AppConfig as BaseEdcMetadataAppConfig
+
 
     class EdcBaseAppConfig(BaseEdcBaseAppConfig):
         project_name = 'Pre-Flourish'
         institution = 'Botswana-Harvard AIDS Institute'
+
 
     class EdcAppointmentAppConfig(BaseEdcAppointmentAppConfig):
         configurations = [
@@ -37,6 +44,7 @@ if settings.APP_NAME == 'pre_flourish':
                 model='pre_flourish.appointment',
                 related_visit_model='pre_flourish.preflourishvisit',
                 appt_type='clinic')]
+
 
     class EdcTimepointAppConfig(BaseEdcTimepointAppConfig):
         timepoints = TimepointCollection(
@@ -53,10 +61,12 @@ if settings.APP_NAME == 'pre_flourish':
                     closed_status=COMPLETE_APPT),
             ])
 
+
     class EdcVisitTrackingAppConfig(BaseEdcVisitTrackingAppConfig):
         visit_models = {
             'pre_flourish': (
                 'pre_flourish_visit', 'pre_flourish.preflourishvisit'), }
+
 
     class EdcFacilityAppConfig(BaseEdcFacilityAppConfig):
         country = 'botswana'
@@ -65,6 +75,7 @@ if settings.APP_NAME == 'pre_flourish':
                                  slots=[100, 100, 100, 100, 100, 100, 100]),
             '5-day clinic': dict(days=[MO, TU, WE, TH, FR],
                                  slots=[100, 100, 100, 100, 100])}
+
 
     class EdcProtocolAppConfig(BaseEdcProtocolAppConfig):
         protocol = 'BHP035'
@@ -75,3 +86,12 @@ if settings.APP_NAME == 'pre_flourish':
             2020, 9, 16, 0, 0, 0, tzinfo=gettz('UTC'))
         study_close_datetime = datetime(
             2023, 12, 31, 23, 59, 59, tzinfo=gettz('UTC'))
+
+
+    class EdcMetadataAppConfig(BaseEdcMetadataAppConfig):
+        reason_field = {
+            'pre_flourish.preflourishvisit': 'reason',
+            'flourish_caregiver.maternalvisit': 'reason',
+            'flourish_child.childvisit': 'reason', }
+        create_on_reasons = [SCHEDULED, UNSCHEDULED, COMPLETED_PROTOCOL_VISIT]
+        delete_on_reasons = [LOST_VISIT, MISSED_VISIT, FAILED_ELIGIBILITY]
