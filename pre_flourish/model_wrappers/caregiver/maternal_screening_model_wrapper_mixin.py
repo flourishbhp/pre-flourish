@@ -49,7 +49,7 @@ class MaternalScreeningModelWrapperMixin:
 
         options = dict(
             screening_identifier=getattr(self.call_log_entry, 'screening_identifier', None),
-            previous_subject_identifier=getattr(self.call_log_entry, 'study_maternal_identifier', None),
+            study_maternal_identifier=getattr(self.call_log_entry, 'study_maternal_identifier', None),
             willing_assent=getattr(self.call_log_entry, 'willing_assent', None),
             study_interest=getattr(self.call_log_entry, 'study_interest', None),
             willing_consent=getattr(self.call_log_entry, 'willing_consent', None),

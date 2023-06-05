@@ -24,7 +24,7 @@ class PreFlourishSubjectScreeningForm(SiteModelFormMixin, FormValidatorMixin,
         label='Screening Identifier',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
-    previous_subject_identifier = forms.CharField(
+    study_maternal_identifier = forms.CharField(
         required=False,
         label='Prev. Subject Identifier',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))

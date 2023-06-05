@@ -17,7 +17,7 @@ class PreFlourishMaternalScreeningModelWrapper(
     consent_model_wrapper_cls = PreFlourishSubjectConsentModelWrapper
     model = 'pre_flourish.preflourishsubjectscreening'
     querystring_attrs = ['screening_identifier',
-                         'previous_subject_identifier',
+                         'study_maternal_identifier',
                          'willing_assent',
                          'study_interest',
                          'willing_consent',
