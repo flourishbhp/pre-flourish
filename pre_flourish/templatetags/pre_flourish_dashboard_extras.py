@@ -1,6 +1,11 @@
+from datetime import datetime
+from urllib.parse import unquote, urlencode
+
 from django import template
 from django.conf import settings
+from django.utils.safestring import mark_safe
 from edc_base.utils import age, get_utcnow
+from edc_visit_schedule.models import SubjectScheduleHistory
 
 register = template.Library()
 
@@ -134,9 +139,41 @@ def caregiver_dashboard_button(model_wrapper):
         subject_identifier=subject_identifier)
 
 
+@register.inclusion_tag(
+    'flourish_dashboard/buttons/caregiver_contact_button.html')
+def caregiver_contact_button(model_wrapper):
+    title = ['Caregiver Contact.']
+    return dict(
+        subject_identifier=model_wrapper.object.subject_identifier,
+        add_caregiver_contact_href=model_wrapper.caregiver_contact.href,
+        title=' '.join(title), )
+
+
+@register.inclusion_tag('flourish_dashboard/buttons/caregiver_off_study.html')
+def caregiver_off_study_button(model_wrapper):
+    title = 'Caregiver Off Study'
+    return dict(
+        title=title,
+        href=model_wrapper.caregiver_offstudy.href,
+        subject_identifier=model_wrapper.subject_identifier
+    )
+
+
+@register.inclusion_tag(
+    'flourish_dashboard/buttons/caregiver_death_report_button.html')
+def caregiver_death_report_button(model_wrapper):
+    title = 'Caregiver Death Report'
+    return dict(
+        title=title,
+        href=model_wrapper.caregiver_death_report.href,
+        subject_identifier=model_wrapper.subject_identifier
+    )
+
+
 @register.simple_tag(takes_context=True)
 def get_age(context, born=None):
     if born:
+        born = datetime.strptime(born, '%Y-%m-%d')
         reference_datetime = context.get('reference_datetime', get_utcnow())
         participant_age = age(born, reference_datetime)
         age_str = ''
@@ -146,3 +183,69 @@ def get_age(context, born=None):
         if age_months > 0:
             age_str += str(age_months) + ' months'
         return age_str
+
+
+@register.inclusion_tag('edc_visit_schedule/subject_schedule_footer_row.html')
+def subject_schedule_footer_row(subject_identifier, visit_schedule, schedule,
+                                subject_dashboard_url):
+    context = {}
+    try:
+        history_obj = SubjectScheduleHistory.objects.get(
+            visit_schedule_name=visit_schedule.name,
+            schedule_name=schedule.name,
+            subject_identifier=subject_identifier,
+            offschedule_datetime__isnull=False)
+    except SubjectScheduleHistory.DoesNotExist:
+        onschedule_model_obj = schedule.onschedule_model_cls.objects.get(
+            subject_identifier=subject_identifier,
+            schedule_name=schedule.name, )
+        options = dict(subject_identifier=subject_identifier)
+        query = unquote(urlencode(options))
+        href = (
+            f'{visit_schedule.offstudy_model_cls().get_absolute_url()}?next='
+            f'{subject_dashboard_url},subject_identifier')
+        href = '&'.join([href, query])
+        context = dict(
+            offschedule_datetime=None,
+            onschedule_datetime=onschedule_model_obj.onschedule_datetime,
+            href=mark_safe(href))
+    else:
+        onschedule_model_obj = schedule.onschedule_model_cls.objects.get(
+            subject_identifier=subject_identifier,
+            schedule_name=schedule.name)
+        options = dict(subject_identifier=subject_identifier)
+        query = unquote(urlencode(options))
+        offstudy_model_obj = None
+        try:
+            offstudy_model_obj = visit_schedule.offstudy_model_cls.objects.get(
+                subject_identifier=subject_identifier)
+        except visit_schedule.offstudy_model_cls.DoesNotExist:
+            href = (f'{visit_schedule.offstudy_model_cls().get_absolute_url()}'
+                    f'?next={subject_dashboard_url},subject_identifier')
+        else:
+            href = (f'{offstudy_model_obj.get_absolute_url()}?next='
+                    f'{subject_dashboard_url},subject_identifier')
+
+        href = '&'.join([href, query])
+
+        context = dict(
+            offschedule_datetime=history_obj.offschedule_datetime,
+            onschedule_datetime=onschedule_model_obj.onschedule_datetime,
+            href=mark_safe(href))
+        if offstudy_model_obj:
+            context.update(offstudy_date=offstudy_model_obj.offstudy_date)
+    context.update(
+        visit_schedule=visit_schedule,
+        schedule=schedule,
+        verbose_name=visit_schedule.offstudy_model_cls._meta.verbose_name)
+    return context
+
+
+@register.inclusion_tag('flourish_dashboard/buttons/child_death_report_button.html')
+def child_death_report_button(model_wrapper):
+    title = 'Child Death Report'
+    return dict(
+        title=title,
+        href=model_wrapper.child_death_report.href,
+        subject_identifier=model_wrapper.subject_identifier
+    )

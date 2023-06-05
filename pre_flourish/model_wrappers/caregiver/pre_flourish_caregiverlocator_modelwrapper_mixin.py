@@ -57,6 +57,7 @@ class PreflourishCaregiverLocatorModelWrapperMixin:
         options = dict(
             study_maternal_identifier=self.object.study_maternal_identifier,
         )
+
         if (hasattr(self, 'screening_identifier') and
                 getattr(self, 'screening_identifier')):
             options.update({'screening_identifier': self.object.screening_identifier})

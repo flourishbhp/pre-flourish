@@ -7,17 +7,19 @@ from edc_navbar import NavbarViewMixin
 from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
-from pre_flourish.action_items import PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
-from pre_flourish.model_wrappers import (
-    AppointmentModelWrapper, PreFlourishSubjectConsentModelWrapper,
-    MaternalCrfModelWrapper)
+from pre_flourish.action_items import MATERNAL_DEATH_STUDY_ACTION, \
+    PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
+from pre_flourish.model_wrappers import AppointmentModelWrapper, \
+    MaternalCrfModelWrapper, \
+    PreFlourishSubjectConsentModelWrapper
 from pre_flourish.model_wrappers import (MaternalVisitModelWrapper,
                                          PreflourishCaregiverLocatorModelWrapper,
                                          PreFlourishDataActionItemModelWrapper)
+from ...ViewMixins.dashboard_view_mixin import DashboardViewMixin
 from ....models import PFDataActionItem
 
 
-class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
+class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMixin,
                     NavbarViewMixin, BaseDashboardView):
     dashboard_url = 'pre_flourish_subject_dashboard_url'
     dashboard_template = 'pre_flourish_subject_dashboard_template'
@@ -35,7 +37,8 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     mother_infant_study = True
     infant_links = True
     infant_subject_dashboard_url = 'pre_flourish_child_dashboard_url'
-    infant_dashboard_include_value = 'pre_flourish/caregiver/dashboard/infant_dashboard_links.html'
+    infant_dashboard_include_value = \
+        'pre_flourish/caregiver/dashboard/infant_dashboard_links.html'
     special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
     visit_attr = 'preflourishvisit'
 
@@ -116,6 +119,17 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         locator_obj = self.get_locator_info()
+        caregiver_offstudy_cls = django_apps.get_model(
+            'pre_flourish.preflourishdeathreport')
+        caregiver_visit_cls = django_apps.get_model(
+            'pre_flourish.preflourishvisit')
+
+        self.get_offstudy_or_message(
+            visit_cls=caregiver_visit_cls,
+            offstudy_cls=caregiver_offstudy_cls,
+            offstudy_action=MATERNAL_DEATH_STUDY_ACTION)
+
+        self.get_offstudy_message(offstudy_cls=caregiver_offstudy_cls)
         context.update(
             infant_registered_subjects=self.infant_registered_subjects,
             locator_obj=locator_obj,
@@ -171,19 +185,6 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
                 action_cls(
                     subject_identifier=subject_identifier)
         return obj
-
-    def action_cls_item_creator(
-            self, subject_identifier=None, action_cls=None, action_type=None):
-        action_cls = site_action_items.get(
-            action_cls.action_name)
-        action_item_model_cls = action_cls.action_item_model_cls()
-        try:
-            action_item_model_cls.objects.get(
-                subject_identifier=subject_identifier,
-                action_type__name=action_type)
-        except ObjectDoesNotExist:
-            action_cls(
-                subject_identifier=subject_identifier)
 
     @property
     def infant_registered_subjects(self):

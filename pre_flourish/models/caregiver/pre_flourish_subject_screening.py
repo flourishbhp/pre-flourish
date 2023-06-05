@@ -14,7 +14,7 @@ from pre_flourish_follow.models import EligibilityMixin
 from ...identifiers import ScreeningIdentifier
 from .eligibility import Eligibility
 from .model_mixins import SearchSlugModelMixin
-from flourish_caregiver.models import CaregiverLocator
+from flourish_caregiver.models.caregiver_locator import CaregiverLocator
 
 
 class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):
