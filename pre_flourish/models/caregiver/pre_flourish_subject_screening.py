@@ -1,4 +1,3 @@
-from statistics import mode
 from django.db import models
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
@@ -9,12 +8,11 @@ from edc_constants.choices import YES_NO
 from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_protocol.validators import datetime_not_before_study_start
 from edc_search.model_mixins import SearchSlugManager
-
 from pre_flourish_follow.models import EligibilityMixin
-from ...identifiers import ScreeningIdentifier
+
 from .eligibility import Eligibility
 from .model_mixins import SearchSlugModelMixin
-from flourish_caregiver.models.caregiver_locator import CaregiverLocator
+from ...identifiers import ScreeningIdentifier
 
 
 class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):
@@ -23,7 +21,7 @@ class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):
         return self.get(screening_identifier=eligibility_identifier)
 
 
-class PreFlourishSubjectScreening(EligibilityMixin,NonUniqueSubjectIdentifierFieldMixin,
+class PreFlourishSubjectScreening(EligibilityMixin, NonUniqueSubjectIdentifierFieldMixin,
                                   SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
     """ A model completed by the user to test and capture the result of
     the pre-consent eligibility checks.

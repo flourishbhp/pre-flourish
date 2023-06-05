@@ -7,7 +7,8 @@ from edc_constants.constants import ALIVE, YES, ON_STUDY, PARTICIPANT, \
     NOT_APPLICABLE
 
 from .models import PreFlourishConsent, PreFlourishSubjectScreening, \
-    PreFlourishCaregiverChildConsent, PreFlourishChildAssent, PreFlourishVisit, HuuPreEnrollment
+    PreFlourishCaregiverChildConsent, PreFlourishChildAssent, PreFlourishVisit, \
+    HuuPreEnrollment
 
 fake = Faker()
 

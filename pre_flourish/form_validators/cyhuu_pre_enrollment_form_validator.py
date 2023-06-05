@@ -9,3 +9,15 @@ class CyhuuPreEnrollmentFormValidator(FormValidator):
             YES,
             field='hiv_docs',
             field_required='hiv_test_result')
+
+        self.required_if(
+            YES,
+            field_required='hiv_docs',
+            field='biological_mother'
+        )
+
+        self.required_if(
+            YES,
+            field='hiv_docs',
+            field_required='hiv_test_date'
+        )

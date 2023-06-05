@@ -2,7 +2,9 @@ from django.apps import apps as django_apps
 from django.core.exceptions import ObjectDoesNotExist
 from edc_action_item.site_action_items import site_action_items
 from edc_base.view_mixins import EdcBaseViewMixin
+from edc_constants.constants import NO
 from edc_dashboard.views import DashboardView as BaseDashboardView
+from edc_locator.action_items import SUBJECT_LOCATOR_ACTION
 from edc_navbar import NavbarViewMixin
 from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
@@ -15,7 +17,7 @@ from pre_flourish.model_wrappers import AppointmentModelWrapper, \
 from pre_flourish.model_wrappers import (MaternalVisitModelWrapper,
                                          PreflourishCaregiverLocatorModelWrapper,
                                          PreFlourishDataActionItemModelWrapper)
-from ...ViewMixins.dashboard_view_mixin import DashboardViewMixin
+from ...view_mixins.dashboard_view_mixin import DashboardViewMixin
 from ....models import PFDataActionItem
 
 
@@ -201,4 +203,25 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         Overridden to stop system from generating subject locator
         action items for child.
         """
-        pass
+        update_caregiver_locator_model = django_apps.get_model(
+            'pre_flourish.updatecaregiverlocator')
+
+        try:
+            obj = update_caregiver_locator_model.objects.get(
+                pre_flourish_visit__subject_identifier=self.subject_identifier)
+        except update_caregiver_locator_model.DoesNotExist:
+            self.trigger_locator(self.subject_identifier)
+        else:
+            if obj.is_locator_updated == NO:
+                self.trigger_locator(self.subject_identifier)
+
+    def trigger_locator(self, subject_identifier):
+        action_cls = site_action_items.get(self.subject_locator_model_cls.action_name)
+        action_item_model_cls = action_cls.action_item_model_cls()
+        try:
+            action_item_model_cls.objects.get(
+                subject_identifier=subject_identifier,
+                action_type__name=SUBJECT_LOCATOR_ACTION)
+        except ObjectDoesNotExist:
+            action_cls(
+                subject_identifier=subject_identifier)
