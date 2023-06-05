@@ -53,7 +53,7 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
                     screening_identifier=self.screening_identifier)
 
                 locator_obj = self.caregiver_locator_model_cls.objects.get(
-                    study_maternal_identifier=screening.previous_subject_identifier
+                    study_maternal_identifier=screening.study_maternal_identifier
                 )
 
             except self.caregiver_locator_model_cls.DoesNotExist:

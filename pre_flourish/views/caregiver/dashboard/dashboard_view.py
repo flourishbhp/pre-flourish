@@ -91,7 +91,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
             pass
         else:
             subject_locator_objs = self.subject_locator_model_cls.objects.filter(
-                study_maternal_identifier=screening_obj.previous_subject_identifier
+                study_maternal_identifier=screening_obj.study_maternal_identifier
             )
             if not subject_locator_objs:
                 try:
