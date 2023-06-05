@@ -40,7 +40,7 @@ class PreFlourishSubjectScreening(EligibilityMixin,NonUniqueSubjectIdentifierFie
         unique=True)
 
     study_maternal_identifier = models.CharField(
-        verbose_name='Prev. Subject Identifier',
+        verbose_name='Study Maternal Identifier',
         max_length=17,
         null=True, )
 
