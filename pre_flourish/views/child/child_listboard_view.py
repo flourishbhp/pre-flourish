@@ -7,7 +7,6 @@ from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
 
 from ...model_wrappers import CaregiverChildConsentModelWrapper
-from ...model_wrappers.child.child_consent_model_wrapper import ChildConsentModelWrapper
 
 
 class ChildListboardView(EdcBaseViewMixin, NavbarViewMixin,
