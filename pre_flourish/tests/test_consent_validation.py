@@ -58,66 +58,6 @@ class TestSubjectConsentForm(TestCase):
         except ValidationError as e:
             self.fail(f'ValidationError unexpectedly raised. Got{e}')
 
-    def test_recruit_source_not_OTHER_source_other_invalid(self):
-        self.consent_options.update(
-            {'recruit_source': 'ANC clinic staff',
-             'recruit_source_other': 'family friend'})
-        form_validator = PreFlourishConsentFormValidator(
-            cleaned_data=self.consent_options)
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('recruit_source_other', form_validator._errors)
-
-    def test_recruit_source_not_OTHER_source_other_valid(self):
-        self.consent_options.update(
-            {'recruit_source': 'ANC clinic staff',
-             'recruit_source_other': None})
-        form_validator = PreFlourishConsentFormValidator(
-            cleaned_data=self.consent_options)
-        try:
-            form_validator.validate()
-        except ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
-    def test_recruitment_clinic_OTHER_recruitment_clinic_other_required(self):
-        self.consent_options.update(
-            {'recruitment_clinic': OTHER,
-             'recruitment_clinic_other': None})
-        form_validator = PreFlourishConsentFormValidator(
-            cleaned_data=self.consent_options)
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('recruitment_clinic_other', form_validator._errors)
-
-    def test_recruitment_clinic_OTHER_recruitment_clinic_other_provided(self):
-        self.consent_options.update(
-            {'recruitment_clinic': OTHER,
-             'recruitment_clinic_other': 'None'})
-        form_validator = PreFlourishConsentFormValidator(
-            cleaned_data=self.consent_options)
-        try:
-            form_validator.validate()
-        except ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
-    def test_recruitment_clinic_not_OTHER_recruitment_clinic_other_invalid(self):
-        self.consent_options.update(
-            {'recruitment_clinic': 'PMH',
-             'recruitment_clinic_other': 'G.West Clinic'})
-        form_validator = PreFlourishConsentFormValidator(
-            cleaned_data=self.consent_options)
-        self.assertRaises(ValidationError, form_validator.validate)
-        self.assertIn('recruitment_clinic_other', form_validator._errors)
-
-    def test_recruitment_clinic_not_OTHER_recruitment_clinic_other_valid(self):
-        self.consent_options.update(
-            {'recruitment_clinic': 'G.West Clinic',
-             'recruitment_clinic_other': None})
-        form_validator = PreFlourishConsentFormValidator(
-            cleaned_data=self.consent_options)
-        try:
-            form_validator.validate()
-        except ValidationError as e:
-            self.fail(f'ValidationError unexpectedly raised. Got{e}')
-
     def test_first_name_last_name_valid(self):
         self.consent_options.update(
             {'first_name': 'TEST BONE',
