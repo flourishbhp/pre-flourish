@@ -15,7 +15,7 @@ from pre_flourish.model_wrappers import AppointmentModelWrapper, \
 from pre_flourish.model_wrappers import (MaternalVisitModelWrapper,
                                          PreflourishCaregiverLocatorModelWrapper,
                                          PreFlourishDataActionItemModelWrapper)
-from ...ViewMixins.dashboard_view_mixin import DashboardViewMixin
+from ...view_mixins.dashboard_view_mixin import DashboardViewMixin
 from ....models import PFDataActionItem
 
 

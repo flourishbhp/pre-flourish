@@ -12,7 +12,7 @@ from pre_flourish.model_wrappers import ActionItemModelWrapper, AppointmentModel
     CaregiverChildConsentModelWrapper, ChildConsentModelWrapper, ChildCrfModelWrapper, \
     ChildVisitModelWrapper, MaternalRegisteredSubjectModelWrapper, \
     PreflourishCaregiverLocatorModelWrapper
-from pre_flourish.views.ViewMixins.dashboard_view_mixin import DashboardViewMixin
+from pre_flourish.views.view_mixins.dashboard_view_mixin import DashboardViewMixin
 
 
 class CaregiverRegisteredSubjectCls(ContextMixin):
