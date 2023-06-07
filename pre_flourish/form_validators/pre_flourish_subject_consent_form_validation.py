@@ -11,9 +11,6 @@ from flourish_form_validations.form_validators import SubjectConsentFormValidato
 class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
     subject_consent_model = 'pre_flourish.preflourishconsent'
 
-    caregiver_locator_model = 'pre_flourish.preflourishcaregiverlocator'
-
-
     def clean(self):
         cleaned_data = self.cleaned_data
         self.subject_identifier = cleaned_data.get('subject_identifier')
@@ -111,4 +108,7 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
                            'is not applicable.'}
             self._errors.update(message)
             raise ValidationError(message)
+
+    def validate_reconsent(self):
+        pass
 
