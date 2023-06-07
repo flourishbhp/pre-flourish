@@ -3,19 +3,14 @@ from django.apps import apps as django_apps
 from edc_base.sites import SiteModelFormMixin
 from edc_form_validators import FormValidatorMixin
 from django.core.exceptions import ValidationError
-# from flourish_form_validations.form_validators import SubjectConsentFormValidator
+from pre_flourish.form_validators import PreFlourishConsentFormValidator
 from ...models import PreFlourishConsent
 from ...models import PreFlourishSubjectScreening
 
 
 class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
                              forms.ModelForm):
-    # form_validator_cls = SubjectConsentFormValidator
-    #
-    # form_validator_cls.subject_consent_model = 'pre_flourish.preflourishconsent'
-    #
-    # form_validator_cls.caregiver_locator_model = None
-
+    form_validator_cls = PreFlourishConsentFormValidator
     caregiver_locator_model = 'flourish_caregiver.caregiverlocator'
 
     @property
