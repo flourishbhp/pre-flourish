@@ -10,9 +10,6 @@ from ..form_validators import PreFlourishConsentFormValidator
 @tag('sc')
 class TestSubjectConsentForm(TestCase):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(PreFlourishConsentFormValidator, *args, **kwargs)
-
     def setUp(self):
 
         self.screening_identifier = 'ABC12345'
