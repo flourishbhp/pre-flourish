@@ -11,7 +11,7 @@ from ...models import PreFlourishSubjectScreening
 class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
                              forms.ModelForm):
     form_validator_cls = PreFlourishConsentFormValidator
-    caregiver_locator_model = 'pre_flourish.preflourishcaregiverlocator'
+    caregiver_locator_model = 'flourish_caregiver.caregiverlocator'
 
     @property
     def caregiver_locator_model_cls(self):
