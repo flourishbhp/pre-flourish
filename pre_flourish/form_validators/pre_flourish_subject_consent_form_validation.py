@@ -101,8 +101,8 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
 
     def validate_child_consent(self):
         cleaned_data = self.cleaned_data
-        subject_eligibie = self.subject_eligible(cleaned_data=cleaned_data)
-        if not subject_eligibie and cleaned_data.get('child_consent') != NOT_APPLICABLE:
+        subject_eligible = self.subject_eligible(cleaned_data=cleaned_data)
+        if not subject_eligible and cleaned_data.get('child_consent') != NOT_APPLICABLE:
             message = {'child_consent':
                            'Caregiver is not eligible for participation, this field '
                            'is not applicable.'}
