@@ -10,7 +10,6 @@ from ...models import CyhuuPreEnrollment
 
 @admin.register(CyhuuPreEnrollment, site=pre_flourish_admin)
 class CyhuuPreEnrollmentAdmin(CrfModelAdminMixin, admin.ModelAdmin):
-
     form = CyhuuPreEnrollmentForm
 
     fieldsets = (
@@ -19,9 +18,9 @@ class CyhuuPreEnrollmentAdmin(CrfModelAdminMixin, admin.ModelAdmin):
                 'pre_flourish_visit',
                 'report_datetime',
                 'biological_mother',
-                'child_dob',
                 'hiv_docs',
                 'hiv_test_result',
+                'hiv_test_date',
             ]}
          ), audit_fieldset_tuple)
 

@@ -1,14 +1,14 @@
 from django.apps import apps as django_apps
+from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-from edc_action_item.site_action_items import site_action_items
 from edc_base.view_mixins import EdcBaseViewMixin
+from edc_constants.constants import NO
 from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_navbar import NavbarViewMixin
 from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
-from pre_flourish.action_items import MATERNAL_DEATH_STUDY_ACTION, \
-    PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION
+from pre_flourish.action_items import MATERNAL_DEATH_STUDY_ACTION
 from pre_flourish.model_wrappers import AppointmentModelWrapper, \
     MaternalCrfModelWrapper, \
     PreFlourishSubjectConsentModelWrapper
@@ -130,6 +130,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             offstudy_action=MATERNAL_DEATH_STUDY_ACTION)
 
         self.get_offstudy_message(offstudy_cls=caregiver_offstudy_cls)
+        self.get_subject_locator_message()
         context.update(
             infant_registered_subjects=self.infant_registered_subjects,
             locator_obj=locator_obj,
@@ -169,23 +170,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             return None
         return obj
 
-    def get_subject_locator_or_message(self):
-        obj = self.get_locator_info()
-        subject_identifier = self.kwargs.get('subject_identifier')
-
-        if not obj:
-            action_cls = site_action_items.get(
-                self.subject_locator_model_cls.action_name)
-            action_item_model_cls = action_cls.action_item_model_cls()
-            try:
-                action_item_model_cls.objects.get(
-                    subject_identifier=subject_identifier,
-                    action_type__name=PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION)
-            except ObjectDoesNotExist:
-                action_cls(
-                    subject_identifier=subject_identifier)
-        return obj
-
     @property
     def infant_registered_subjects(self):
         """Returns an infant registered subjects.
@@ -196,9 +180,24 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         if registered_subject:
             return registered_subject
 
-    def get_subject_locator_or_message(self):
+    def get_subject_locator_message(self):
         """
         Overridden to stop system from generating subject locator
         action items for child.
         """
-        pass
+        update_caregiver_locator_model = django_apps.get_model(
+            'pre_flourish.updatecaregiverlocator')
+
+        try:
+            obj = update_caregiver_locator_model.objects.get(
+                subject_identifier=self.subject_identifier)
+        except update_caregiver_locator_model.DoesNotExist:
+            self.prompt_locator()
+        else:
+            if obj.is_locator_updated == NO:
+                self.prompt_locator()
+
+    def prompt_locator(self):
+        message = 'Please update caregiver locator and complete the Update caregiver ' \
+                  'locator forms under special forms'
+        messages.error(self.request, message)

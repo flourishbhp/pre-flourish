@@ -3,8 +3,12 @@ from .caregiver_locator_model_wrapper import PreflourishCaregiverLocatorModelWra
 from .log_entry_model_wrapper import PreFlourishLogEntryModelWrapper
 from .maternal_crf_model_wrapper import MaternalCrfModelWrapper
 from .maternal_dataset_model_wrapper import MaternalDatasetModelWrapper
+from .maternal_registered_subject_model_wrapper import \
+    MaternalRegisteredSubjectModelWrapper
 from .maternal_screening_model_wrapper import PreFlourishMaternalScreeningModelWrapper
 from .maternal_visit_model_wrapper import MaternalVisitModelWrapper
 from .pre_flourish_subject_consent_model_wrapper import \
     PreFlourishSubjectConsentModelWrapper
-from .maternal_registered_subject_model_wrapper import MaternalRegisteredSubjectModelWrapper
+from .update_caregiver_locator_model_wrapper import UpdateCaregiverLocatorModelWrapper
+from .update_caregiver_locator_model_wrapper_mixin import \
+    UpdateCaregiverLocatorModelWrapperMixin

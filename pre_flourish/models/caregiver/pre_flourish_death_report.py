@@ -5,11 +5,12 @@ from edc_base.sites import SiteModelMixin
 from edc_identifier.managers import SubjectIdentifierManager
 from edc_search.model_mixins import SearchSlugModelMixin
 
+from flourish_prn.models import DeathReportModelMixin
 from pre_flourish.action_items import MATERNAL_DEATH_STUDY_ACTION
 
 
 class PreFlourishDeathReport(ActionModelMixin, SiteModelMixin,
-                             SearchSlugModelMixin, BaseUuidModel):
+                             SearchSlugModelMixin, DeathReportModelMixin, BaseUuidModel):
     tracking_identifier_prefix = 'MO'
 
     action_name = MATERNAL_DEATH_STUDY_ACTION

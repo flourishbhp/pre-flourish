@@ -5,6 +5,10 @@ from edc_base.utils import age, get_utcnow
 class ChildDummyConsentModelWrapperMixin:
 
     @property
+    def subject_consent_cls(self):
+        return django_apps.get_model('pre_flourish.preflourishconsent')
+
+    @property
     def screening_identifier(self):
         subject_consent = self.subject_consent_cls.objects.filter(
             subject_identifier=self.caregiver_subject_identifier, )
