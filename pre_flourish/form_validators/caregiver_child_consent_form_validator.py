@@ -4,6 +4,9 @@ from flourish_form_validations.form_validators import CaregiverChildConsentFormV
 from django.core.exceptions import ValidationError
 
 class PreFlourishCaregiverChildConsentFormValidator(CaregiverChildConsentFormValidator):
+    def clean(self):
+        super().clean()
+        self.validate_child_age(cleaned_data=self.cleaned_data)
 
     def validate_previously_enrolled(self, cleaned_data):
         pass
@@ -34,3 +37,14 @@ class PreFlourishCaregiverChildConsentFormValidator(CaregiverChildConsentFormVal
 
     def preg_not_required(self):
         pass
+
+    def validate_child_age(self, cleaned_data):
+        child_dob = cleaned_data.get('child_dob', None)
+        child_age = age(child_dob, get_utcnow()).years
+
+        if child_age and child_age < 7:
+            msg = {'child_dob':
+                           'Child must be 7 years or older'}
+            self._errors.update(msg)
+            raise ValidationError(msg)
+
