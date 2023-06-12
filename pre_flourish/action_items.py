@@ -1,6 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
-from edc_action_item import Action, site_action_items, HIGH_PRIORITY
-from django.apps import apps as django_apps
+from edc_action_item import Action, HIGH_PRIORITY, site_action_items
 from edc_locator.action_items import SubjectLocatorAction
 
 MATERNAL_OFF_STUDY_ACTION = 'submit-pf-caregiver-study'

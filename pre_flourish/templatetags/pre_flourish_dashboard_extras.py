@@ -249,3 +249,14 @@ def child_death_report_button(model_wrapper):
         href=model_wrapper.child_death_report.href,
         subject_identifier=model_wrapper.subject_identifier
     )
+
+
+@register.inclusion_tag('pre_flourish/buttons/update_caregiver_locator_button.html')
+def update_caregiver_locator_button(model_wrapper):
+    title = 'Update Caregiver Locator'
+    return dict(
+        title=title,
+        href=model_wrapper.update_caregiver_locator.href,
+        subject_identifier=model_wrapper.subject_identifier,
+        update_locator=model_wrapper.update_caregiver_locator_obj
+    )
