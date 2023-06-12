@@ -86,7 +86,7 @@ class PreflourishCaregiverLocatorModelWrapperMixin:
     @property
     def create_subject_screening_options(self):
         options = dict(
-            previous_subject_identifier=self.object.study_maternal_identifier)
+            study_maternal_identifier=self.object.study_maternal_identifier)
         if getattr(self, 'screening_identifier', None):
             options.update({'screening_identifier': self.object.screening_identifier})
         if getattr(self, 'subject_identifier', None):

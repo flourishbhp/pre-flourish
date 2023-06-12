@@ -59,7 +59,7 @@ class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixi
         verbose_name=('Are you willing to continue the study when you reach 18'
                       ' years of age?'),
         choices=YES_NO,
-        help_text='If no, participant is not eligible.')
+        )
 
     hiv_testing = models.CharField(
         max_length=3,

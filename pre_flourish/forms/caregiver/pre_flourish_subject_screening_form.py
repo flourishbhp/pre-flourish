@@ -1,6 +1,7 @@
 from django import forms
 from edc_base.sites import SiteModelFormMixin
 from edc_form_validators import FormValidatorMixin
+from django.apps import apps as django_apps
 
 from ...models import PreFlourishSubjectScreening
 
@@ -23,10 +24,11 @@ class PreFlourishSubjectScreeningForm(SiteModelFormMixin, FormValidatorMixin,
         label='Screening Identifier',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
-    previous_subject_identifier = forms.CharField(
+    study_maternal_identifier = forms.CharField(
         required=False,
-        label='Prev. Subject Identifier',
+        label='Study Maternal Identifier',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+
 
     class Meta:
         model = PreFlourishSubjectScreening

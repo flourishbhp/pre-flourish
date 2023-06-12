@@ -12,7 +12,7 @@ class PreFlourishSubjectScreeningAdmin(ModelAdminMixin, admin.ModelAdmin):
     search_fields = ['subject_identifier', 'screening_identifier']
 
     fields = ('screening_identifier',
-              'previous_subject_identifier',
+              'study_maternal_identifier',
               'report_datetime',
               'caregiver_age',
               'caregiver_omang',
