@@ -5,13 +5,6 @@ from django.core.exceptions import ValidationError
 
 class PreFlourishCaregiverChildConsentFormValidator(CaregiverChildConsentFormValidator):
 
-    child_dataset_model = 'flourish_child.childdataset'
-
-    preg_women_screening_model = 'flourish_caregiver.screeningpregwomen'
-
-    delivery_model = 'flourish_caregiver.maternaldelivery'
-
-
     def validate_previously_enrolled(self, cleaned_data):
         pass
 
