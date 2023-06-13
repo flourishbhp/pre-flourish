@@ -14,7 +14,7 @@ class ChildPregTestingAdmin(ChildCrfModelAdminMixin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': [
-                'child_visit',
+                'pre_flourish_visit',
                 'report_datetime',
                 'menarche',
                 'last_menstrual_period',
