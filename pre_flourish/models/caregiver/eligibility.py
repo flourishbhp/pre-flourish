@@ -28,7 +28,7 @@ class Eligibility:
             self.error_message.append('Not a citizen')
 
         if has_child == NO:
-            self.error_message.append('Does not have a child > 10 years')
+            self.error_message.append('Does not have a child > 7 years')
 
         if willing_assent == NO:
             self.error_message.append('Child is not willing to assent')

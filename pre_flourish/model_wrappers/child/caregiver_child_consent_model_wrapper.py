@@ -3,9 +3,13 @@ from edc_model_wrapper import ModelWrapper
 
 from pre_flourish.model_wrappers.child.child_assent_model_wrapper_mixin import \
     ChildAssentModelWrapperMixin
+from pre_flourish.model_wrappers.child.child_death_report_model_wrapper_mixin import \
+    ChildDeathReportModelWrapperMixin
 
 
-class CaregiverChildConsentModelWrapper(ChildAssentModelWrapperMixin,ModelWrapper):
+class CaregiverChildConsentModelWrapper(ChildAssentModelWrapperMixin,
+                                        ChildDeathReportModelWrapperMixin,
+                                        ModelWrapper):
     model = 'pre_flourish.preflourishcaregiverchildconsent'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
         'pre_flourish_child_dashboard_url')

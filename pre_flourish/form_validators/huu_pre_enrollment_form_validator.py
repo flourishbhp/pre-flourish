@@ -27,15 +27,4 @@ class HuuPreEnrollmentFormValidator(FormValidator):
             field='breastfed',
             field_required='months_breastfeed')
 
-        child_dob = self.cleaned_data.get('child_dob')
-
-        start = datetime.datetime.strptime("2005-05-01", "%Y-%m-%d").date()
-        end = datetime.datetime.strptime("2012-11-01", "%Y-%m-%d").date()
-
-        if child_dob < start or child_dob > end:
-            message = {'child_dob':
-                       'DOB must be between 1-May-2005 and 1-Nov-2012'}
-            self._errors.update(message)
-            raise ValidationError(message)
-
 

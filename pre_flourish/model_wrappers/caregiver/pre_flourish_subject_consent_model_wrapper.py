@@ -1,14 +1,27 @@
-from datetime import timedelta
-from django.conf import settings
-from edc_model_wrapper import ModelWrapper
-from edc_base.utils import get_utcnow
 from dateutil.relativedelta import relativedelta
+from django.conf import settings
+from edc_base.utils import get_utcnow
+from edc_model_wrapper import ModelWrapper
+
+from .caregiver_contact_model_wrapper_mixin import CaregiverContactModelWrapperMixin
+from .caregiver_death_report_model_wrapper_mixin import \
+    CaregiverDeathReportModelWrapperMixin
+from .caregiver_offstudy_model_wrapper_mixin import CaregiverOffstudyModelWrapperMixin
 from .child_assent_model_wrapper import \
     PreFlourishChildAssentModelWrapper as AssentModelWrapper
+from .pre_flourish_caregiverlocator_modelwrapper_mixin import \
+    PreflourishCaregiverLocatorModelWrapperMixin
+from .update_caregiver_locator_model_wrapper_mixin import \
+    UpdateCaregiverLocatorModelWrapperMixin
 from ...models import PreFlourishChildAssent as Assent
 
 
-class PreFlourishSubjectConsentModelWrapper(ModelWrapper):
+class PreFlourishSubjectConsentModelWrapper(CaregiverContactModelWrapperMixin,
+                                            CaregiverOffstudyModelWrapperMixin,
+                                            CaregiverDeathReportModelWrapperMixin,
+                                            PreflourishCaregiverLocatorModelWrapperMixin,
+                                            UpdateCaregiverLocatorModelWrapperMixin,
+                                            ModelWrapper):
     model = 'pre_flourish.preflourishconsent'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
         'pre_flourish_screening_listboard_url')

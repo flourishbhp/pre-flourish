@@ -1,10 +1,10 @@
 from datetime import datetime
-from urllib.parse import urlencode, unquote
+from urllib.parse import unquote, urlencode
 
 from django import template
 from django.conf import settings
-from edc_base.utils import age, get_utcnow
 from django.utils.safestring import mark_safe
+from edc_base.utils import age, get_utcnow
 from edc_visit_schedule.models import SubjectScheduleHistory
 
 register = template.Library()
@@ -56,8 +56,8 @@ def screening_button(model_wrapper):
     add_screening_href = ''
     subject_screening_obj = None
     if hasattr(model_wrapper, 'maternal_screening'):
-        add_screening_href = f'{model_wrapper.maternal_screening.href}&previous_subject_identifier={model_wrapper.study_maternal_identifier}'
-    if hasattr(model_wrapper, 'screening_model_obj'):
+        add_screening_href = model_wrapper.maternal_screening.href
+    if model_wrapper.screening_model_obj:
         subject_screening_obj = model_wrapper.screening_model_obj
 
     return dict(
@@ -147,6 +147,37 @@ def caregiver_dashboard_button(model_wrapper):
         subject_identifier=subject_identifier)
 
 
+@register.inclusion_tag(
+    'flourish_dashboard/buttons/caregiver_contact_button.html')
+def caregiver_contact_button(model_wrapper):
+    title = ['Caregiver Contact.']
+    return dict(
+        subject_identifier=model_wrapper.object.subject_identifier,
+        add_caregiver_contact_href=model_wrapper.caregiver_contact.href,
+        title=' '.join(title), )
+
+
+@register.inclusion_tag('flourish_dashboard/buttons/caregiver_off_study.html')
+def caregiver_off_study_button(model_wrapper):
+    title = 'Caregiver Off Study'
+    return dict(
+        title=title,
+        href=model_wrapper.caregiver_offstudy.href,
+        subject_identifier=model_wrapper.subject_identifier
+    )
+
+
+@register.inclusion_tag(
+    'flourish_dashboard/buttons/caregiver_death_report_button.html')
+def caregiver_death_report_button(model_wrapper):
+    title = 'Caregiver Death Report'
+    return dict(
+        title=title,
+        href=model_wrapper.caregiver_death_report.href,
+        subject_identifier=model_wrapper.subject_identifier
+    )
+
+
 @register.simple_tag(takes_context=True)
 def get_age(context, born=None):
     if born:
@@ -216,3 +247,24 @@ def subject_schedule_footer_row(subject_identifier, visit_schedule, schedule,
         schedule=schedule,
         verbose_name=visit_schedule.offstudy_model_cls._meta.verbose_name)
     return context
+
+
+@register.inclusion_tag('flourish_dashboard/buttons/child_death_report_button.html')
+def child_death_report_button(model_wrapper):
+    title = 'Child Death Report'
+    return dict(
+        title=title,
+        href=model_wrapper.child_death_report.href,
+        subject_identifier=model_wrapper.subject_identifier
+    )
+
+
+@register.inclusion_tag('pre_flourish/buttons/update_caregiver_locator_button.html')
+def update_caregiver_locator_button(model_wrapper):
+    title = 'Update Caregiver Locator'
+    return dict(
+        title=title,
+        href=model_wrapper.update_caregiver_locator.href,
+        subject_identifier=model_wrapper.subject_identifier,
+        update_locator=model_wrapper.update_caregiver_locator_obj
+    )

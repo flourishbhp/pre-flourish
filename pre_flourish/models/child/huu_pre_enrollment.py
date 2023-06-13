@@ -10,16 +10,6 @@ from ...choices import POS_NEG_IND, YES_NO_UNKNOWN
 
 class HuuPreEnrollment(CrfModelMixin):
 
-    screening_identifier = models.CharField(
-        verbose_name='Eligibility Identifier',
-        max_length=36,
-        unique=True,
-        editable=False)
-
-    child_dob = models.DateField(
-        validators=[date_not_future, dob_not_today],
-        verbose_name='What is your DOB?', )
-
     child_hiv_docs = models.CharField(
         verbose_name='Is there documentation of the child’s HIV status?',
         choices=YES_NO,
@@ -49,11 +39,6 @@ class HuuPreEnrollment(CrfModelMixin):
     )
 
     bmi = models.IntegerField(blank=True, null=True)
-
-    sex = models.CharField(
-        verbose_name='Sex',
-        max_length=3,
-        choices=GENDER)
 
     knows_gest_age = models.CharField(
         verbose_name='Does the caregiver know the gestational age of the '

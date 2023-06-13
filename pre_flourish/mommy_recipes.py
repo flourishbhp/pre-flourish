@@ -7,7 +7,9 @@ from edc_visit_tracking.constants import SCHEDULED
 from edc_constants.constants import ALIVE, YES, ON_STUDY, PARTICIPANT, \
     NOT_APPLICABLE
 
-from .models import PreFlourishConsent, PreFlourishSubjectScreening, PreFlourishCaregiverChildConsent, PreFlourishChildAssent
+from .models import PreFlourishConsent, PreFlourishSubjectScreening, \
+    PreFlourishCaregiverChildConsent, PreFlourishChildAssent, PreFlourishVisit, \
+    HuuPreEnrollment
 
 fake = Faker()
 

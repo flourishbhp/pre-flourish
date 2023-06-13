@@ -27,6 +27,10 @@ class PreFlourishChildOffStudyAdmin(ModelAdminMixin, admin.ModelAdmin):
                 'comment']}
          ), audit_fieldset_tuple)
 
+    radio_fields = {
+        'reason': admin.VERTICAL,
+    }
+
     def response_add(self, request, obj, **kwargs):
         response = self._redirector(obj)
         return response if response else super().response_add(

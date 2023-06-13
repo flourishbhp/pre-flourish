@@ -1,0 +1,11 @@
+<a id="off_study_add_{{ subject_identifier }}"
+   {% if not update_locator %}
+    	class="btn btn-warning btn-sm" data-toggle="tooltip"  data-placement="right"
+        href="{{ href }}">
+	{% else %}
+	    class="btn btn-success btn-sm" data-toggle="tooltip"  data-placement="right"
+        href="{{ href }}">
+    {% endif %}
+    Update Caregiver Locator
+</a>
+

@@ -18,7 +18,7 @@ def update_locator(consent, screening):
     locator_cls = django_apps.get_model(locator_model)
     try:
         locator_obj = locator_cls.objects.get(
-            study_maternal_identifier=screening.previous_subject_identifier
+            study_maternal_identifier=screening.study_maternal_identifier
         )
     except locator_cls.DoesNotExist:
         pass
@@ -46,8 +46,8 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
 
         if instance.is_eligible:
             if caregiver_screening:
-                if hasattr(caregiver_screening, 'previous_subject_identifier') and \
-                        getattr(caregiver_screening, 'previous_subject_identifier'):
+                if hasattr(caregiver_screening, 'study_maternal_identifier') and \
+                        getattr(caregiver_screening, 'study_maternal_identifier'):
                     update_locator(consent=instance, screening=caregiver_screening)
                 caregiver_screening.has_passed_consent = True
                 caregiver_screening.subject_identifier = instance.subject_identifier
