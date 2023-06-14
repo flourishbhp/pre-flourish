@@ -39,7 +39,7 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
         try:
             pre_flourish_screening = self.pre_flourish_screening_cls.objects.get(
                 screening_identifier=self.screening_identifier)
-        except self.bhp_prior_screening_cls.DoesNotExist:
+        except self.pre_flourish_screening.DoesNotExist:
             return None
         else:
             return pre_flourish_screening
