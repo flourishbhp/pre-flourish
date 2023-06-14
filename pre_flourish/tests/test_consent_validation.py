@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase, tag
 from edc_base.utils import get_utcnow, relativedelta
 from edc_constants.constants import YES, OTHER
+from model_mommy import mommy
 
 from ..form_validators import PreFlourishConsentFormValidator
 
@@ -14,6 +15,8 @@ class TestSubjectConsentForm(TestCase):
 
         self.screening_identifier = 'ABC12345'
         self.study_child_identifier = '1234DCD'
+        self.caregiver_screening = mommy.make_recipe(
+            'pre_flourish.preflourishsubjectscreening', )
 
         self.consent_options = {
             'screening_identifier': self.screening_identifier,
@@ -86,3 +89,27 @@ class TestSubjectConsentForm(TestCase):
             cleaned_data=self.consent_options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('first_name', form_validator._errors)
+
+    def test_dob_match_screening_invalid(self):
+        self.caregiver_screening.screening_identifier = 'ABC12345'
+        self.caregiver_screening.caregiver_age = 30
+        self.caregiver_screening.save()
+        self.consent_options.update(
+            {'dob': (get_utcnow() - relativedelta(years=25)).date()})
+        form_validator = PreFlourishConsentFormValidator(
+            cleaned_data=self.consent_options)
+        self.assertRaises(ValidationError, form_validator.validate)
+        self.assertIn('dob', form_validator._errors)
+
+    def test_dob_match_screening_valid(self):
+        self.caregiver_screening.screening_identifier = 'ABC12345'
+        self.caregiver_screening.caregiver_age = 25
+        self.caregiver_screening.save()
+        self.consent_options.update(
+            {'dob': (get_utcnow() - relativedelta(years=25)).date()})
+        try:
+            form_validator = PreFlourishConsentFormValidator(
+                cleaned_data=self.consent_options)
+        except Exception:
+            self.fail("Value should not fail")
+
