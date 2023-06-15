@@ -16,10 +16,6 @@ class ChildPregTestingAdmin(ChildCrfModelAdminMixin, admin.ModelAdmin):
             'fields': [
                 'pre_flourish_visit',
                 'report_datetime',
-                'menarche',
-                'last_menstrual_period',
-                'is_lmp_date_estimated',
-                'experienced_pregnancy',
                 'test_done',
                 'test_date',
                 'preg_test_result',
@@ -27,10 +23,7 @@ class ChildPregTestingAdmin(ChildCrfModelAdminMixin, admin.ModelAdmin):
             ]}
          ), audit_fieldset_tuple)
 
-    radio_fields = {'experienced_pregnancy': admin.VERTICAL,
-                    'menarche': admin.VERTICAL,
-                    'test_done': admin.VERTICAL,
-                    'preg_test_result': admin.VERTICAL,
-                    'is_lmp_date_estimated': admin.VERTICAL, }
+    radio_fields = {'test_done': admin.VERTICAL,
+                    'preg_test_result': admin.VERTICAL,}
 
     search_fields = 'subject_identifier'
