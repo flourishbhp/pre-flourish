@@ -29,10 +29,10 @@ class HuuPreEnrollmentRules(CrfRuleGroup):
 class ChyuuPreEnrollmentRules(CrfRuleGroup):
 
     hiv_test_counseling = CrfRule(
-        predicate=pc.func_hiv_test_required,
+        predicate=pc.func_hiv_rapid_test_required,
         consequence=REQUIRED,
         alternative=NOT_REQUIRED,
-        target_models=[f'{app_label}.pfchildhivrapidtestcounseling', ])
+        target_models=[f'{app_label}.pfhivrapidtestcounseling', ])
     class Meta:
         app_label = app_label
         source_model = f'{app_label}.cyhuupreenrollment'
