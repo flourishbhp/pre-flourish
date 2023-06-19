@@ -36,13 +36,14 @@ class TestHivRapidTestForm(TestCase):
         pre_flourish_visit = mommy.make_recipe(
             'pre_flourish.preflourishvisit',
             appointment=self.appointment,
+            report_datetime=get_utcnow()
         )
         
         mommy.make_recipe(
             'pre_flourish.cyhuupreenrollment',
             pre_flourish_visit=pre_flourish_visit,
             hiv_docs=NO,
-            report_datetime=datetime.now(),
+            report_datetime=get_utcnow(),
             )
 
 
