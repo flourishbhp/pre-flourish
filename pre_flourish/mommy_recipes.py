@@ -8,7 +8,7 @@ from edc_constants.constants import ALIVE, YES, ON_STUDY, PARTICIPANT, \
 
 from .models import PreFlourishConsent, PreFlourishSubjectScreening, \
     PreFlourishCaregiverChildConsent, PreFlourishChildAssent, PreFlourishVisit, \
-    HuuPreEnrollment
+    HuuPreEnrollment, CyhuuPreEnrollment
 
 fake = Faker()
 
@@ -82,3 +82,7 @@ preflourishvisit = Recipe(
     study_status=ON_STUDY,
     survival_status=ALIVE,
     info_source=PARTICIPANT)
+
+cyhuupreenrollment = Recipe(
+    CyhuuPreEnrollment,
+)
