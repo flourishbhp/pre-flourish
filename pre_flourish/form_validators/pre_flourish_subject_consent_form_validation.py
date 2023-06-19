@@ -10,6 +10,7 @@ from flourish_form_validations.form_validators import SubjectConsentFormValidato
 
 class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
     subject_consent_model = 'pre_flourish.preflourishconsent'
+    pre_flourish_screening_model = 'pre_flourish.preflourishsubjectscreening'
 
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -26,6 +27,23 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
         self.validate_identity_number(cleaned_data=self.cleaned_data)
         self.validate_breastfeed_intent()
         self.validate_child_consent()
+        self.validate_birth_date()
+
+    @property
+    def pre_flourish_screening_cls(self):
+        return django_apps.get_model(self.pre_flourish_screening_model)
+
+    @property
+    def pre_flourish_screening(self):
+
+        try:
+            pre_flourish_screening = self.pre_flourish_screening_cls.objects.get(
+                screening_identifier=self.screening_identifier)
+        except self.pre_flourish_screening.DoesNotExist:
+            return None
+        else:
+            return pre_flourish_screening
+
 
     def clean_full_name_syntax(self):
         cleaned_data = self.cleaned_data
@@ -111,4 +129,17 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
 
     def validate_reconsent(self):
         pass
+
+    def validate_birth_date(self):
+        consent_datetime = self.cleaned_data.get('consent_datetime')
+        consent_age = relativedelta(
+            consent_datetime.date(), self.cleaned_data.get('dob')).years
+        if self.pre_flourish_screening:
+            screening_age = self.pre_flourish_screening.caregiver_age
+            if screening_age and consent_age:
+                if screening_age != consent_age:
+                    message = {'dob':
+                                   'Date of birth does not match the age given on the screening form.'}
+                    self._errors.update(message)
+                    raise ValidationError(message)
 

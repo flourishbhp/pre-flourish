@@ -2,7 +2,6 @@ from .child_consent_mixin import ChildConsentMixin
 from .child_hiv_rapid_test_counseling_admin import PFChildHIVRapidTestCounselingAdmin
 from .child_preg_testing_admin import ChildPregTestingAdmin
 from .huu_pre_enrollment_admin import HuuPreEnrollmentAdmin
-from .infant_hiv_testing_admin import InfantHIVTestingAdmin
 from .offschedule_admin import ChildOffScheduleAdmin
 from .pre_flourish_child_assent_admin import PreFlourishChildAssentAdmin
 from .pre_flourish_child_consent_admin import PreFlourishCaregiverChildConsentAdmin

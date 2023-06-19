@@ -1,7 +1,6 @@
 from .child_hiv_rapid_test_counseling_form import PFChildHIVRapidTestCounselingForm
 from .child_preg_testing_form import ChildPregTestingForm
 from .huu_pre_enrollment_form import HuuPreEnrollmentForm
-from .infant_hiv_testing_form import InfantHIVTestingForm
 from .offschedule_form import ChildOffScheduleForm
 from .pre_flourish_child_assent_form import PreFlourishChildAssentForm
 from .pre_flourish_child_consent_form import PreFlourishCaregiverChildConsentForm

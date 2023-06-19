@@ -1,6 +1,5 @@
 from dateutil.relativedelta import relativedelta
 from edc_base.utils import get_utcnow
-from edc_constants.constants import YES, NOT_APPLICABLE
 from faker import Faker
 from model_mommy.recipe import Recipe, seq
 from edc_visit_tracking.constants import SCHEDULED
@@ -9,7 +8,7 @@ from edc_constants.constants import ALIVE, YES, ON_STUDY, PARTICIPANT, \
 
 from .models import PreFlourishConsent, PreFlourishSubjectScreening, \
     PreFlourishCaregiverChildConsent, PreFlourishChildAssent, PreFlourishVisit, \
-    HuuPreEnrollment
+    HuuPreEnrollment, CyhuuPreEnrollment
 
 fake = Faker()
 
@@ -55,7 +54,6 @@ preflourishcaregiverchildconsent = Recipe(
     confirm_identity=seq('234513187')
 )
 
-
 preflourishchildassent = Recipe(
     PreFlourishChildAssent,
     subject_identifier=None,
@@ -70,16 +68,21 @@ preflourishchildassent = Recipe(
     preg_testing=YES,
     specimen_consent=YES,
     dob=(get_utcnow() - relativedelta(years=3)).date(),
-    consent_datetime=get_utcnow())
+    consent_datetime=get_utcnow(),
+)
+
+huupreenrollment = Recipe(
+    HuuPreEnrollment,
+)
 
 preflourishvisit = Recipe(
     PreFlourishVisit,
     report_datetime=get_utcnow(),
     reason=SCHEDULED,
-    information_provider='MOTHER',
     study_status=ON_STUDY,
     survival_status=ALIVE,
     info_source=PARTICIPANT)
 
-huupreenrollment = Recipe(
-    HuuPreEnrollment, )
+cyhuupreenrollment = Recipe(
+    CyhuuPreEnrollment,
+)

@@ -1,6 +1,5 @@
 from .child_hiv_rapid_test_counseling import PFChildHIVRapidTestCounseling
 from .huu_pre_enrollment import HuuPreEnrollment
-from .infant_hiv_testing import PFInfantHIVTesting
 from .offschedule import ChildOffSchedule
 from .pf_child_preg_testing import PFChildPregTesting
 from .pre_flourish_child_assent import PreFlourishChildAssent

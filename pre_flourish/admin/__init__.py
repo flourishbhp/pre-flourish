@@ -11,7 +11,6 @@ from .caregiver import UpdateCaregiverLocatorAdmin
 from .child import ChildOffScheduleAdmin
 from .child import ChildPregTestingAdmin
 from .child import HuuPreEnrollmentAdmin
-from .child import InfantHIVTestingAdmin
 from .child import PFChildHIVRapidTestCounselingAdmin
 from .child import PreFlourishCaregiverChildConsentAdmin
 from .child import PreFlourishChildAssentAdmin
