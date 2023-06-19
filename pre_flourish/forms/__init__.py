@@ -8,10 +8,10 @@ from .caregiver import PreFlourishDeathReportForm
 from .caregiver import PreFlourishLogEntryForm
 from .caregiver import PreFlourishOffStudyForm
 from .caregiver import PreFlourishSubjectScreeningForm
+from .caregiver import PFHIVRapidTestCounselingForm
 from .child import ChildOffScheduleForm
 from .child import ChildPregTestingForm
 from .child import HuuPreEnrollmentForm
-from .child import InfantHIVTestingForm
 from .child import PFChildHIVRapidTestCounselingForm
 from .child import PreFlourishCaregiverChildConsentForm
 from .child import PreFlourishChildAssentForm

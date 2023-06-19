@@ -95,7 +95,7 @@ def put_on_schedule(instance, subject_identifier,
         except onschedule_model_cls.DoesNotExist:
             schedule.put_on_schedule(
                 subject_identifier=instance.subject_identifier,
-                onschedule_datetime=instance.created,
+                onschedule_datetime=instance.created.replace(microsecond=0),
                 schedule_name=schedule_name)
         else:
             try:

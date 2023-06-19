@@ -15,12 +15,6 @@ class HuuPreEnrollmentRules(CrfRuleGroup):
         alternative=NOT_REQUIRED,
         target_models=[f'{app_label}.pfchildpregtesting', ])
 
-    hiv_test = CrfRule(
-        predicate=pc.func_hiv_test_required,
-        consequence=REQUIRED,
-        alternative=NOT_REQUIRED,
-        target_models=[f'{app_label}.pfinfanthivtesting', ])
-
     hiv_test_counseling = CrfRule(
         predicate=pc.func_hiv_test_required,
         consequence=REQUIRED,
@@ -30,3 +24,15 @@ class HuuPreEnrollmentRules(CrfRuleGroup):
     class Meta:
         app_label = app_label
         source_model = f'{app_label}.huupreenrollmentrules'
+
+@register()
+class ChyuuPreEnrollmentRules(CrfRuleGroup):
+
+    hiv_test_counseling = CrfRule(
+        predicate=pc.func_hiv_rapid_test_required,
+        consequence=REQUIRED,
+        alternative=NOT_REQUIRED,
+        target_models=[f'{app_label}.pfhivrapidtestcounseling', ])
+    class Meta:
+        app_label = app_label
+        source_model = f'{app_label}.cyhuupreenrollment'

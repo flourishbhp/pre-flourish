@@ -28,6 +28,21 @@ class PreFlourishPredicates(PredicateCollection):
         else:
             return False
 
+    def func_hiv_rapid_test_required(self, visit=None, **kwargs):
+        cyhuu_preenrollment_model = django_apps.get_model(
+            f'{self.app_label}.cyhuupreenrollment')
+        if visit:
+            try:
+                obj = cyhuu_preenrollment_model.objects.get(
+                    pre_flourish_visit=visit
+                )
+            except cyhuu_preenrollment_model.DoesNotExist:
+                return False
+            else:
+                return obj.hiv_docs == NO
+        else:
+            return False
+
     def fun_pre_test_required(self, visit=None, **kwargs):
         pre_flourish_child_assent_model = django_apps.get_model(
             f'{self.app_label}.preflourishchildassent')
