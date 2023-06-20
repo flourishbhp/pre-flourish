@@ -185,19 +185,10 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         Overridden to stop system from generating subject locator
         action items for child.
         """
-        update_caregiver_locator_model = django_apps.get_model(
-            'pre_flourish.updatecaregiverlocator')
-
-        try:
-            obj = update_caregiver_locator_model.objects.get(
-                subject_identifier=self.subject_identifier)
-        except update_caregiver_locator_model.DoesNotExist:
-            self.prompt_locator()
-        else:
-            if obj.is_locator_updated == NO:
+        if self.subject_locator:
+            if self.subject_locator.is_locator_updated == NO or not self.subject_locator.is_locator_updated:
                 self.prompt_locator()
 
     def prompt_locator(self):
-        message = 'Please update caregiver locator and complete the Update caregiver ' \
-                  'locator forms under special forms'
+        message = 'Please update caregiver locator information.'
         messages.error(self.request, message)

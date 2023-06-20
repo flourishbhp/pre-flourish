@@ -1,4 +1,3 @@
-from .caregiver import UpdateCaregiverLocatorForm
 from .appointment_form import AppointmentForm
 from .caregiver import CaregiverOffScheduleForm
 from .caregiver import CyhuuPreEnrollmentForm
