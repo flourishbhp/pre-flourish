@@ -6,5 +6,4 @@ from .pre_flourish_death_report_admin import PreFlourishDeathReportAdmin
 from .pre_flourish_logentry_admin import PreFlourishLogEntryAdmin
 from .pre_flourish_off_study_admin import PreFlourishOffStudyAdmin
 from .pre_flourish_subject_screening_admin import PreFlourishSubjectScreeningAdmin
-from .update_caregiver_locator_admin import UpdateCaregiverLocatorAdmin
 from .hiv_rapid_test_counseling_admin import PFHIVRapidTestCounselingAdmin

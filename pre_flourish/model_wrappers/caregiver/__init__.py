@@ -9,6 +9,3 @@ from .maternal_screening_model_wrapper import PreFlourishMaternalScreeningModelW
 from .maternal_visit_model_wrapper import MaternalVisitModelWrapper
 from .pre_flourish_subject_consent_model_wrapper import \
     PreFlourishSubjectConsentModelWrapper
-from .update_caregiver_locator_model_wrapper import UpdateCaregiverLocatorModelWrapper
-from .update_caregiver_locator_model_wrapper_mixin import \
-    UpdateCaregiverLocatorModelWrapperMixin

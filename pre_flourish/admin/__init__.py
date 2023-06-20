@@ -7,7 +7,6 @@ from .caregiver import PreFlourishDeathReportAdmin
 from .caregiver import PreFlourishLogEntryAdmin
 from .caregiver import PreFlourishOffStudyAdmin
 from .caregiver import PreFlourishSubjectScreeningAdmin
-from .caregiver import UpdateCaregiverLocatorAdmin
 from .child import ChildOffScheduleAdmin
 from .child import ChildPregTestingAdmin
 from .child import HuuPreEnrollmentAdmin

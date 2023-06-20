@@ -11,8 +11,6 @@ from .child_assent_model_wrapper import \
     PreFlourishChildAssentModelWrapper as AssentModelWrapper
 from .pre_flourish_caregiverlocator_modelwrapper_mixin import \
     PreflourishCaregiverLocatorModelWrapperMixin
-from .update_caregiver_locator_model_wrapper_mixin import \
-    UpdateCaregiverLocatorModelWrapperMixin
 from ...models import PreFlourishChildAssent as Assent
 
 
@@ -20,7 +18,6 @@ class PreFlourishSubjectConsentModelWrapper(CaregiverContactModelWrapperMixin,
                                             CaregiverOffstudyModelWrapperMixin,
                                             CaregiverDeathReportModelWrapperMixin,
                                             PreflourishCaregiverLocatorModelWrapperMixin,
-                                            UpdateCaregiverLocatorModelWrapperMixin,
                                             ModelWrapper):
     model = 'pre_flourish.preflourishconsent'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
