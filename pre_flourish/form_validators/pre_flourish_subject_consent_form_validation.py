@@ -44,7 +44,6 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
         else:
             return pre_flourish_screening
 
-
     def clean_full_name_syntax(self):
         cleaned_data = self.cleaned_data
         first_name = cleaned_data.get("first_name")
@@ -52,7 +51,8 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
 
         if first_name and not re.match(r'^[A-Z]+$|^([A-Z]+[ ][A-Z]+)$', first_name):
             message = {'first_name': 'Ensure first name is letters (A-Z) in '
-                                     'upper case, no special characters, except spaces. Maximum 2 first '
+                                     'upper case, no special characters, except spaces. '
+                                     'Maximum 2 first '
                                      'names allowed.'}
             self._errors.update(message)
             raise ValidationError(message)
@@ -117,6 +117,12 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
                 self._errors.update(message)
                 raise ValidationError(message)
 
+            if self.pre_flourish_screening.caregiver_age != consent_age:
+                message = {'dob': f'Expected {self.pre_flourish_screening.caregiver_age} '
+                                  f'years old, got {consent_age} years old'}
+                self._errors.update(message)
+                raise ValidationError(message)
+
     def validate_child_consent(self):
         cleaned_data = self.cleaned_data
         subject_eligible = self.subject_eligible(cleaned_data=cleaned_data)
@@ -139,7 +145,7 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
             if screening_age and consent_age:
                 if screening_age != consent_age:
                     message = {'dob':
-                                   'Date of birth does not match the age given on the screening form.'}
+                                   'Date of birth does not match the age given on the '
+                                   'screening form.'}
                     self._errors.update(message)
                     raise ValidationError(message)
-

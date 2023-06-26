@@ -181,13 +181,11 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             return registered_subject
 
     def get_subject_locator_message(self):
-        """
-        Overridden to stop system from generating subject locator
+        """ Overridden to stop system from generating subject locator
         action items for child.
         """
-        if self.subject_locator:
-            if self.subject_locator.is_locator_updated == NO or not self.subject_locator.is_locator_updated:
-                self.prompt_locator()
+        if self.subject_locator and not self.subject_locator.is_locator_updated:
+            self.prompt_locator()
 
     def prompt_locator(self):
         message = 'Please update caregiver locator information.'

@@ -96,7 +96,7 @@ class TestVisitScheduleSetup(TestCase):
 
         appointment = Appointment.objects.get(
             subject_identifier=child_assent.subject_identifier,
-            visit_code='1000')
+            visit_code='0200')
 
         pre_flourish_visit = mommy.make_recipe(
             'pre_flourish.preflourishvisit',

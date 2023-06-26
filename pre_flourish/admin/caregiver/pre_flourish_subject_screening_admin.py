@@ -15,17 +15,21 @@ class PreFlourishSubjectScreeningAdmin(ModelAdminMixin, admin.ModelAdmin):
               'study_maternal_identifier',
               'report_datetime',
               'caregiver_age',
-              'caregiver_omang',
+              'valid_identification',
+              'biological_mother',
+              'biological_mother_in_bcpp',
               'has_child',
               'willing_consent',
               'willing_assent',
               'study_interest',
               'remain_in_study')
 
-    radio_fields = {'caregiver_omang': admin.VERTICAL,
-                    'willing_consent': admin.VERTICAL,
+    radio_fields = {'willing_consent': admin.VERTICAL,
                     'willing_assent': admin.VERTICAL,
+                    'valid_identification': admin.VERTICAL,
                     'study_interest': admin.VERTICAL,
+                    'biological_mother': admin.VERTICAL,
+                    'biological_mother_in_bcpp': admin.VERTICAL,
                     'has_child': admin.VERTICAL,
                     'remain_in_study': admin.VERTICAL, }
 
