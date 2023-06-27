@@ -116,6 +116,6 @@ def put_on_schedule(instance=None, subject_identifier=None,
 
     schedule.put_on_schedule(
         subject_identifier=subject_identifier,
-        onschedule_datetime=base_appt_datetime,
+        onschedule_datetime=base_appt_datetime.replace(microsecond=0),
         schedule_name=schedule_name,
-        base_appt_datetime=base_appt_datetime)
+        base_appt_datetime=base_appt_datetime.replace(microsecond=0))
