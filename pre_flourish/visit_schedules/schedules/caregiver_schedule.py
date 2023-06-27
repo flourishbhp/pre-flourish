@@ -2,6 +2,7 @@ from dateutil.relativedelta import relativedelta
 from edc_visit_schedule import Schedule, Visit
 
 from pre_flourish.visit_schedules.crfs import caregiver_crfs_0200
+from pre_flourish.visit_schedules.subject_schedule import PfSubjectSchedule
 
 # schedule for new participants
 pre_flourish_schedule1 = Schedule(
@@ -23,6 +24,7 @@ visit0 = Visit(
     crfs=caregiver_crfs_0200,
     facility_name='5-day clinic')
 
+pre_flourish_schedule1.subject_schedule_cls = PfSubjectSchedule
 pre_flourish_schedule1.add_visit(visit=visit0)
 
 # schedule for new participants
@@ -34,6 +36,7 @@ pre_flourish_schedule2 = Schedule(
     consent_model='pre_flourish.preflourishconsent',
     appointment_model='pre_flourish.appointment')
 
+pre_flourish_schedule2.subject_schedule_cls = PfSubjectSchedule
 pre_flourish_schedule2.add_visit(visit=visit0)
 
 # schedule for new participants
@@ -45,4 +48,5 @@ pre_flourish_schedule3 = Schedule(
     consent_model='pre_flourish.preflourishconsent',
     appointment_model='pre_flourish.appointment')
 
+pre_flourish_schedule3.subject_schedule_cls = PfSubjectSchedule
 pre_flourish_schedule3.add_visit(visit=visit0)

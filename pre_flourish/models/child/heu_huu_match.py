@@ -11,7 +11,35 @@ class HeuHuuMatch(BaseUuidModel):
         max_length=50)
 
     heu_prt = models.CharField(
-        verbose_name="HUE Subject Identifier",
+        verbose_name="HEU Subject Identifier",
+        blank=True,
+        null=True,
+        max_length=50)
+
+    heu_prt_age = models.IntegerField(
+        verbose_name="HUE Subject Age",
+        blank=True,
+        null=True, )
+
+    huu_prt_age = models.IntegerField(
+        verbose_name="HUU Subject Age",
+        blank=True,
+        null=True, )
+
+    huu_prt_bmi = models.DecimalField(
+        verbose_name="HUU Subject BMI",
+        blank=True,
+        max_digits=10, decimal_places=4,
+        null=True, )
+
+    heu_prt_bmi = models.DecimalField(
+        verbose_name="HEU Subject BMI",
+        blank=True,
+        max_digits=10, decimal_places=4,
+        null=True, )
+
+    gender = models.CharField(
+        verbose_name="Subject(s) gender",
         blank=True,
         null=True,
         max_length=50)

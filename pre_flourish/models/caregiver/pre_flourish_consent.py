@@ -1,25 +1,26 @@
+from django.apps import apps as django_apps
 from django.db import models
 from edc_base.model_fields import OtherCharField
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.sites.site_model_mixin import SiteModelMixin
-from edc_identifier.model_mixins import NonUniqueSubjectIdentifierModelMixin
-from edc_registration.model_mixins import (
-    UpdatesOrCreatesRegistrationModelMixin)
-from edc_search.model_mixins import SearchSlugManager
-
 from edc_consent.field_mixins import (
     CitizenFieldsMixin, VulnerabilityFieldsMixin)
 from edc_consent.field_mixins import IdentityFieldsMixin
 from edc_consent.field_mixins import PersonalFieldsMixin
 from edc_consent.managers import ConsentManager
 from edc_consent.model_mixins import ConsentModelMixin
-from edc_constants.choices import YES_NO, GENDER, YES_NO_NA
+from edc_constants.choices import GENDER, YES_NO, YES_NO_NA
+from edc_identifier.model_mixins import NonUniqueSubjectIdentifierModelMixin
+from edc_registration.model_mixins import (
+    UpdatesOrCreatesRegistrationModelMixin)
+from edc_search.model_mixins import SearchSlugManager
 
-from ...choices import IDENTITY_TYPE, RECRUIT_SOURCE, RECRUIT_CLINIC
-from ...subject_identifier import SubjectIdentifier
+import pre_flourish.models
 from .eligibility import ConsentEligibility
 from .model_mixins import ReviewFieldsMixin, SearchSlugModelMixin
+from ...choices import IDENTITY_TYPE, RECRUIT_CLINIC, RECRUIT_SOURCE
+from ...subject_identifier import SubjectIdentifier
 
 
 class SubjectConsentManager(SearchSlugManager, models.Manager):
@@ -52,7 +53,7 @@ class PreFlourishConsent(
     gender = models.CharField(
         verbose_name='Gender',
         choices=GENDER,
-        max_length=1,)
+        max_length=1, )
 
     identity_type = models.CharField(
         verbose_name='What type of identity number is this?',
@@ -63,7 +64,7 @@ class PreFlourishConsent(
         max_length=75,
         choices=RECRUIT_SOURCE,
         verbose_name="The caregiver first learned about the flourish "
-        "study from ")
+                     "study from ")
 
     recruit_source_other = OtherCharField(
         max_length=35,
@@ -80,13 +81,12 @@ class PreFlourishConsent(
         max_length=100,
         verbose_name="if other recruitment, specify...",
         blank=True,
-        null=True,)
+        null=True, )
 
     biological_caregiver = models.CharField(
         max_length=3,
         verbose_name='Are you the biological mother to the child or children?',
         choices=YES_NO)
-
 
     future_contact = models.CharField(
         max_length=3,
@@ -95,7 +95,8 @@ class PreFlourishConsent(
 
     child_consent = models.CharField(
         max_length=3,
-        verbose_name='Are you willing to consent for your child’s participation in FLOURISH?',
+        verbose_name='Are you willing to consent for your child’s participation in '
+                     'FLOURISH?',
         choices=YES_NO_NA,
         help_text='If ‘No’ ineligible for study participation')
 
@@ -131,7 +132,7 @@ class PreFlourishConsent(
         super().save(*args, **kwargs)
 
     def natural_key(self):
-        return (self.subject_identifier, self.version)
+        return self.subject_identifier, self.version
 
     @property
     def caregiver_type(self):
@@ -169,6 +170,16 @@ class PreFlourishConsent(
         """
         if self.is_eligible:
             return super().registration_update_or_create()
+
+    @property
+    def registration_model(self):
+        return django_apps.get_model('pre_flourish.preflourishregisteredsubject')
+
+    @property
+    def registered_subject_model_class(self):
+        """Returns the registered subject model class.
+        """
+        return django_apps.get_model('pre_flourish.preflourishregisteredsubject')
 
     class Meta(ConsentModelMixin.Meta):
         app_label = 'pre_flourish'

@@ -16,4 +16,5 @@ from .child import PreFlourishChildAssentAdmin
 from .child import PreFlourishChildOffStudyAdmin
 from .pf_data_action_item_admin import PFDataActionItemAdmin
 from .pre_flourish_action_item_admin import PreFlourishActionItemAdmin
+from .pre_flourish_registered_subject import PreFlourishRegisteredSubjectAdmin
 from .pre_flourish_visit_admin import PreFlourishVisitAdmin

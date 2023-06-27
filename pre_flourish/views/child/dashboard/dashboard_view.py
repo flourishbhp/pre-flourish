@@ -18,11 +18,15 @@ from pre_flourish.views.view_mixins.dashboard_view_mixin import DashboardViewMix
 class CaregiverRegisteredSubjectCls(ContextMixin):
 
     @property
+    def registration_model(self):
+        return django_apps.get_model('pre_flourish.preflourishregisteredsubject')
+
+    @property
     def caregiver_registered_subject(self):
         try:
-            caregiver_registered_subject = RegisteredSubject.objects.get(
+            caregiver_registered_subject = self.registration_model.objects.get(
                 subject_identifier=self.caregiver_subject_identifier)
-        except RegisteredSubject.DoesNotExist:
+        except self.registration_model.DoesNotExist:
             raise ValidationError(
                 "Registered subject for the mother is expected to exist.")
         else:
@@ -65,6 +69,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         'pre_flourish/child/dashboard/caregiver_dashboard_links.html'
     special_forms_include_value = 'pre_flourish/child/dashboard/special_forms.html'
     visit_attr = 'preflourishvisit'
+    registered_subject_model = 'pre_flourish.preflourishregisteredsubject'
 
     def get_subject_locator_or_message(self):
         """
@@ -97,7 +102,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
                 model_name = f'pre_flourish.{onschedule_model_obj._meta.model_name}'
                 visit_schedule, schedule = \
                     site_visit_schedules.get_by_onschedule_model_schedule_name(
-                    model_name, onschedule_model_obj.schedule_name)
+                        model_name, onschedule_model_obj.schedule_name)
                 self.current_schedule = schedule
                 self.current_visit_schedule = visit_schedule
                 self.current_onschedule_model = onschedule_model_obj

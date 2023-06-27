@@ -1,0 +1,62 @@
+{% load pre_flourish_dashboard_extras %}
+
+<div class="col-md-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ title }} </h3>
+        </div>
+        <div class="panel-body key-body">
+            <h4>Note: Key for BMI and Age Groups</h4>
+            <ul>
+                <li>Headers represent the age groups</li>
+                <li>Columns represent the BMI groups</li>
+            </ul>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th></th>
+                <th colspan="2">10 - 13</th>
+                <th colspan="2">14 - 16</th>
+                <th colspan="2">17 - 21</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>M</th>
+                <th>F</th>
+                <th>M</th>
+                <th>F</th>
+                <th>M</th>
+                <th>F</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key, value in data.items %}
+                <tr>
+                    <td>
+                        {{ key }}
+                    </td>
+                    <td>
+                        {{ data|get_item:key|get_item:"age_group_1"|get_item:"male" }}
+                    </td>
+                    <td>
+                        {{ data|get_item:key|get_item:'age_group_1'|get_item:'female' }}
+                    </td>
+                    <td>
+                        {{ data|get_item:key|get_item:'age_group_2'|get_item:'male' }}
+                    </td>
+                    <td>
+                        {{ data|get_item:key|get_item:'age_group_2'|get_item:'female' }}
+                    </td>
+                    <td>
+                        {{ data|get_item:key|get_item:'age_group_3'|get_item:'male' }}
+                    </td>
+                    <td>
+                        {{ data|get_item:key|get_item:'age_group_3'|get_item:'female' }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -2,10 +2,8 @@ from django.apps import apps as django_apps
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from edc_base.view_mixins import EdcBaseViewMixin
-from edc_constants.constants import NO
 from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_navbar import NavbarViewMixin
-from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
 from pre_flourish.action_items import MATERNAL_DEATH_STUDY_ACTION
@@ -16,7 +14,7 @@ from pre_flourish.model_wrappers import (MaternalVisitModelWrapper,
                                          PreflourishCaregiverLocatorModelWrapper,
                                          PreFlourishDataActionItemModelWrapper)
 from ...view_mixins.dashboard_view_mixin import DashboardViewMixin
-from ....models import PFDataActionItem
+from ....models import PFDataActionItem, PreFlourishRegisteredSubject
 
 
 class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -41,6 +39,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         'pre_flourish/caregiver/dashboard/infant_dashboard_links.html'
     special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
     visit_attr = 'preflourishvisit'
+    registered_subject_model = 'pre_flourish.preflourishregisteredsubject'
 
     @property
     def appointments(self):
@@ -175,7 +174,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         """Returns an infant registered subjects.
         """
         subject_identifier = self.kwargs.get('subject_identifier')
-        registered_subject = RegisteredSubject.objects.filter(
+        registered_subject = PreFlourishRegisteredSubject.objects.filter(
             relative_identifier=subject_identifier)
         if registered_subject:
             return registered_subject

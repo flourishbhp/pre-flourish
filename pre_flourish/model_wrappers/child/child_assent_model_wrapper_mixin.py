@@ -1,4 +1,5 @@
 from django.apps import apps as django_apps
+from django.core.exceptions import ObjectDoesNotExist
 
 from flourish_child.models import ChildAssent
 from flourish_dashboard.model_wrappers.child_assent_model_wrapper_mixin import \
@@ -127,16 +128,6 @@ class ChildAssentModelWrapperMixin(BaseFlourishChildAssentModelWrapperMixin):
             )
         except self.caregiver_childconsent_cls.DoesNotExist:
             return None
-
-    @property
-    def heu_participant(self):
-        try:
-            heu_huu_match_obj = self.heu_huu_match_cls.objects.get(
-                huu_prt=self.subject_identifier)
-        except self.heu_huu_match_cls.DoesNotExist:
-            return None
-        else:
-            return heu_huu_match_obj.heu_prt
 
     def set_initials(self, first_name=None, last_name=None):
         initials = ''

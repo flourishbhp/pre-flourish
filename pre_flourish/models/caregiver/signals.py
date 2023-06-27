@@ -52,7 +52,7 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
             caregiver_screening.subject_identifier = instance.subject_identifier
             caregiver_screening.save()
 
-        if child_assent_objs(instance.subject_identifier):
+        if instance.subject_identifier and child_assent_objs(instance.subject_identifier):
             for child_assent in child_assent_objs(instance.subject_identifier):
                 child_assent.save()
 

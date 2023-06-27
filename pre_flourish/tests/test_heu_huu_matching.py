@@ -40,7 +40,7 @@ class TestHEUHUUMatch(TestCase):
             'infant_enrolldate': get_utcnow(),
             'study_maternal_identifier': '12345',
             'study_child_identifier': '1234',
-            'infant_sex':MALE
+            'infant_sex': MALE
         }
 
         mommy.make_recipe(
@@ -286,3 +286,47 @@ class TestHEUHUUMatch(TestCase):
 
         self.assertEqual(HeuHuuMatch.objects.filter(
             huu_prt=pre_flourish_child_assent_obj.subject_identifier).count(), 1)
+
+    def test_best_match(self):
+        """Assert that the child is matched to the best HEU participant."""
+        heu_huu_matching_helper = HEUHUUMatchingHelper(dob=(get_utcnow() -
+                                                            relativedelta(years=13,
+                                                                          months=2)).date(),
+                                                       child_weight_kg=20,
+                                                       child_height_cm=130,
+                                                       subject_identifier='223112')
+        matched_prts = [
+            {
+                'subject_identifier': '4435',
+                'age': 14,
+                'bmi': 10
+            },
+            {
+                'subject_identifier': '9876',
+                'age': 12,
+                'bmi': 11.2
+            },
+            {
+                'subject_identifier': '4986',
+                'age': 13,
+                'bmi': 11.83
+            },
+            {
+                'subject_identifier': '41122',
+                'age': 12,
+                'bmi': 11.84
+            },
+            {
+                'subject_identifier': '43344',
+                'age': 15,
+                'bmi': 11.5
+            },
+            {
+                'subject_identifier': '4567',
+                'age': 13,
+                'bmi': 11.83431
+            },
+        ]
+
+        best_match = heu_huu_matching_helper.best_match(matched_prts=matched_prts)
+        self.assertEqual(best_match['subject_identifier'], '4567')
