@@ -9,7 +9,6 @@ from .caregiver import PFHIVRapidTestCounseling
 from .caregiver import PreFlourishLogEntry
 from .caregiver import PreFlourishOffStudy
 from .caregiver import PreFlourishSubjectScreening
-from .caregiver import UpdateCaregiverLocator
 from .child import child_assent_on_post_save, child_assent_on_post_save
 from .child import ChildOffSchedule as PreFlourishChildOffSchedule
 from .child import HeuHuuMatch

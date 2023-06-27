@@ -8,9 +8,11 @@ from edc_form_validators import FormValidator
 from edc_constants.constants import NO, FEMALE, MALE
 from edc_constants.constants import OMANG
 
+from pre_flourish.form_validators.locator_change_mixin import LocatorChangeMixin, \
+    raise_validation_error
 
-class PreFlourishChildAssentFormValidator(FormValidator):
 
+class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
     child_assent_model = 'pre_flourish.preflourishchildassent'
 
     caregiver_child_consent_model = 'pre_flourish.preflourishcaregiverchildconsent'
@@ -33,12 +35,13 @@ class PreFlourishChildAssentFormValidator(FormValidator):
             field_required='witness_name')
 
         self.validate_against_child_consent()
-        #self.clean_full_name_syntax()
+        # self.clean_full_name_syntax()
         self.clean_initials_with_full_name()
         self.validate_gender()
         self.validate_identity_number(cleaned_data)
         self.validate_preg_testing()
         self.validate_dob(cleaned_data)
+        self.validate_locator_updated()
 
     def clean_full_name_syntax(self):
         cleaned_data = self.cleaned_data
@@ -47,14 +50,15 @@ class PreFlourishChildAssentFormValidator(FormValidator):
 
         if not re.match(r'^[A-Z]+$|^([A-Z]+[ ][A-Z]+)$', first_name):
             message = {'first_name': 'Ensure first name is letters (A-Z) in '
-                       'upper case, no special characters, except spaces. Maximum 2 first '
-                       'names allowed.'}
+                                     'upper case, no special characters, except spaces. '
+                                     'Maximum 2 first '
+                                     'names allowed.'}
             self._errors.update(message)
             raise ValidationError(message)
 
         if not re.match(r'^[A-Z-]+$', last_name):
             message = {'last_name': 'Ensure last name is letters (A-Z) in '
-                       'upper case, no special characters, except hyphens.'}
+                                    'upper case, no special characters, except hyphens.'}
             self._errors.update(message)
             raise ValidationError(message)
 
@@ -82,8 +86,8 @@ class PreFlourishChildAssentFormValidator(FormValidator):
                 middle_name = first_name.split(' ')[1]
 
             if (middle_name and
-                (initials[:1] != new_first_name[:1] or
-                 initials[1:2] != middle_name[:1])):
+                    (initials[:1] != new_first_name[:1] or
+                     initials[1:2] != middle_name[:1])):
                 is_first_name = True
 
             elif not middle_name and initials[:1] != first_name[:1]:
@@ -116,25 +120,25 @@ class PreFlourishChildAssentFormValidator(FormValidator):
                 raise ValidationError(message)
             if identity != confirm_identity:
                 msg = {'identity':
-                       '\'Identity\' must match \'confirm identity\'.'}
+                           '\'Identity\' must match \'confirm identity\'.'}
                 self._errors.update(msg)
                 raise ValidationError(msg)
             if identity_type in ['country_id', 'birth_cert']:
                 if len(identity) != 9:
                     msg = {'identity':
-                           f'{identity_type} provided should contain 9 values. '
-                           'Please correct.'}
+                               f'{identity_type} provided should contain 9 values. '
+                               'Please correct.'}
                     self._errors.update(msg)
                     raise ValidationError(msg)
             gender = cleaned_data.get('gender')
             if gender == FEMALE and identity[4] != '2':
                 msg = {'identity':
-                       'Participant is Female. Please correct the identity number.'}
+                           'Participant is Female. Please correct the identity number.'}
                 self._errors.update(msg)
                 raise ValidationError(msg)
             if gender == MALE and identity[4] != '1':
                 msg = {'identity':
-                       'Participant is Male. Please correct the identity number.'}
+                           'Participant is Male. Please correct the identity number.'}
                 self._errors.update(msg)
                 raise ValidationError(msg)
 
@@ -142,24 +146,25 @@ class PreFlourishChildAssentFormValidator(FormValidator):
 
         if self.caregiver_child_consent.child_dob != cleaned_data.get('dob'):
             msg = {'dob':
-                   'Child dob must match dob specified for the caregiver consent'
-                   f' on behalf of child {self.caregiver_child_consent.child_dob}.'}
+                       'Child dob must match dob specified for the caregiver consent'
+                       f' on behalf of child {self.caregiver_child_consent.child_dob}.'}
             self._errors.update(msg)
             raise ValidationError(msg)
 
         assent_datetime = cleaned_data.get('consent_datetime')
         assent_age = relativedelta(
-            assent_datetime.date(), cleaned_data.get('dob')).years if assent_datetime else None
+            assent_datetime.date(),
+            cleaned_data.get('dob')).years if assent_datetime else None
         age_in_years = None
 
         try:
             assent_obj = self.assent_cls.objects.get(
-                subject_identifier=self.cleaned_data.get('subject_identifier'),)
+                subject_identifier=self.cleaned_data.get('subject_identifier'), )
         except self.assent_cls.DoesNotExist:
             if assent_age and (assent_age < 7 or assent_age >= 18):
                 msg = {'dob':
-                       f'Participant is {assent_age} years of age. Child assent'
-                       ' is not required.'}
+                           f'Participant is {assent_age} years of age. Child assent'
+                           ' is not required.'}
                 self._errors.update(msg)
                 raise ValidationError(msg)
         else:
@@ -167,9 +172,9 @@ class PreFlourishChildAssentFormValidator(FormValidator):
                 assent_datetime.date(), assent_obj.dob).years if assent_datetime else None
             if age_in_years and assent_age != age_in_years:
                 message = {'dob':
-                           'In previous consent the derived age of the '
-                           f'participant is {age_in_years}, but age derived '
-                           f'from the DOB is {assent_age}.'}
+                               'In previous consent the derived age of the '
+                               f'participant is {age_in_years}, but age derived '
+                               f'from the DOB is {assent_age}.'}
                 self._errors.update(message)
                 raise ValidationError(message)
 
@@ -179,8 +184,8 @@ class PreFlourishChildAssentFormValidator(FormValidator):
             gender = self.cleaned_data.get('gender')
             if gender != infant_sex:
                 msg = {'gender':
-                       f'Child\'s gender is {infant_sex} from '
-                       'the caregiver consent on behalf of child. Please correct.'}
+                           f'Child\'s gender is {infant_sex} from '
+                           'the caregiver consent on behalf of child. Please correct.'}
                 self._errors.update(msg)
                 raise ValidationError(msg)
 
@@ -201,11 +206,17 @@ class PreFlourishChildAssentFormValidator(FormValidator):
             if field in ['identity', 'confirm_identity', 'identity_type']:
                 if child_consent_value != field_value:
                     message = {field:
-                               f'{field_value} does not match {child_consent_value} '
-                               'from the caregiver consent on behalf of child. Please '
-                               'correct this.'}
+                                   f'{field_value} does not match {child_consent_value} '
+                                   'from the caregiver consent on behalf of child. '
+                                   'Please '
+                                   'correct this.'}
                     self._errors.update(message)
                     raise ValidationError(message)
+
+    def validate_locator_updated(self):
+        if not self.locator_obj_is_locator_updated(
+                self.caregiver_child_consent.subject_consent.subject_identifier):
+            raise_validation_error()
 
     @property
     def caregiver_child_consent(self):
@@ -215,6 +226,7 @@ class PreFlourishChildAssentFormValidator(FormValidator):
             child_consent = self.caregiver_child_consent_cls.objects.get(
                 subject_identifier=self.cleaned_data.get('subject_identifier'))
         except self.caregiver_child_consent_cls.DoesNotExist:
-            raise ValidationError('Caregiver child consent matching query does not exist.')
+            raise ValidationError(
+                'Caregiver child consent matching query does not exist.')
         else:
             return child_consent

@@ -8,11 +8,11 @@ from edc_constants.choices import YES_NO
 from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_protocol.validators import datetime_not_before_study_start
 from edc_search.model_mixins import SearchSlugManager
-from pre_flourish_follow.models import EligibilityMixin
 
+from flourish_caregiver.identifiers import ScreeningIdentifier
+from pre_flourish_follow.models import EligibilityMixin
 from .eligibility import Eligibility
 from .model_mixins import SearchSlugModelMixin
-from ...identifiers import ScreeningIdentifier
 
 
 class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):
@@ -41,6 +41,26 @@ class PreFlourishSubjectScreening(EligibilityMixin, NonUniqueSubjectIdentifierFi
         verbose_name='Study Maternal Identifier',
         max_length=17,
         null=True, )
+
+    valid_identification = models.CharField(
+        verbose_name="Do you have any valid Botswana identification document?",
+        max_length=20,
+        null=True,
+        help_text='If no, participant is not eligible.',
+        choices=YES_NO)
+
+    biological_mother = models.CharField(
+        verbose_name="Are you the biological mother",
+        max_length=3,
+        null=True,
+        choices=YES_NO)
+
+    biological_mother_in_bcpp = models.CharField(
+        verbose_name="Is this child the biological child of the woman who was enrolled "
+                     "in the BCPP study",
+        max_length=3,
+        null=True,
+        choices=YES_NO)
 
     report_datetime = models.DateTimeField(
         verbose_name="Report Date and Time",

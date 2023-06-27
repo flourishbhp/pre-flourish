@@ -6,7 +6,7 @@ from ...models import PFChildPregTesting
 
 
 class ChildPregTestingForm(FormValidatorMixin, forms.ModelForm):
-    form_validator_cls = ChildPregTestingFormValidator
+    #form_validator_cls = ChildPregTestingFormValidator
 
     class Meta:
         model = PFChildPregTesting

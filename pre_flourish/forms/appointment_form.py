@@ -5,11 +5,13 @@ from edc_appointment.constants import NEW_APPT, IN_PROGRESS_APPT
 from edc_appointment.form_validators import AppointmentFormValidator
 from edc_base.sites.forms import SiteModelFormMixin
 from edc_form_validators import FormValidatorMixin
+
+from ..form_validators.locator_change_mixin import LocatorChangeMixin
 from ..models.appointment import Appointment
 
 
 class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormValidator,
-                      forms.ModelForm):
+                      LocatorChangeMixin, forms.ModelForm):
     """Note, the appointment is only changed, never added,
     through this form.
     """
@@ -20,6 +22,8 @@ class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormVal
         super().clean()
 
         cleaned_data = self.cleaned_data
+
+        self.validate_locator_updated()
 
         if cleaned_data.get('appt_datetime'):
 
@@ -34,10 +38,11 @@ class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormVal
 
             if self.instance.visit_code_sequence == 0:
                 if (cleaned_data.get('appt_datetime') < earlist_appt_date.replace(
-                    microsecond=0)
-                    or (self.instance.visit_code != '2000'
-                        and cleaned_data.get('appt_datetime') > latest_appt_date.replace(
-                            microsecond=0))):
+                        microsecond=0)
+                        or (self.instance.visit_code != '2000'
+                            and cleaned_data.get(
+                                    'appt_datetime') > latest_appt_date.replace(
+                                    microsecond=0))):
                     raise forms.ValidationError(
                         'The appointment datetime cannot be outside the window period, '
                         'please correct. See earliest, ideal and latest datetimes below.')
@@ -57,8 +62,9 @@ class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormVal
 
             try:
                 self.instance.get_previous_by_appt_datetime(
-                                subject_identifier=self.instance.subject_identifier,
-                                visit_schedule_name=self.instance.visit_schedule_name).preflourishvisit
+                    subject_identifier=self.instance.subject_identifier,
+                    visit_schedule_name=self.instance.visit_schedule_name
+                ).preflourishvisit
             except ObjectDoesNotExist:
                 last_visit = self.appointment_model_cls.visit_model_cls().objects.filter(
                     appointment__subject_identifier=self.instance.subject_identifier,
@@ -73,7 +79,8 @@ class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormVal
                             visit_schedule_name=self.instance.visit_schedule_name)
                     except last_visit.appointment.DoesNotExist:
                         raise forms.ValidationError(
-                            f'A previous visit report is required. Enter the visit report for '
+                            f'A previous visit report is required. Enter the visit '
+                            f'report for '
                             f'appointment {next_visit.visit_code} before '
                             'starting with this appointment.')
             except AttributeError:
@@ -82,8 +89,9 @@ class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormVal
             # appointment sequence
             try:
                 self.instance.get_previous_by_appt_datetime(
-                                subject_identifier=self.instance.subject_identifier,
-                                visit_schedule_name=self.instance.visit_schedule_name).preflourishvisit
+                    subject_identifier=self.instance.subject_identifier,
+                    visit_schedule_name=self.instance.visit_schedule_name
+                ).preflourishvisit
             except ObjectDoesNotExist:
                 first_new_appt = self.appointment_model_cls.objects.filter(
                     subject_identifier=self.instance.subject_identifier,
@@ -97,6 +105,14 @@ class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormVal
                         f'Update appointment for {first_new_appt.visit_code} first.')
             except AttributeError:
                 pass
+
+    def validate_locator_updated(self):
+        if len( self.instance.subject_identifier.split('-')) == 4:
+            subject_identifier =  self.instance.subject_identifier[:-3]
+        else:
+            subject_identifier =  self.instance.subject_identifier
+        if not self.locator_obj_is_locator_updated(subject_identifier):
+            raise_validation_error()
 
     class Meta:
         model = Appointment
