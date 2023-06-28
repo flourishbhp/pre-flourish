@@ -1,17 +1,16 @@
 import pytz
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
-from edc_appointment.constants import NEW_APPT, IN_PROGRESS_APPT
+from edc_appointment.constants import IN_PROGRESS_APPT, NEW_APPT
 from edc_appointment.form_validators import AppointmentFormValidator
 from edc_base.sites.forms import SiteModelFormMixin
 from edc_form_validators import FormValidatorMixin
 
-from ..form_validators.locator_change_mixin import LocatorChangeMixin
 from ..models.appointment import Appointment
 
 
 class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormValidator,
-                      LocatorChangeMixin, forms.ModelForm):
+                      forms.ModelForm):
     """Note, the appointment is only changed, never added,
     through this form.
     """
@@ -22,8 +21,6 @@ class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormVal
         super().clean()
 
         cleaned_data = self.cleaned_data
-
-        self.validate_locator_updated()
 
         if cleaned_data.get('appt_datetime'):
 
@@ -105,14 +102,6 @@ class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormVal
                         f'Update appointment for {first_new_appt.visit_code} first.')
             except AttributeError:
                 pass
-
-    def validate_locator_updated(self):
-        if len( self.instance.subject_identifier.split('-')) == 4:
-            subject_identifier =  self.instance.subject_identifier[:-3]
-        else:
-            subject_identifier =  self.instance.subject_identifier
-        if not self.locator_obj_is_locator_updated(subject_identifier):
-            raise_validation_error()
 
     class Meta:
         model = Appointment
