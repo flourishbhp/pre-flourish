@@ -1,14 +1,10 @@
 from collections import defaultdict
-from datetime import datetime
 
-from dateutil.relativedelta import relativedelta
 from django.apps import apps as django_apps
 from django.db.models import Max
-from edc_base.utils import age, get_utcnow
 from edc_constants.constants import MALE
 
 from .report_mixin import ReportsMixin
-from ...utility import bmi
 
 MALE = 'M'
 FEMALE = 'F'
