@@ -12,8 +12,6 @@ from edc_constants.choices import YES_NO, YES_NO_NA
 from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_protocol.validators import datetime_not_before_study_start
 from flourish_caregiver.choices import CHILD_IDENTITY_TYPE
-from flourish_caregiver.models.model_mixins.identifier_sufix_mixin import \
-    IdentifierSufixMixin
 
 from ..caregiver import PreFlourishConsent
 from ...constants import INFANT
@@ -24,7 +22,7 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin,
                                        NonUniqueSubjectIdentifierFieldMixin,
                                        IdentityFieldsMixin, ReviewFieldsMixin,
                                        PersonalFieldsMixin, VerificationFieldsMixin,
-                                       IdentifierSufixMixin, BaseUuidModel):
+                                       BaseUuidModel):
     """Inline table for caregiver's children"""
 
     subject_consent = models.ForeignKey(
@@ -164,7 +162,6 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin,
     @property
     def child_dataset(self):
         return True
-
 
     class Meta:
         app_label = 'pre_flourish'
