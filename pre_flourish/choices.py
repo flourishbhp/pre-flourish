@@ -6,7 +6,7 @@ IDENTITY_TYPE = (
     ('country_id_rcpt', 'Country ID receipt'),
     ('passport', 'Passport'),
     ('drivers_license', 'Drivers license'),
-    ('mirage_certificate', 'Mirage certificate'),
+    ('marriage_certificate', 'Marriage certificate'),
 )
 
 POS_NEG_IND = (
