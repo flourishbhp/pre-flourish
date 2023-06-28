@@ -24,10 +24,10 @@ class HUUMixin(ReportsMixin):
                                                                        flat=True)
         participants = self.huu_pre_enrollment_cls.objects.filter(
             id__in=latest_huu_pre_enrollment_ids,
-            height__isnull=False,
-            height__gt=0,
-            weight__isnull=False,
-            weight__gt=0,
+            child_height__isnull=False,
+            child_height__gt=0,
+            child_weight_kg__isnull=False,
+            child_weight_kg__gt=0,
         )
         return self.get_huu_bmi_age_data(participants)
 
@@ -45,7 +45,7 @@ class HUUMixin(ReportsMixin):
 
         for participant in participants:
             if participant.child_height > 0 and participant.child_weight_kg > 0 and \
-                    participant.child_age and participant.sex:
+                    participant.child_age and participant.gender:
                 bmi = participant.child_weight_kg / (
                         (participant.child_height / 100) ** 2)
 
@@ -53,7 +53,7 @@ class HUUMixin(ReportsMixin):
                     if bmi_range[0] <= bmi <= bmi_range[1]:
                         for age_range, age_group in age_range_to_group.items():
                             if age_range[0] <= participant.child_age <= age_range[1]:
-                                gender = 'male' if participant.sex == MALE else 'female'
+                                gender = 'male' if participant.gender == MALE else 'female'
                                 bmi_age_data[bmi_group][age_group][gender] += 1
                                 subj_id = \
                                     participant.pre_flourish_visit.subject_identifier

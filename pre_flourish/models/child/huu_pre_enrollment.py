@@ -1,8 +1,9 @@
+from django.apps import apps as django_apps
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
-from edc_base.model_validators import date_not_future, dob_not_today
-from edc_constants.choices import YES_NO, GENDER
+from edc_base.model_validators import date_not_future
+from edc_base.utils import age, get_utcnow
+from edc_constants.choices import YES_NO
 
 from ..model_mixins import CrfModelMixin
 from ...choices import POS_NEG_IND, YES_NO_UNKNOWN
@@ -76,6 +77,28 @@ class HuuPreEnrollment(CrfModelMixin):
     def save(self, *args, **kwargs):
         self.bmi = self.child_weight_kg / ((self.child_height / 100) ** 2)
         super().save(*args, **kwargs)
+
+    @property
+    def gender(self):
+        return getattr(self.child_assent, 'gender', None)
+
+    @property
+    def child_age(self):
+        if self.child_assent.dob:
+            _age = age(self.child_assent.dob, get_utcnow())
+            return _age.years + (_age.months / 12)
+
+    @property
+    def pre_flourish_child_assent_model_cls(self):
+        return django_apps.get_model('pre_flourish.preflourishchildassent')
+
+    @property
+    def child_assent(self):
+        try:
+            return self.pre_flourish_child_assent_model_cls.objects.get(
+                subject_identifier=self.subject_identifier)
+        except self.pre_flourish_child_assent_model_cls.DoesNotExist:
+            return None
 
     class Meta:
         app_label = 'pre_flourish'
