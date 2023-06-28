@@ -1,5 +1,3 @@
-from flourish_caregiver.models import CaregiverLocator, MaternalDataset
-from flourish_child.models import ChildDataset
 from flourish_dashboard.model_wrappers.bhp_prior_screening_model_wrapper_mixin import \
     BHPPriorScreeningModelWrapperMixin as BaseScreeningModelWrapperMixin
 from pre_flourish.model_wrappers.caregiver.bhp_prior_screening_model_wrapper import \
