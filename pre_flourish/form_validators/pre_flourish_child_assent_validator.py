@@ -35,7 +35,7 @@ class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
             field_required='witness_name')
 
         self.validate_against_child_consent()
-        # self.clean_full_name_syntax()
+        self.clean_full_name_syntax()
         self.clean_initials_with_full_name()
         self.validate_gender()
         self.validate_identity_number(cleaned_data)
