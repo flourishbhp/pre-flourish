@@ -9,7 +9,6 @@ from ...choices import POS_NEG_IND, YES_NO_UNKNOWN
 
 
 class HuuPreEnrollment(CrfModelMixin):
-
     child_hiv_docs = models.CharField(
         verbose_name='Is there documentation of the child’s HIV status?',
         choices=YES_NO,
@@ -28,12 +27,12 @@ class HuuPreEnrollment(CrfModelMixin):
         blank=True,
         null=True)
 
-    weight = models.IntegerField(
+    child_weight_kg = models.IntegerField(
         verbose_name='Weight (kg)',
         validators=[MinValueValidator(15), MaxValueValidator(140), ],
     )
 
-    height = models.IntegerField(
+    child_height = models.IntegerField(
         verbose_name='Height (cm)',
         validators=[MinValueValidator(40), MaxValueValidator(210), ],
     )
@@ -73,6 +72,10 @@ class HuuPreEnrollment(CrfModelMixin):
         validators=[MaxValueValidator(30), MinValueValidator(1)],
         blank=True,
         null=True)
+
+    def save(self, *args, **kwargs):
+        self.bmi = self.child_weight_kg / ((self.child_height / 100) ** 2)
+        super().save(*args, **kwargs)
 
     class Meta:
         app_label = 'pre_flourish'
