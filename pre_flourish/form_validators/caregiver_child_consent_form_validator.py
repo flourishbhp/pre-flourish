@@ -1,3 +1,4 @@
+from datetime import datetime
 from edc_base.utils import age, get_utcnow
 from edc_constants.choices import FEMALE, MALE, YES, NO, NOT_APPLICABLE
 from flourish_form_validations.form_validators import CaregiverChildConsentFormValidator
@@ -7,6 +8,7 @@ class PreFlourishCaregiverChildConsentFormValidator(CaregiverChildConsentFormVal
     def clean(self):
         super().clean()
         self.validate_child_age(cleaned_data=self.cleaned_data)
+        self.validate_child_dob_is_today(cleaned_data=self.cleaned_data)
 
     def validate_previously_enrolled(self, cleaned_data):
         pass
@@ -46,4 +48,17 @@ class PreFlourishCaregiverChildConsentFormValidator(CaregiverChildConsentFormVal
             msg = {'child_dob': 'Child must be 7 years or older'}
             self._errors.update(msg)
             raise ValidationError(msg)
+        
+    def validate_child_dob_is_today(self,cleaned_data):
+
+        child_dob = cleaned_data.get('child_dob', None)
+        current_date = datetime.now().date()
+
+        if child_dob and child_dob >= current_date:
+            msg = {'child_dob':
+                           'Child age must be an older date not today'}
+            self._errors.update(msg)
+            raise ValidationError(msg)
+        
+
 
