@@ -45,8 +45,7 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
             caregiver_screening.save()
 
         if instance.is_eligible and caregiver_screening:
-            if hasattr(caregiver_screening, 'study_maternal_identifier') and \
-                    getattr(caregiver_screening, 'study_maternal_identifier'):
+            if hasattr(caregiver_screening, 'study_maternal_identifier'):
                 update_locator(consent=instance, screening=caregiver_screening)
             caregiver_screening.has_passed_consent = True
             caregiver_screening.subject_identifier = instance.subject_identifier
