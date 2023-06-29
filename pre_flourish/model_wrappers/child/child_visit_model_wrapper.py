@@ -8,3 +8,4 @@ class ChildVisitModelWrapper(VisitModelWrapper):
     model = 'pre_flourish.preflourishvisit'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
         'pre_flourish_child_dashboard_url')
+    next_url_attrs = ['subject_identifier', 'appointment']
