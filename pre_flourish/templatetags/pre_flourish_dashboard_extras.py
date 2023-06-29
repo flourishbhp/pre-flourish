@@ -128,16 +128,6 @@ def child_dashboard_button(model_wrapper):
 
 
 @register.inclusion_tag(
-    'flourish_dashboard/buttons/child_dashboard_button.html')
-def heu_match_child_dashboard_button(model_wrapper):
-    child_dashboard_url = settings.DASHBOARD_URL_NAMES.get(
-        'child_dashboard_url')
-    return dict(
-        child_dashboard_url=child_dashboard_url,
-        subject_identifier=model_wrapper.heu_participant)
-
-
-@register.inclusion_tag(
     'pre_flourish/buttons/caregiver_dashboard_button.html')
 def caregiver_dashboard_button(model_wrapper):
     subject_dashboard_url = settings.DASHBOARD_URL_NAMES.get(
@@ -260,9 +250,6 @@ def child_death_report_button(model_wrapper):
         href=model_wrapper.child_death_report.href,
         subject_identifier=model_wrapper.subject_identifier
     )
-
-
-
 
 
 @register.inclusion_tag('pre_flourish/reports/matrix_pool.html')

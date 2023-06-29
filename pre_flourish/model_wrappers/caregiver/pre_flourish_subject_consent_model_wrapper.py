@@ -17,9 +17,9 @@ from ...models import PreFlourishChildAssent as Assent
 
 class PreFlourishSubjectConsentModelWrapper(CaregiverContactModelWrapperMixin,
                                             CaregiverOffstudyModelWrapperMixin,
+                                            BhpPriorScreeningModelWrapperMixin,
                                             CaregiverDeathReportModelWrapperMixin,
                                             PreflourishCaregiverLocatorModelWrapperMixin,
-                                            BhpPriorScreeningModelWrapperMixin,
                                             ModelWrapper):
     model = 'pre_flourish.preflourishconsent'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(

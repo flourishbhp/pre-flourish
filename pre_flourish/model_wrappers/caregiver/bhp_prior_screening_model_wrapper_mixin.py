@@ -13,7 +13,7 @@ class BhpPriorScreeningModelWrapperMixin(BaseScreeningModelWrapperMixin):
         unpersisted bhp prior screening model instance.
         """
         options = dict(
-            screening_identifier=self.locator_model_obj.screening_identifier,
+            screening_identifier=self.screening_identifier,
             study_maternal_identifier=self.locator_model_obj.study_maternal_identifier,
         )
         return options
@@ -24,5 +24,5 @@ class BhpPriorScreeningModelWrapperMixin(BaseScreeningModelWrapperMixin):
         maternal screening model instance.
         """
         options = dict(
-            screening_identifier=self.locator_model_obj.screening_identifier, )
+            screening_identifier=self.screening_identifier, )
         return options
