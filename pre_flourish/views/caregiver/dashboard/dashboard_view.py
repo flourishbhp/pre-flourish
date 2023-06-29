@@ -129,7 +129,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             offstudy_action=MATERNAL_DEATH_STUDY_ACTION)
 
         self.get_offstudy_message(offstudy_cls=caregiver_offstudy_cls)
-        self.get_subject_locator_message()
         context.update(
             infant_registered_subjects=self.infant_registered_subjects,
             locator_obj=locator_obj,
@@ -179,7 +178,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         if registered_subject:
             return registered_subject
 
-    def get_subject_locator_message(self):
+    def get_subject_locator_or_message(self):
         """ Overridden to stop system from generating subject locator
         action items for child.
         """
