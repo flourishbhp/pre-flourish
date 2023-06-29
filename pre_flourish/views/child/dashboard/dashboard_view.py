@@ -9,7 +9,8 @@ from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
 from pre_flourish.model_wrappers import ActionItemModelWrapper, AppointmentModelWrapper, \
-    CaregiverChildConsentModelWrapper, ChildConsentModelWrapper, ChildCrfModelWrapper, \
+    CaregiverChildConsentModelWrapper, ChildAppointmentModelWrapper, \
+    ChildConsentModelWrapper, ChildCrfModelWrapper, \
     ChildVisitModelWrapper, MaternalRegisteredSubjectModelWrapper, \
     PreflourishCaregiverLocatorModelWrapper
 from pre_flourish.views.view_mixins.dashboard_view_mixin import DashboardViewMixin
@@ -52,7 +53,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     dashboard_url = 'pre_flourish_child_dashboard_url'
     dashboard_template = 'pre_flourish_child_dashboard_template'
     appointment_model = 'pre_flourish.appointment'
-    appointment_model_wrapper_cls = AppointmentModelWrapper
+    appointment_model_wrapper_cls = ChildAppointmentModelWrapper
     consent_model = 'pre_flourish.preflourishchilddummysubjectconsent'
     consent_model_wrapper_cls = ChildConsentModelWrapper
     subject_locator_model = 'flourish_caregiver.caregiverlocator'
