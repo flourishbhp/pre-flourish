@@ -10,19 +10,6 @@ from pre_flourish.form_validators.caregiver_child_consent_form_validator import 
 @tag('cc')
 class TestChildConsentForm(TestCase):
 
-    
-    def setUp(self):
-        import_holidays()
-
-        self.caregiver_screening = mommy.make_recipe(
-            'pre_flourish.preflourishsubjectscreening', )
-
-        self.subject_consent = mommy.make_recipe(
-            'pre_flourish.preflourishconsent',
-            screening_identifier=self.caregiver_screening.screening_identifier,
-        )
-        
-
     def test_dob_invalid(self):
         caregiver_child_consent = {
 
