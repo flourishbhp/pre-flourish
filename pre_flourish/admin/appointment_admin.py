@@ -1,15 +1,20 @@
 import pytz
 from django.contrib import admin
+from django.http import HttpResponseRedirect
+from django.urls import NoReverseMatch, reverse
 from django.utils.safestring import mark_safe
 
 from edc_appointment.admin import AppointmentAdmin as BaseAppointmentAdmin
+from edc_model_admin import ModelAdminNextUrlRedirectError
+
+from .admin_redirect_mixin import AdminRedirectMixin
 from ..admin_site import pre_flourish_admin
 from ..forms import AppointmentForm
 from ..models.appointment import Appointment
 
 
 @admin.register(Appointment, site=pre_flourish_admin)
-class AppointmentAdmin(BaseAppointmentAdmin):
+class AppointmentAdmin(AdminRedirectMixin, BaseAppointmentAdmin):
     form = AppointmentForm
     model = Appointment
 
@@ -19,17 +24,16 @@ class AppointmentAdmin(BaseAppointmentAdmin):
         app_obj = Appointment.objects.get(id=object_id)
 
         if app_obj.visit_code_sequence == 0:
-
             earliest_start = (app_obj.timepoint_datetime -
                               app_obj.visits.get(app_obj.visit_code).rlower).astimezone(
-                                          pytz.timezone('Africa/Gaborone'))
+                pytz.timezone('Africa/Gaborone'))
 
             latest_start = (app_obj.timepoint_datetime +
                             app_obj.visits.get(app_obj.visit_code).rupper).astimezone(
-                                          pytz.timezone('Africa/Gaborone'))
+                pytz.timezone('Africa/Gaborone'))
 
             ideal_start = app_obj.timepoint_datetime.astimezone(
-                                          pytz.timezone('Africa/Gaborone'))
+                pytz.timezone('Africa/Gaborone'))
 
             extra_context.update({
                 'earliest_start': earliest_start.strftime("%Y-%m-%d, %H:%M:%S"),
@@ -64,4 +68,3 @@ class AppointmentAdmin(BaseAppointmentAdmin):
 
             extra_context['additional_instructions'] = additional_instructions
         return extra_context
-
