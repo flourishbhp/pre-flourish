@@ -16,7 +16,6 @@ from edc_registration.model_mixins import (
     UpdatesOrCreatesRegistrationModelMixin)
 from edc_search.model_mixins import SearchSlugManager
 
-import pre_flourish.models
 from .eligibility import ConsentEligibility
 from .model_mixins import ReviewFieldsMixin, SearchSlugModelMixin
 from ...choices import IDENTITY_TYPE, RECRUIT_CLINIC, RECRUIT_SOURCE
