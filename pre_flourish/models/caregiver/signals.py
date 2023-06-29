@@ -51,10 +51,6 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
             caregiver_screening.subject_identifier = instance.subject_identifier
             caregiver_screening.save()
 
-        if instance.subject_identifier and child_assent_objs(instance.subject_identifier):
-            for child_assent in child_assent_objs(instance.subject_identifier):
-                child_assent.save()
-
 
 @receiver(post_save, weak=False, sender=PreFlourishChildAssent,
           dispatch_uid='pre_flourish_assent_post_save')
@@ -72,11 +68,6 @@ def pre_flourish_assent_post_save(sender, instance, raw, created, **kwargs):
                             'pre_flourish.onschedulepreflourish',
                             'pre_flourish_schedule1',
                             child_subject_identifier=instance.subject_identifier, )
-
-
-def child_assent_objs(subject_identifier):
-    return PreFlourishChildAssent.objects.filter(
-        subject_identifier__startswith=subject_identifier)
 
 
 def put_on_schedule(instance, subject_identifier,
