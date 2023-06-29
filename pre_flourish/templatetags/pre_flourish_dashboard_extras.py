@@ -12,7 +12,8 @@ register = template.Library()
 
 @register.filter
 def get_item(dictionary, key):
-    return dictionary.get(key)
+    if dictionary is not None:
+        return dictionary.get(key)
 
 
 @register.inclusion_tag('pre_flourish/buttons/consent_button.html')
@@ -124,6 +125,16 @@ def child_dashboard_button(model_wrapper):
     return dict(
         child_dashboard_url=child_dashboard_url,
         subject_identifier=model_wrapper.subject_identifier)
+
+
+@register.inclusion_tag(
+    'flourish_dashboard/buttons/child_dashboard_button.html')
+def heu_match_child_dashboard_button(model_wrapper):
+    child_dashboard_url = settings.DASHBOARD_URL_NAMES.get(
+        'child_dashboard_url')
+    return dict(
+        child_dashboard_url=child_dashboard_url,
+        subject_identifier=model_wrapper.heu_participant)
 
 
 @register.inclusion_tag(
@@ -252,3 +263,31 @@ def child_death_report_button(model_wrapper):
 
 
 
+
+
+@register.inclusion_tag('pre_flourish/reports/matrix_pool.html')
+def heu_matrix_pool(data):
+    title = 'FLOURISH MATRIX POOL'
+    return dict(
+        title=title,
+        data=data
+    )
+
+
+@register.inclusion_tag('pre_flourish/reports/matrix_pool.html')
+def huu_matrix_pool(data):
+    title = 'PRE FLOURISH MATRIX POOL'
+    return dict(
+        title=title,
+        data=data
+    )
+
+
+@register.inclusion_tag(
+    'flourish_dashboard/buttons/bhp_prior_screening_button.html')
+def bhp_prior_screening_button(model_wrapper):
+    return dict(
+        add_screening_href=model_wrapper.bhp_prior_screening.href,
+        screening_identifier=model_wrapper.screening_identifier,
+        prior_screening_obj=model_wrapper.bhp_prior_screening_model_obj,
+        caregiver_locator_obj=model_wrapper.locator_model_obj)

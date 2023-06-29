@@ -43,8 +43,7 @@ class PreFlourishCaregiverChildConsentFormValidator(CaregiverChildConsentFormVal
         child_age = age(child_dob, get_utcnow()).years
 
         if child_age and child_age < 7:
-            msg = {'child_dob':
-                           'Child must be 7 years or older'}
+            msg = {'child_dob': 'Child must be 7 years or older'}
             self._errors.update(msg)
             raise ValidationError(msg)
 

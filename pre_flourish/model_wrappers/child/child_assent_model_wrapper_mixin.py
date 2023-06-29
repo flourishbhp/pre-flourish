@@ -1,4 +1,5 @@
 from django.apps import apps as django_apps
+from django.core.exceptions import ObjectDoesNotExist
 
 from flourish_child.models import ChildAssent
 from flourish_dashboard.model_wrappers.child_assent_model_wrapper_mixin import \
@@ -31,6 +32,16 @@ class ChildAssentModelWrapperMixin(BaseFlourishChildAssentModelWrapperMixin):
                 **self.create_child_assent_options(self.caregiverchildconsent_obj))
 
             return self.assent_model_wrapper_cls(model_obj=model_obj)
+
+    @property
+    def assent_model_obj(self):
+        """Returns a child assent model instance or None.
+        """
+        try:
+            return self.assent_model_cls.objects.filter(
+                **self.assent_options).latest('consent_datetime')
+        except ObjectDoesNotExist:
+            return None
 
     @property
     def child_assents(self):

@@ -10,8 +10,8 @@
     <th>Identifier</th>
     <th>Subject</th>
     <th>Age / Born</th>
-    <th>Modified</th>
-    <th>Host</th>
+    <th>HEU Participants</th>
+    <th>Assent Date</th>
     <!-- end results header -->
 
 {% endblock listboard_table_header %}
@@ -38,6 +38,4 @@
     </td>
     <td>{{ result.child_age }} Yrs</td>
     <td>{{ result.assent_date }}</td>
-    <td>{{ result.object.modified|date:"SHORT_DATETIME_FORMAT" }}</td>
-    <td>{{ result.hostname_created }}</td>
 {% endblock listboard_table_columns %}

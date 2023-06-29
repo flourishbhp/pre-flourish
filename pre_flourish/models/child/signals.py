@@ -3,11 +3,18 @@ from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from edc_action_item import site_action_items
-from edc_constants.constants import OPEN, NEW, YES, POS
+from edc_base import get_utcnow
+from edc_base.utils import age
+from edc_constants.constants import NEG, NEW, OPEN, POS
+from edc_visit_schedule import site_visit_schedules
+
 from pre_flourish.action_items import CHILD_OFF_STUDY_ACTION
-from edc_visit_schedule.site_visit_schedules import site_visit_schedules
-from pre_flourish.models.child import PreFlourishChildAssent, \
-    PreFlourishChildDummySubjectConsent, HuuPreEnrollment
+from pre_flourish.helper_classes.utils import create_child_dummy_consent, \
+    get_or_create_caregiver_dataset, \
+    get_or_create_child_dataset, pre_flourish_caregiver_child_consent, \
+    put_on_schedule, trigger_action_item
+from pre_flourish.models.child import HuuPreEnrollment, PreFlourishChildAssent, \
+    PreFlourishChildDummySubjectConsent
 
 
 class CaregiverConsentError(Exception):
@@ -34,7 +41,8 @@ def child_assent_on_post_save(sender, instance, raw, created, **kwargs):
 
 @receiver(post_save, weak=False, sender=PreFlourishChildDummySubjectConsent,
           dispatch_uid='pre_flourish_child_dummy_consent_on_post_save')
-def pre_flourish_child_dummy_consent_on_post_save(sender, instance, raw, created, **kwargs):
+def pre_flourish_child_dummy_consent_on_post_save(sender, instance, raw, created,
+                                                  **kwargs):
     """Put subject on schedule after consenting.
     """
     if not raw:
@@ -57,6 +65,12 @@ def huu_pre_enrollment_post_save(sender, instance, raw, created, **kwargs):
                 action_name=CHILD_OFF_STUDY_ACTION,
                 subject_identifier=instance.subject_identifier,
             )
+        test_age = (age(instance.child_test_date, get_utcnow()).years * 12) + (age(
+            instance.child_test_date, get_utcnow()).months)
+        if instance.child_hiv_result == NEG and test_age <= 3:
+            caregiver_child_consent = pre_flourish_caregiver_child_consent(instance)
+            get_or_create_caregiver_dataset(caregiver_child_consent.subject_consent)
+            get_or_create_child_dataset(caregiver_child_consent)
 
 
 def trigger_action_item(model_cls, action_name, subject_identifier,
@@ -116,6 +130,6 @@ def put_on_schedule(instance=None, subject_identifier=None,
 
     schedule.put_on_schedule(
         subject_identifier=subject_identifier,
-        onschedule_datetime=base_appt_datetime,
+        onschedule_datetime=base_appt_datetime.replace(microsecond=0),
         schedule_name=schedule_name,
-        base_appt_datetime=base_appt_datetime)
+        base_appt_datetime=base_appt_datetime.replace(microsecond=0))

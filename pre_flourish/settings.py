@@ -35,7 +35,6 @@ DEFAULT_STUDY_SITE = 40
 REVIEWER_SITE_ID = 1
 
 DEVICE_ID = 40
-
 DEVICE_ROLE = 'Client'
 
 APP_NAME = 'flourish'
@@ -74,6 +73,7 @@ INSTALLED_APPS = [
     'django_q',
     'django_extensions',
     'crispy_forms',
+    'django_nose',
     'multiselectfield',
     'edc_action_item.apps.AppConfig',
     'edc_calendar.apps.AppConfig',
@@ -112,12 +112,12 @@ INSTALLED_APPS = [
     'flourish.apps.EdcDataManagerAppConfig',
     'flourish.apps.EdcFacilityAppConfig',
     'flourish.apps.EdcLocatorAppConfig',
+    'flourish.apps.EdcMetadataAppConfig',
     'flourish.apps.EdcOdkAppConfig',
     'flourish.apps.EdcProtocolAppConfig',
     'flourish.apps.EdcVisitTrackingAppConfig',
     'flourish.apps.EdcTimepointAppConfig',
     'flourish.apps.EdcSenaiteInterfaceAppConfig',
-    'flourish.apps.EdcMetadataAppConfig',
     'pre_flourish_follow.apps.AppConfig',
     'flourish.apps.AppConfig',
     'flourish_calendar.apps.AppConfig',
@@ -161,7 +161,7 @@ WSGI_APPLICATION = 'flourish.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 mysql_config = configparser.ConfigParser()
-mysql_config.read(os.path.join(ETC_DIR, 'mysql.conf'))
+mysql_config.read(os.path.join(ETC_DIR, 'mysql.ini'))
 
 HOST = mysql_config['mysql']['host']
 DB_USER = mysql_config['mysql']['user']
@@ -172,7 +172,7 @@ PORT = mysql_config['mysql']['port']
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': DB_NAME,
+#         'NAME': 'pre_flourish',
 #         'USER': DB_USER,
 #         'PASSWORD': DB_PASSWORD,
 #         'HOST': HOST,  # Or an IP Address that your DB is hosted on
@@ -183,7 +183,7 @@ PORT = mysql_config['mysql']['port']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -252,45 +252,31 @@ TELEPHONE_REGEX = '^[2-8]{1}[0-9]{6}$'
 DASHBOARD_URL_NAMES = {
     'child_dashboard_url': 'flourish_dashboard:child_dashboard_url',
     'child_listboard_url': 'flourish_dashboard:child_listboard_url',
+    'child_result_listboard_url': 'flourish_dashboard:child_result_listboard_url',
     'child_screening_listboard_url': 'flourish_dashboard:child_screening_listboard_url',
-    'pre_flourish_screening_listboard_url':
-        'pre_flourish:pre_flourish_screening_listboard_url',
-    'pre_flourish_consent_listboard_url':
-        'pre_flourish:pre_flourish_consent_listboard_url',
-    'pre_flourish_child_listboard_url': 'pre_flourish:pre_flourish_child_listboard_url',
-    'pre_flourish_subject_dashboard_url':
-        'pre_flourish:pre_flourish_subject_dashboard_url',
-    'subject_listboard_url': 'flourish_dashboard:subject_listboard_url',
     'data_manager_listboard_url': 'edc_data_manager:data_manager_listboard_url',
-    'maternal_screening_listboard_url':
-        'flourish_dashboard:maternal_screening_listboard_url',
-    'maternal_dataset_listboard_url': 'flourish_dashboard:maternal_dataset_listboard_url',
-    'pre_flourish_maternal_dataset_listboard_url':
-        'pre_flourish:pre_flourish_maternal_dataset_listboard_url',
-    'flourish_follow_listboard_url': 'flourish_follow:flourish_follow_listboard_url',
-    'flourish_follow_appt_listboard_url':
-        'flourish_follow:flourish_follow_appt_listboard_url',
-    'flourish_follow_booking_listboard_url':
-        'flourish_follow:flourish_follow_booking_listboard_url',
-    'flourish_follow_book_listboard_url':
-        'flourish_follow:flourish_follow_book_listboard_url',
-    'subject_dashboard_url': 'flourish_dashboard:subject_dashboard_url',
-    'odk_listboard_url': 'edc_odk:odk_listboard_url',
     'export_listboard_url': 'flourish_export:export_listboard_url',
     'flourish_calendar_url': 'flourish_calendar:calendar',
+    'flourish_follow_appt_listboard_url':'flourish_follow:flourish_follow_appt_listboard_url',
+    'flourish_follow_book_listboard_url':'flourish_follow:flourish_follow_book_listboard_url',
+    'flourish_follow_booking_listboard_url':'flourish_follow:flourish_follow_booking_listboard_url',
+    'flourish_follow_listboard_url': 'flourish_follow:flourish_follow_listboard_url',
+    'maternal_dataset_listboard_url': 'flourish_dashboard:maternal_dataset_listboard_url',
+    'maternal_screening_listboard_url':'flourish_dashboard:maternal_screening_listboard_url',
+    'odk_listboard_url': 'edc_odk:odk_listboard_url',
+    'pre_flourish_child_listboard_url': 'pre_flourish:pre_flourish_child_listboard_url',
+    'pre_flourish_consent_listboard_url':'pre_flourish:pre_flourish_consent_listboard_url',
+    'pre_flourish_follow_appt_listboard_url': 'pre_flourish_follow:pre_flourish_follow_appt_listboard_url',
+    'pre_flourish_follow_book_listboard_url': 'pre_flourish_follow:pre_flourish_follow_book_listboard_url',
+    'pre_flourish_follow_booking_listboard_url': 'pre_flourish_follow:pre_flourish_follow_booking_listboard_url',
+    'pre_flourish_follow_listboard_url': 'pre_flourish_follow:pre_flourish_follow_listboard_url',
+    'pre_flourish_caregiver_locator_listboard_url': 'pre_flourish:pre_flourish_caregiver_locator_listboard_url',
+    'pre_flourish_maternal_dataset_listboard_url':'pre_flourish:pre_flourish_maternal_dataset_listboard_url',
+    'pre_flourish_screening_listboard_url':'pre_flourish:pre_flourish_screening_listboard_url',
+    'pre_flourish_subject_dashboard_url':'pre_flourish:pre_flourish_subject_dashboard_url',
     'senaite_result_listboard_url': 'flourish_dashboard:caregiver_result_listboard_url',
-    'child_result_listboard_url': 'flourish_dashboard:child_result_listboard_url',
-    'pre_flourish_follow_listboard_url':
-        'pre_flourish_follow:pre_flourish_follow_listboard_url',
-    'pre_flourish_follow_appt_listboard_url':
-        'pre_flourish_follow:pre_flourish_follow_appt_listboard_url',
-    'pre_flourish_follow_booking_listboard_url':
-        'pre_flourish_follow:pre_flourish_follow_booking_listboard_url',
-    'pre_flourish_follow_book_listboard_url':
-        'pre_flourish_follow:pre_flourish_follow_book_listboard_url',
-    'pre_flourish_caregiver_locator_listboard_url':
-        'pre_flourish:pre_flourish_caregiver_locator_listboard_url',
-
+    'subject_dashboard_url': 'flourish_dashboard:subject_dashboard_url',
+    'subject_listboard_url': 'flourish_dashboard:subject_listboard_url',
 }
 
 DASHBOARD_BASE_TEMPLATES = {
@@ -322,6 +308,13 @@ DASHBOARD_BASE_TEMPLATES = {
         'flourish_dashboard/child_subject/screening_listboard.html',
     'odk_listboard_template': 'edc_odk/odk_forms/listboard.html',
     'export_listboard_template': 'flourish_export/listboard.html',
+    # Preflourish_follow_templates
+    'pre_flourish_follow_listboard_template': 'pre_flourish_follow/follow_listboard.html',
+    'pre_flourish_follow_appt_listboard_template': 'pre_flourish_follow/appointments_windows_listboards.html',
+    'pre_flourish_follow_booking_listboard_template': 'pre_flourish_follow/bookings_listboard.html',
+    'pre_flourish_follow_book_listboard_template': 'pre_flourish_follow/book_listboard.html',
+    # Override senaite result template
+    'senaite_result_listboard_template': 'flourish_dashboard/result_listboard.html',
 }
 
 # Static files (CSS, JavaScript, Images)

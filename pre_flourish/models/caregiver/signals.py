@@ -44,19 +44,12 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
             caregiver_screening.is_consented = True
             caregiver_screening.save()
 
-        if instance.is_eligible:
-            if caregiver_screening:
-                if hasattr(caregiver_screening, 'study_maternal_identifier') and \
-                        getattr(caregiver_screening, 'study_maternal_identifier'):
-                    update_locator(consent=instance, screening=caregiver_screening)
-                caregiver_screening.has_passed_consent = True
-                caregiver_screening.subject_identifier = instance.subject_identifier
-                caregiver_screening.save()
-
-                put_on_schedule(instance,
-                                instance.subject_identifier,
-                                'pre_flourish.onschedulepreflourish',
-                                'pre_flourish_schedule1')
+        if instance.is_eligible and caregiver_screening:
+            if hasattr(caregiver_screening, 'study_maternal_identifier'):
+                update_locator(consent=instance, screening=caregiver_screening)
+            caregiver_screening.has_passed_consent = True
+            caregiver_screening.subject_identifier = instance.subject_identifier
+            caregiver_screening.save()
 
 
 @receiver(post_save, weak=False, sender=PreFlourishChildAssent,
@@ -78,7 +71,7 @@ def pre_flourish_assent_post_save(sender, instance, raw, created, **kwargs):
 
 
 def put_on_schedule(instance, subject_identifier,
-        onschedule_model, schedule_name, child_subject_identifier=None):
+                    onschedule_model, schedule_name, child_subject_identifier=None):
     if instance:
         subject_identifier = subject_identifier or instance.subject_identifier
 

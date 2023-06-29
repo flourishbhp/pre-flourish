@@ -6,14 +6,12 @@ from edc_dashboard.view_mixins import ListboardFilterViewMixin, SearchFormViewMi
 from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
 
-
 from ...model_wrappers import PreFlourishSubjectConsentModelWrapper
 
 
 class SubjectListboardView(EdcBaseViewMixin, NavbarViewMixin,
-                    ListboardFilterViewMixin, SearchFormViewMixin,
-                    ListboardView):
-
+                           ListboardFilterViewMixin, SearchFormViewMixin,
+                           ListboardView):
     listboard_template = 'pre_flourish_subject_listboard_template'
     listboard_url = 'pre_flourish_consent_listboard_url'
     listboard_panel_style = 'success'

@@ -3,6 +3,7 @@ from django.conf import settings
 from edc_base.utils import get_utcnow
 from edc_model_wrapper import ModelWrapper
 
+from .bhp_prior_screening_model_wrapper_mixin import BhpPriorScreeningModelWrapperMixin
 from .caregiver_contact_model_wrapper_mixin import CaregiverContactModelWrapperMixin
 from .caregiver_death_report_model_wrapper_mixin import \
     CaregiverDeathReportModelWrapperMixin
@@ -18,6 +19,7 @@ class PreFlourishSubjectConsentModelWrapper(CaregiverContactModelWrapperMixin,
                                             CaregiverOffstudyModelWrapperMixin,
                                             CaregiverDeathReportModelWrapperMixin,
                                             PreflourishCaregiverLocatorModelWrapperMixin,
+                                            BhpPriorScreeningModelWrapperMixin,
                                             ModelWrapper):
     model = 'pre_flourish.preflourishconsent'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(

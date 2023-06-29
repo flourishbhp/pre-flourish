@@ -18,21 +18,18 @@ from django.apps import apps as django_apps
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
-from django.urls import path, include
-
+from django.urls import include, path
 from django.views.generic.base import RedirectView
-
 from edc_action_item.admin_site import edc_action_item_admin
 from edc_appointment.admin_site import edc_appointment_admin
 from edc_identifier.admin_site import edc_identifier_admin
+
 from .admin_site import pre_flourish_admin
-
-from .views import HomeView, AdministrationView
-
+from .views import AdministrationView, download_pool_ids_view, \
+    HomeView, ReportsView
 
 app_name = 'pre_flourish'
 app_config = django_apps.get_app_config(app_name)
-
 
 urlpatterns = [
     path('accounts/', include('edc_base.auth.urls')),
@@ -47,6 +44,9 @@ urlpatterns = [
 
     path('administration/', AdministrationView.as_view(),
          name='administration_url'),
+
+    path('reports/', ReportsView.as_view(),
+         name='pre_flourish_reports_url'),
     path('admin/pre_flourish/',
          RedirectView.as_view(url='admin/pre_flourish/'),
          name='pre_flourish_models_url'),
@@ -64,6 +64,8 @@ urlpatterns = [
 
     path('switch_sites/', LogoutView.as_view(next_page=settings.INDEX_PAGE),
          name='switch_sites_url'),
+    path('download-csv/<str:patient_ids>/', download_pool_ids_view,
+         name='download_pool_ids_url'),
     path('home/', HomeView.as_view(), name='home_url'),
     path('', HomeView.as_view(), name='home_url'),
 ]

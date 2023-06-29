@@ -1,0 +1,24 @@
+<table>
+  <thead>
+    <tr>
+      <th>BMI Group</th>
+      <th>Age Group</th>
+      <th>Gender</th>
+      <th>Subject Identifiers</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for bmi_group, age_data in heu_ids.items %}
+      {% for age_group, gender_data in age_data.items %}
+        {% for gender, subj_list in gender_data.items %}
+          <tr>
+            <td>{{ bmi_group }}</td>
+            <td>{{ age_group }}</td>
+            <td>{{ gender }}</td>
+            <td>{{ subj_list|join:", " }}</td>
+          </tr>
+        {% endfor %}
+      {% endfor %}
+    {% endfor %}
+  </tbody>
+</table>

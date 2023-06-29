@@ -8,3 +8,4 @@ from .pre_flourish_child_dummy_consent import PreFlourishChildDummySubjectConsen
 from .pre_flourish_child_off_study import PreFlourishChildOffStudy
 from .signals import child_assent_on_post_save, \
     child_assent_on_post_save
+from .heu_huu_match import HeuHuuMatch

@@ -2,20 +2,20 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django_crypto_fields.fields import IdentityField
 from edc_base.model_mixins import BaseUuidModel
-from edc_base.model_validators import datetime_not_future, date_not_future
+from edc_base.model_validators import date_not_future, datetime_not_future
 from edc_base.sites.site_model_mixin import SiteModelMixin
 from edc_base.utils import age, get_utcnow
 from edc_consent.field_mixins import IdentityFieldsMixin
 from edc_consent.field_mixins import PersonalFieldsMixin
 from edc_consent.field_mixins import ReviewFieldsMixin, VerificationFieldsMixin
-from edc_constants.choices import YES_NO_NA, YES_NO
+from edc_constants.choices import YES_NO, YES_NO_NA
 from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_protocol.validators import datetime_not_before_study_start
-
 from flourish_caregiver.choices import CHILD_IDENTITY_TYPE
-from flourish_caregiver.subject_identifier import InfantIdentifier
+
 from ..caregiver import PreFlourishConsent
 from ...constants import INFANT
+from ...subject_identifier import PFInfantIdentifier
 
 
 class PreFlourishCaregiverChildConsent(SiteModelMixin,
@@ -134,12 +134,9 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin,
 
     @property
     def child_subject_identifier_postfix(self):
-
         children_count = PreFlourishCaregiverChildConsent.objects.filter(
             subject_identifier__istartswith=self.subject_consent.subject_identifier
         ).count()
-
-        child_identifier_postfix = 0
 
         if not children_count:
             child_identifier_postfix = 10
@@ -149,11 +146,10 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin,
         return child_identifier_postfix
 
     def save(self, *args, **kwargs):
-
         self.child_age_at_enrollment = age(self.child_dob, get_utcnow()).years
 
         if not self.subject_identifier:
-            self.subject_identifier = InfantIdentifier(
+            self.subject_identifier = PFInfantIdentifier(
                 maternal_identifier=self.subject_consent.subject_identifier,
                 registration_status=self.registration_status,
                 registration_datetime=self.consent_datetime,
@@ -163,6 +159,9 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin,
 
         return super().save(*args, **kwargs)
 
+    @property
+    def child_dataset(self):
+        return True
 
     class Meta:
         app_label = 'pre_flourish'

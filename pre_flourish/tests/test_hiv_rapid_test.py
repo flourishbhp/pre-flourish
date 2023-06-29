@@ -29,7 +29,7 @@ class TestHivRapidTestForm(TestCase):
 
         self.appointment = Appointment.objects.get(
             subject_identifier=self.subject_consent.subject_identifier,
-            visit_code='1000')
+            visit_code='0200')
 
 
     def test_func_hiv_test_required(self):

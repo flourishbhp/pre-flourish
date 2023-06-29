@@ -1,15 +1,15 @@
+from django.apps import apps as django_apps
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
-from edc_base.model_validators import date_not_future, dob_not_today
-from edc_constants.choices import YES_NO, GENDER
+from edc_base.model_validators import date_not_future
+from edc_base.utils import age, get_utcnow
+from edc_constants.choices import YES_NO
 
 from ..model_mixins import CrfModelMixin
 from ...choices import POS_NEG_IND, YES_NO_UNKNOWN
 
 
 class HuuPreEnrollment(CrfModelMixin):
-
     child_hiv_docs = models.CharField(
         verbose_name='Is there documentation of the child’s HIV status?',
         choices=YES_NO,
@@ -28,12 +28,12 @@ class HuuPreEnrollment(CrfModelMixin):
         blank=True,
         null=True)
 
-    weight = models.IntegerField(
+    child_weight_kg = models.IntegerField(
         verbose_name='Weight (kg)',
         validators=[MinValueValidator(15), MaxValueValidator(140), ],
     )
 
-    height = models.IntegerField(
+    child_height = models.IntegerField(
         verbose_name='Height (cm)',
         validators=[MinValueValidator(40), MaxValueValidator(210), ],
     )
@@ -73,6 +73,32 @@ class HuuPreEnrollment(CrfModelMixin):
         validators=[MaxValueValidator(30), MinValueValidator(1)],
         blank=True,
         null=True)
+
+    def save(self, *args, **kwargs):
+        self.bmi = self.child_weight_kg / ((self.child_height / 100) ** 2)
+        super().save(*args, **kwargs)
+
+    @property
+    def gender(self):
+        return getattr(self.child_assent, 'gender', None)
+
+    @property
+    def child_age(self):
+        if self.child_assent.dob:
+            _age = age(self.child_assent.dob, get_utcnow())
+            return _age.years + (_age.months / 12)
+
+    @property
+    def pre_flourish_child_assent_model_cls(self):
+        return django_apps.get_model('pre_flourish.preflourishchildassent')
+
+    @property
+    def child_assent(self):
+        try:
+            return self.pre_flourish_child_assent_model_cls.objects.get(
+                subject_identifier=self.subject_identifier)
+        except self.pre_flourish_child_assent_model_cls.DoesNotExist:
+            return None
 
     class Meta:
         app_label = 'pre_flourish'
