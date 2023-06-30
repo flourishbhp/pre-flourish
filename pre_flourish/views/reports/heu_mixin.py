@@ -48,12 +48,6 @@ class HEUMixin(ReportsMixin):
     def get_heu_bmi_age_data(self, participants):
         if not participants:
             return {}
-        bmi_range_to_group = {
-            ((group := self.bmi_groups[i])['min'], group['max']): group['name'] for i in
-            range(len(self.bmi_groups))}
-        age_range_to_group = {
-            ((group := self.age_groups[i])['min'], group['max']): group['name'] for i in
-            range(len(self.age_groups))}
         bmi_age_data = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
         subject_data = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
 
@@ -66,9 +60,9 @@ class HEUMixin(ReportsMixin):
                 _bmi = participant.child_weight_kg / (
                         (participant.child_height / 100) ** 2)
 
-                for bmi_range, bmi_group in bmi_range_to_group.items():
+                for bmi_range, bmi_group in self.bmi_range_to_group.items():
                     if bmi_range[0] <= _bmi <= bmi_range[1]:
-                        for age_range, age_group in age_range_to_group.items():
+                        for age_range, age_group in self.age_range_to_group.items():
                             if age_range[0] <= _age < age_range[1]:
                                 gender = 'male' if gender == MALE else 'female'
                                 bmi_age_data[bmi_group][age_group][gender] += 1
