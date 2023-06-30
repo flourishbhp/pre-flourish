@@ -3,8 +3,9 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from edc_action_item.admin import ActionItemAdmin
-from edc_action_item.admin_site import edc_action_item_admin
-from edc_action_item.models import ActionItem
+
+from pre_flourish.admin_site import pre_flourish_admin
+from pre_flourish.models import PFActionItem
 
 
 class PreFlourishActionItemAdmin(ActionItemAdmin):
@@ -29,4 +30,4 @@ class PreFlourishActionItemAdmin(ActionItemAdmin):
             return HttpResponseRedirect(pre_flourish_url)
 
 
-admin.site.register(ActionItem, PreFlourishActionItemAdmin, site=edc_action_item_admin)
+admin.site.register(PFActionItem, PreFlourishActionItemAdmin, site=pre_flourish_admin)

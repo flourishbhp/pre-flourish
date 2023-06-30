@@ -65,9 +65,11 @@ def huu_pre_enrollment_post_save(sender, instance, raw, created, **kwargs):
                 action_name=CHILD_OFF_STUDY_ACTION,
                 subject_identifier=instance.subject_identifier,
             )
-        test_age = (age(instance.child_test_date, get_utcnow()).years * 12) + (age(
-            instance.child_test_date, get_utcnow()).months)
-        if instance.child_hiv_result == NEG and test_age <= 3:
+        test_age = None
+        if instance.child_test_date:
+            test_age = (age(instance.child_test_date, get_utcnow()).years * 12) + (age(
+                instance.child_test_date, get_utcnow()).months)
+        if test_age and instance.child_hiv_result == NEG and test_age <= 3:
             caregiver_child_consent = pre_flourish_caregiver_child_consent(instance)
             get_or_create_caregiver_dataset(caregiver_child_consent.subject_consent)
             get_or_create_child_dataset(caregiver_child_consent)
