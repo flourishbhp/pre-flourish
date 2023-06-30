@@ -1,6 +1,8 @@
 from edc_action_item import Action, HIGH_PRIORITY, site_action_items
 from edc_locator.action_items import SubjectLocatorAction
 
+from pre_flourish.action_item_getter import PFActionItemGetter
+
 MATERNAL_OFF_STUDY_ACTION = 'submit-pf-caregiver-study'
 CHILD_OFF_STUDY_ACTION = 'submit-pf-child-study'
 PRE_FLOURISH_CAREGIVER_LOCATOR_ACTION = 'submit-pf-caregiver-locator'
@@ -8,6 +10,7 @@ MATERNAL_DEATH_STUDY_ACTION = 'submit-pf-death-report'
 
 
 class MaternalOffStudyAction(Action):
+    action_item_getter = PFActionItemGetter
     name = MATERNAL_OFF_STUDY_ACTION
     display_name = 'Submit Pre Flourish Caregiver Offstudy'
     reference_model = 'pre_flourish.preflourishoffstudy'
@@ -17,6 +20,7 @@ class MaternalOffStudyAction(Action):
 
 
 class ChildOffStudyAction(Action):
+    action_item_getter = PFActionItemGetter
     name = CHILD_OFF_STUDY_ACTION
     display_name = 'Submit Pre Flourish Child Offstudy'
     reference_model = 'pre_flourish.preflourishchildoffstudy'
