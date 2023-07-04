@@ -1,5 +1,5 @@
 from dateutil.relativedelta import relativedelta
-from django.test import TestCase
+from django.test import TestCase, tag
 from edc_base import get_utcnow
 from edc_constants.constants import FEMALE, YES
 from edc_facility.import_holidays import import_holidays
@@ -66,7 +66,7 @@ class TestPregnancyTestForm(TestCase):
         self.assertEqual(CrfMetadata.objects.get(
             model='pre_flourish.pfinfanthivtesting',
             subject_identifier=pre_flourish_visit.subject_identifier,
-            visit_code='1000').entry_status, NOT_REQUIRED)
+            visit_code='0200').entry_status, NOT_REQUIRED)
 
         mommy.make_recipe(
             'pre_flourish.huupreenrollment',
@@ -78,7 +78,7 @@ class TestPregnancyTestForm(TestCase):
         self.assertEqual(CrfMetadata.objects.get(
             model='pre_flourish.pfinfanthivtesting',
             subject_identifier=pre_flourish_visit.subject_identifier,
-            visit_code='1000').entry_status, REQUIRED)
+            visit_code='0200').entry_status, REQUIRED)
 
     def test_preg_test_required(self):
         self.assertEqual(OnScheduleChildPreFlourish.objects.filter(
@@ -95,7 +95,7 @@ class TestPregnancyTestForm(TestCase):
         self.assertEqual(CrfMetadata.objects.get(
             model='pre_flourish.pfinfanthivtesting',
             subject_identifier=visit.subject_identifier,
-            visit_code='1000').entry_status, NOT_REQUIRED)
+            visit_code='0200').entry_status, NOT_REQUIRED)
 
         mommy.make_recipe(
             'pre_flourish.huupreenrollment',
@@ -107,4 +107,51 @@ class TestPregnancyTestForm(TestCase):
         self.assertEqual(CrfMetadata.objects.get(
             model='pre_flourish.pfinfanthivtesting',
             subject_identifier=visit.subject_identifier,
-            visit_code='1000').entry_status, REQUIRED)
+            visit_code='0200').entry_status, REQUIRED)
+
+    @tag('preg_test_bot_required')
+    def test_preg_test_bot_required(self):
+        caregiver_screening = mommy.make_recipe(
+            'pre_flourish.preflourishsubjectscreening', )
+
+        subject_consent = mommy.make_recipe(
+            'pre_flourish.preflourishconsent',
+            screening_identifier=caregiver_screening.screening_identifier,
+        )
+
+        caregiver_child_consent = mommy.make_recipe(
+            'pre_flourish.preflourishcaregiverchildconsent',
+            subject_consent=subject_consent,
+            child_dob=get_utcnow() - relativedelta(years=11),
+            gender=FEMALE
+        )
+
+        child_assent = mommy.make_recipe(
+            'pre_flourish.preflourishchildassent',
+            subject_identifier=caregiver_child_consent.subject_identifier,
+            identity=caregiver_child_consent.identity,
+            confirm_identity=caregiver_child_consent.identity,
+            identity_type=caregiver_child_consent.identity_type,
+            first_name=caregiver_child_consent.first_name,
+            last_name=caregiver_child_consent.last_name,
+            gender=caregiver_child_consent.gender,
+            dob=caregiver_child_consent.child_dob,
+        )
+
+        appointment = Appointment.objects.get(
+            subject_identifier=self.child_assent.subject_identifier,
+            visit_code='0200')
+
+        dummy_consent = PreFlourishChildDummySubjectConsent.objects.get(
+            subject_identifier=child_assent.subject_identifier)
+
+        visit = mommy.make_recipe(
+            'pre_flourish.preflourishvisit',
+            appointment=appointment,
+            report_datetime=dummy_consent.consent_datetime
+        )
+
+        self.assertEqual(CrfMetadata.objects.get(
+            model='pre_flourish.pfinfanthivtesting',
+            subject_identifier=visit.subject_identifier,
+            visit_code='0200').entry_status, NOT_REQUIRED)
