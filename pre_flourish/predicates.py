@@ -55,6 +55,6 @@ class PreFlourishPredicates(PredicateCollection):
                 return False
             else:
                 child_age = age(obj.dob, get_utcnow()).years
-                return child_age >= 11 and obj.gender == FEMALE
+                return child_age > 11 and obj.gender == FEMALE
         else:
             return False
