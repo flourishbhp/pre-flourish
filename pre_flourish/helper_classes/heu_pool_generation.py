@@ -1,7 +1,9 @@
 from collections import defaultdict
 
+from dateutil.relativedelta import relativedelta
 from django.apps import apps as django_apps
 from django.db.models import Max
+from edc_base import get_utcnow
 from edc_constants.constants import MALE
 from tqdm import tqdm
 
@@ -43,15 +45,16 @@ class HEUPoolGeneration(MatchHelper):
         ).select_related('child_visit')
         return self.get_heu_bmi_age_data(participants)
 
-    @staticmethod
-    def child_consent(caregiver_child_consent_cls, participant):
+    def child_consent(self, caregiver_child_consent_cls, participant):
+        ten_years_ago = get_utcnow() - relativedelta(years=10)
         try:
             return caregiver_child_consent_cls.objects.filter(
-                subject_identifier=participant.child_visit.subject_identifier
+                subject_identifier=participant.child_visit.subject_identifier,
+                child_dob__lte=ten_years_ago,
+                study_child_identifier__in=self.unexposed_participants
             ).latest('consent_datetime')
         except caregiver_child_consent_cls.DoesNotExist:
-            raise ('No consent found for {}'.format(
-                participant.child_visit.subject_identifier))
+            pass
 
     def get_heu_bmi_age_data(self, participants):
         if not participants:
@@ -62,6 +65,8 @@ class HEUPoolGeneration(MatchHelper):
         for participant in tqdm(participants):
             child_consent = self.child_consent(self.caregiver_child_consent_cls,
                                                participant)
+            if not child_consent:
+                continue
             child_dob = child_consent.child_dob
             gender = child_consent.gender
             if participant.child_height > 0 and participant.child_weight_kg > 0 and \
@@ -74,28 +79,13 @@ class HEUPoolGeneration(MatchHelper):
                 age_range = self.age_range(_age)
                 if bmi_group is None or age_range is None:
                     continue
-                if not self.is_heu(child_consent.subject_consent.screening_identifier):
-                    continue
                 bmi_age_data[bmi_group][age_range][gender] += 1
                 subj_id = participant.child_visit.subject_identifier
                 subject_data[bmi_group][age_range][gender].append(subj_id)
 
         self.prepare_create_pool('heu', bmi_age_data, subject_data)
 
-    def is_heu(self, screening_identifier):
-        study_maternal_identifier = self.study_maternal_identifier(
-            screening_identifier)
-        return study_maternal_identifier in self.unexposed_participants
-
     @property
     def unexposed_participants(self):
         return self.child_dataset_cls.objects.all().values_list(
-            'study_maternal_identifier', flat=True)
-
-    def study_maternal_identifier(self, screening_identifier):
-        try:
-            return self.screening_prior_model_cls.objects.get(
-                screening_identifier=screening_identifier).study_maternal_identifier
-        except self.screening_prior_model_cls.DoesNotExist:
-            raise ('No screening prior found for {}'.format(
-                screening_identifier))
+            'study_child_identifier', flat=True)
