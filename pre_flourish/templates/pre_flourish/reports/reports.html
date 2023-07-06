@@ -1,8 +1,9 @@
 {% extends 'pre_flourish/base.html' %}
+{% load django_tables2 %}
 {% load render_table from django_tables2 %}
 {% load static %}
-{% load export_url from django_tables2 %}
 {% load pre_flourish_dashboard_extras %}
+{% load export_url from django_tables2 %}
 
 
 
@@ -219,6 +220,14 @@
         .panel.panel-default {
             overflow-x: auto;
         }
+
+        .table-container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            justify-content: center;
+            padding: 2rem;
+        }
     </style>
 {% endblock extra-styles %}
 
@@ -227,34 +236,25 @@
     <div id="main">
         <div class="container">
             <div class="row">
-                {% heu_matrix_pool bmi_age_data %}
-                {% huu_matrix_pool huu_report %}
+                {% heu_matrix_pool heu_pool %}
+                {% huu_matrix_pool huu_pool %}
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                {% heu_matrix_pool heu_pool %}
+                {% huu_matrix_pool huu_pool %}
             </div>
         </div>
         <div class="container">
             <div class="row">
                 <div class="panel panel-default">
-                    <div class="panel-heading panel-heading-nav">
-                        <ul class="nav nav-tabs">
-                            <li role="presentation" class="active">
-                                <a href="#one" aria-controls="one" role="tab"
-                                   data-toggle="tab">HEU Matrix Pool</a>
-                            </li>
-                            <li role="presentation">
-                                <a href="#two" aria-controls="two" role="tab"
-                                   data-toggle="tab">HUU Matrix Pool</a>
-                            </li>
-                        </ul>
+                    <div class="panel-heading">
+                        <h3> Metrix Pool Table </h3>
                     </div>
-                    <div class="panel-body">
-                        <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane fade in active" id="one">
-                                {% render_table table %}
-                            </div>
-                            <div role="tabpanel" class="tab-pane fade" id="two">
-                                {% render_table table2 %}
-                            </div>
-                        </div>
+                    <div class="table-container">
+                        <!-- Table rendering -->
+                        {% render_table table %}
                     </div>
                 </div>
             </div>

@@ -69,6 +69,7 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
                 'dob',
                 'is_dob_estimated',
                 'citizen',
+                'gender',
                 'identity',
                 'identity_type',
                 'confirm_identity',
@@ -87,6 +88,7 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
         audit_fieldset_tuple)
 
     radio_fields = {
+        'gender': admin.VERTICAL,
         'assessment_score': admin.VERTICAL,
         'biological_caregiver': admin.VERTICAL,
         'future_contact': admin.VERTICAL,

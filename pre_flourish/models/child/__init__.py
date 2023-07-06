@@ -1,4 +1,5 @@
 from .child_hiv_rapid_test_counseling import PFChildHIVRapidTestCounseling
+from .heu_huu_match import HeuHuuMatch, MetrixPool
 from .huu_pre_enrollment import HuuPreEnrollment
 from .offschedule import ChildOffSchedule
 from .pf_child_preg_testing import PFChildPregTesting
@@ -8,4 +9,3 @@ from .pre_flourish_child_dummy_consent import PreFlourishChildDummySubjectConsen
 from .pre_flourish_child_off_study import PreFlourishChildOffStudy
 from .signals import child_assent_on_post_save, \
     child_assent_on_post_save
-from .heu_huu_match import HeuHuuMatch

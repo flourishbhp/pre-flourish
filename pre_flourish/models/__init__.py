@@ -11,7 +11,7 @@ from .caregiver import PreFlourishOffStudy
 from .caregiver import PreFlourishSubjectScreening
 from .child import child_assent_on_post_save, child_assent_on_post_save
 from .child import ChildOffSchedule as PreFlourishChildOffSchedule
-from .child import HeuHuuMatch
+from .child import HeuHuuMatch, MetrixPool
 from .child import HuuPreEnrollment
 from .child import PFChildHIVRapidTestCounseling
 from .child import PFChildPregTesting
