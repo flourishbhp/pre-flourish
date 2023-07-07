@@ -10,6 +10,7 @@ from edc_constants.constants import OMANG
 
 from pre_flourish.form_validators.locator_change_mixin import LocatorChangeMixin, \
     raise_validation_error
+from datetime import date
 
 
 class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
@@ -39,7 +40,7 @@ class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
         self.clean_initials_with_full_name()
         self.validate_gender()
         self.validate_identity_number(cleaned_data)
-        self.validate_preg_testing()
+        self.validate_preg_testing(cleaned_data)
         self.validate_dob(cleaned_data)
         self.validate_locator_updated()
 
@@ -188,11 +189,12 @@ class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
                            'the caregiver consent on behalf of child. Please correct.'}
                 self._errors.update(msg)
                 raise ValidationError(msg)
-
-    def validate_preg_testing(self):
-        self.applicable_if(
-            FEMALE,
-            field='gender',
+    
+    def validate_preg_testing(self,cleaned_data=None):
+        dob = cleaned_data.get('dob')
+        
+        self.applicable_if_true(
+            FEMALE and self.calculate_age(dob) > 12,
             field_applicable='preg_testing')
 
     def validate_against_child_consent(self):
@@ -230,3 +232,8 @@ class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
                 'Caregiver child consent matching query does not exist.')
         else:
             return child_consent
+        
+    def calculate_age(self,dob):
+        today = date.today()
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+        return age
