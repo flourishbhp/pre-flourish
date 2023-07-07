@@ -5,11 +5,11 @@ from django.apps import apps as django_apps
 
 
 class MatchHelper:
-    metrix_pool_model = 'pre_flourish.metrixpool'
+    matrix_pool_model = 'pre_flourish.matrixpool'
 
     @property
-    def metrix_pool_cls(self):
-        return django_apps.get_model(self.metrix_pool_model)
+    def matrix_pool_cls(self):
+        return django_apps.get_model(self.matrix_pool_model)
 
     bmi_range_to_group = {
         (00.0, 14.9): '<14.9',
@@ -23,12 +23,12 @@ class MatchHelper:
     def calculate_age(child_dob):
         return relativedelta(datetime.now(), child_dob).years
 
-    def create_metrix_pool(self, name, bmi_group, gender_group, age_group, count,
+    def create_matrix_pool(self, name, bmi_group, gender_group, age_group, count,
                            subject_identifiers):
         defaults = {
             'count': count,
         }
-        obj, _ = self.metrix_pool_cls.objects.update_or_create(
+        obj, _ = self.matrix_pool_cls.objects.update_or_create(
             pool=name, bmi_group=bmi_group, age_group=age_group,
             gender_group=gender_group, defaults=defaults
         )
@@ -40,7 +40,7 @@ class MatchHelper:
             for age_group, gender_data in age_data.items():
                 for gender_group, count in gender_data.items():
                     subject_identifiers = subject_data[bmi_group][age_group][gender_group]
-                    self.create_metrix_pool(
+                    self.create_matrix_pool(
                         name=name, age_group=age_group,
                         bmi_group=bmi_group, gender_group=gender_group,
                         count=count, subject_identifiers=subject_identifiers)
