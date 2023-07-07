@@ -45,11 +45,11 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
     huu_pre_enrollment_model = 'pre_flourish.huupreenrollment'
     pre_flourish_child_consent_model = 'pre_flourish.preflourishcaregiverchildconsent'
-    metrix_pool_model = 'pre_flourish.metrixpool'
+    matrix_pool_model = 'pre_flourish.matrixpool'
 
     @property
-    def metrix_pool_cls(self):
-        return django_apps.get_model(self.metrix_pool_model)
+    def matrix_pool_cls(self):
+        return django_apps.get_model(self.matrix_pool_model)
 
     @property
     def huu_pre_enrollment_cls(self):
@@ -241,7 +241,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             gender = 'male' if obj.gender == MALE else 'female'
             if bmi_group is None or age_range is None:
                 continue
-            matrix_group.append(self.metrix_pool_cls.objects.filter(
+            matrix_group.append(self.matrix_pool_cls.objects.filter(
                 pool='heu', bmi_group=bmi_group, age_group=age_range,
                 gender_group=gender, ).exists())
         return any(matrix_group)
