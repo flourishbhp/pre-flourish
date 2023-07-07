@@ -48,7 +48,7 @@ class HEUPoolGeneration(MatchHelper):
             return caregiver_child_consent_cls.objects.filter(
                 subject_identifier=participant.child_visit.subject_identifier,
                 child_dob__lte=ten_years_ago,
-                study_child_identifier__in=self.unexposed_participants
+                study_child_identifier__in=self.exposed_participants
             ).latest('consent_datetime')
         except caregiver_child_consent_cls.DoesNotExist:
             pass
