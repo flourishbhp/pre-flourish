@@ -9,11 +9,6 @@
     <tr>
         <td>{% caregiver_contact_button subject_consent %}</td>
     </tr>
-    {% if subject_consent.bhp_prior_screening_model_obj %}
-        <tr>
-            <td>{% flourish_consent_button subject_consent %}</td>
-        </tr>
-    {% endif %}
     {% if is_flourish_eligible %}
         <tr>
             <td>{% bhp_prior_screening_button subject_consent %}</td>

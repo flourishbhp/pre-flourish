@@ -1,5 +1,4 @@
 from .caregiver import AppointmentModelWrapper
-from .caregiver import FlourishConsentModelWrapperMixin
 from .caregiver import MaternalCrfModelWrapper
 from .caregiver import MaternalRegisteredSubjectModelWrapper
 from .caregiver import MaternalVisitModelWrapper

@@ -278,14 +278,3 @@ def bhp_prior_screening_button(model_wrapper):
         screening_identifier=model_wrapper.screening_identifier,
         prior_screening_obj=model_wrapper.bhp_prior_screening_model_obj,
         caregiver_locator_obj=model_wrapper.locator_model_obj)
-
-
-@register.inclusion_tag('pre_flourish/buttons/flourish_consent_button.html')
-def flourish_consent_button(model_wrapper):
-    title = ['Consent subject to participate.']
-    return dict(
-        subject_identifier=model_wrapper.flourish_consent.object.subject_identifier,
-        subject_screening_obj=model_wrapper.bhp_prior_screening_model_obj,
-        add_consent_href=model_wrapper.flourish_consent.href,
-        version=model_wrapper.flourish_consent.version,
-        title=' '.join(title))

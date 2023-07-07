@@ -10,8 +10,6 @@ from .caregiver_death_report_model_wrapper_mixin import \
 from .caregiver_offstudy_model_wrapper_mixin import CaregiverOffstudyModelWrapperMixin
 from .child_assent_model_wrapper import \
     PreFlourishChildAssentModelWrapper as AssentModelWrapper
-from .consent_model_wrapper_mixin import \
-    ConsentModelWrapperMixin as FlourishConsentModelWrapperMixin
 from .pre_flourish_caregiverlocator_modelwrapper_mixin import \
     PreflourishCaregiverLocatorModelWrapperMixin
 from ...models import PreFlourishChildAssent as Assent
@@ -19,7 +17,6 @@ from ...models import PreFlourishChildAssent as Assent
 
 class PreFlourishSubjectConsentModelWrapper(CaregiverContactModelWrapperMixin,
                                             CaregiverOffstudyModelWrapperMixin,
-                                            FlourishConsentModelWrapperMixin,
                                             BhpPriorScreeningModelWrapperMixin,
                                             CaregiverDeathReportModelWrapperMixin,
                                             PreflourishCaregiverLocatorModelWrapperMixin,
