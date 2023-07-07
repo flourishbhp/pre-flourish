@@ -57,7 +57,7 @@ class HeuHuuMatch(BaseUuidModel):
         verbose_name_plural = 'HeuHuu Matching Participants'
 
 
-class MetrixPool(BaseUuidModel):
+class MatrixPool(BaseUuidModel):
     pool = models.CharField(
         verbose_name="Pool",
         blank=True,

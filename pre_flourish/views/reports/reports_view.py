@@ -9,10 +9,10 @@ from django_tables2.export import ExportMixin
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
 
-from ...models import MetrixPool
+from ...models import MatrixPool
 
 
-class MetrixPoolTable(tables.Table):
+class MatrixPoolTable(tables.Table):
     subject_identifiers = tables.Column()
 
     def render_subject_identifiers(self, value):
@@ -22,7 +22,7 @@ class MetrixPoolTable(tables.Table):
         return format_html(button_html)
 
     class Meta:
-        model = MetrixPool
+        model = MatrixPool
         fields = ('pool', 'bmi_group', 'age_group', 'gender_group',
                   'count')
         attrs = {'class': 'table table-striped'}
@@ -34,8 +34,8 @@ class ReportsView(ExportMixin, EdcBaseViewMixin, NavbarViewMixin,
     template_name = 'pre_flourish/reports/reports.html'
     navbar_name = 'pre_flourish_dashboard'
     navbar_selected_item = 'pre_flourish_reports'
-    model = MetrixPool
-    table_class = MetrixPoolTable
+    model = MatrixPool
+    table_class = MatrixPoolTable
     table_pagination = {'per_page': 5}
     export_formats = ('csv', 'xls')  # Specify the export formats you want to support
 

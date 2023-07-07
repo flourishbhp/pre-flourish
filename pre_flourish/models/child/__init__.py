@@ -1,5 +1,5 @@
 from .child_hiv_rapid_test_counseling import PFChildHIVRapidTestCounseling
-from .heu_huu_match import HeuHuuMatch, MetrixPool
+from .heu_huu_match import HeuHuuMatch, MatrixPool
 from .huu_pre_enrollment import HuuPreEnrollment
 from .offschedule import ChildOffSchedule
 from .pf_child_preg_testing import PFChildPregTesting

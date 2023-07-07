@@ -87,5 +87,6 @@ class HEUPoolGeneration(MatchHelper):
 
     @property
     def unexposed_participants(self):
-        return self.child_dataset_cls.objects.all().values_list(
+        return self.child_dataset_cls.objects.filter(
+            infant_hiv_exposed__in=['Exposed', 'exposed']).values_list(
             'study_child_identifier', flat=True)
