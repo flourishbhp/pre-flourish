@@ -9,9 +9,6 @@ from tqdm import tqdm
 
 from .match_helper import MatchHelper
 
-MALE = 'M'
-FEMALE = 'F'
-
 
 class HEUPoolGeneration(MatchHelper):
     child_clinical_measurements_model = 'flourish_child.childclinicalmeasurements'

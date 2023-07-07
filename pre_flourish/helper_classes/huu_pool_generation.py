@@ -2,12 +2,10 @@ from collections import defaultdict
 
 from django.apps import apps as django_apps
 from django.db.models import Max
+from edc_constants.constants import MALE
 from tqdm import tqdm
 
 from .match_helper import MatchHelper
-
-MALE = 'M'
-FEMALE = 'F'
 
 
 class HUUPoolGeneration(MatchHelper):
