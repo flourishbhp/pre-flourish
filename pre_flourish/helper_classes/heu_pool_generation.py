@@ -83,7 +83,7 @@ class HEUPoolGeneration(MatchHelper):
         self.prepare_create_pool('heu', bmi_age_data, subject_data)
 
     @property
-    def unexposed_participants(self):
+    def exposed_participants(self):
         return self.child_dataset_cls.objects.filter(
             infant_hiv_exposed__in=['Exposed', 'exposed']).values_list(
             'study_child_identifier', flat=True)
