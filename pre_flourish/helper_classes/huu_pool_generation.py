@@ -2,21 +2,20 @@ from collections import defaultdict
 
 from django.apps import apps as django_apps
 from django.db.models import Max
+from edc_constants.constants import MALE
+from tqdm import tqdm
 
-from .report_mixin import ReportsMixin
-
-MALE = 'M'
-FEMALE = 'F'
+from .match_helper import MatchHelper
 
 
-class HUUMixin(ReportsMixin):
+class HUUPoolGeneration(MatchHelper):
     huu_pre_enrollment_model = 'pre_flourish.huupreenrollment'
 
     @property
     def huu_pre_enrollment_cls(self):
         return django_apps.get_model(self.huu_pre_enrollment_model)
 
-    def get_huu_report(self):
+    def generate_pool(self):
         latest_huu_pre_enrollment_ids = \
             self.huu_pre_enrollment_cls.objects.values(
                 'pre_flourish_visit__subject_identifier').annotate(
@@ -37,23 +36,18 @@ class HUUMixin(ReportsMixin):
         bmi_age_data = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
         subject_data = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
 
-        for participant in participants:
+        for participant in tqdm(participants):
             if participant.child_height > 0 and participant.child_weight_kg > 0 and \
                     participant.child_age and participant.gender:
                 bmi = participant.child_weight_kg / (
                         (participant.child_height / 100) ** 2)
+                bmi_group = self.bmi_group(bmi)
+                age_range = self.age_range(participant.child_age)
+                gender = 'male' if participant.gender == MALE else 'female'
+                if bmi_group is None or age_range is None:
+                    continue
+                bmi_age_data[bmi_group][age_range][gender] += 1
+                subj_id = participant.pre_flourish_visit.subject_identifier
+                subject_data[bmi_group][age_range][gender].append(subj_id)
 
-                for bmi_range, bmi_group in self.bmi_range_to_group.items():
-                    if bmi_range[0] <= bmi <= bmi_range[1]:
-                        for age_range, age_group in self.age_range_to_group.items():
-                            if age_range[0] <= participant.child_age <= age_range[1]:
-                                gender = 'male' if participant.gender == MALE else \
-                                    'female'
-                                bmi_age_data[bmi_group][age_group][gender] += 1
-                                subj_id = \
-                                    participant.pre_flourish_visit.subject_identifier
-                                subject_data[bmi_group][age_range][gender].append(subj_id)
-                                break
-                        break
-
-        return {'bmi_age_data': bmi_age_data, 'subject_data': subject_data}
+        self.prepare_create_pool('huu', bmi_age_data, subject_data)

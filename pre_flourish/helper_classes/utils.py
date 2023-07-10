@@ -1,3 +1,4 @@
+from celery.app import shared_task
 from django.db.models import Q
 from edc_action_item import site_action_items
 from edc_constants.constants import NEG, NEW, NO, OPEN
@@ -5,12 +6,14 @@ from edc_visit_schedule import site_visit_schedules
 
 from flourish_caregiver.models import MaternalDataset
 from flourish_child.models import ChildDataset
-from pre_flourish.models.child.pre_flourish_child_dummy_consent import \
-    PreFlourishChildDummySubjectConsent
-from pre_flourish.models.child.pre_flourish_child_consent import \
-    PreFlourishCaregiverChildConsent
+from pre_flourish.helper_classes.heu_pool_generation import HEUPoolGeneration
+from pre_flourish.helper_classes.huu_pool_generation import HUUPoolGeneration
 from pre_flourish.models.caregiver.pre_flourish_subject_screening import \
     PreFlourishSubjectScreening
+from pre_flourish.models.child.pre_flourish_child_consent import \
+    PreFlourishCaregiverChildConsent
+from pre_flourish.models.child.pre_flourish_child_dummy_consent import \
+    PreFlourishChildDummySubjectConsent
 
 
 def get_or_create_caregiver_dataset(consent):
@@ -126,3 +129,9 @@ def put_on_schedule(instance=None, subject_identifier=None,
         onschedule_datetime=base_appt_datetime,
         schedule_name=schedule_name,
         base_appt_datetime=base_appt_datetime)
+
+
+@shared_task
+def populate_heu_huu_pool_data():
+    HUUPoolGeneration().generate_pool()
+    HEUPoolGeneration().generate_pool()

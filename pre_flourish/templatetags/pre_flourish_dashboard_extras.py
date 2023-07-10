@@ -36,7 +36,7 @@ def dashboard_button(model_wrapper):
         subject_identifier=model_wrapper.subject_identifier)
 
 
-@register.inclusion_tag('flourish_dashboard/buttons/locator_button.html')
+@register.inclusion_tag('pre_flourish/buttons/locator_button.html')
 def locator_button(model_wrapper):
     return dict(
         add_locator_href=model_wrapper.caregiver_locator.href,
