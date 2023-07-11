@@ -195,7 +195,7 @@ class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
         dob = cleaned_data.get('dob')
         
         self.applicable_if_true(
-            FEMALE and age(dob,date.today()).years > 12,
+            FEMALE and age(dob,date.today()).years >= 12,
             field_applicable='preg_testing')
 
     def validate_against_child_consent(self):
