@@ -1,8 +1,9 @@
+from datetime import date
 import re
 
 from django.apps import apps as django_apps
 from django.core.exceptions import ValidationError
-from edc_base.utils import relativedelta
+from edc_base.utils import relativedelta,age
 from edc_form_validators import FormValidator
 
 from edc_constants.constants import NO, FEMALE, MALE
@@ -10,6 +11,7 @@ from edc_constants.constants import OMANG
 
 from pre_flourish.form_validators.locator_change_mixin import LocatorChangeMixin, \
     raise_validation_error
+
 
 
 class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
@@ -39,7 +41,7 @@ class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
         self.clean_initials_with_full_name()
         self.validate_gender()
         self.validate_identity_number(cleaned_data)
-        self.validate_preg_testing()
+        self.validate_preg_testing(cleaned_data)
         self.validate_dob(cleaned_data)
         self.validate_locator_updated()
 
@@ -188,11 +190,12 @@ class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
                            'the caregiver consent on behalf of child. Please correct.'}
                 self._errors.update(msg)
                 raise ValidationError(msg)
-
-    def validate_preg_testing(self):
-        self.applicable_if(
-            FEMALE,
-            field='gender',
+    
+    def validate_preg_testing(self,cleaned_data=None):
+        dob = cleaned_data.get('dob')
+        
+        self.applicable_if_true(
+            FEMALE and age(dob,date.today()).years > 12,
             field_applicable='preg_testing')
 
     def validate_against_child_consent(self):
@@ -230,3 +233,4 @@ class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
                 'Caregiver child consent matching query does not exist.')
         else:
             return child_consent
+        
