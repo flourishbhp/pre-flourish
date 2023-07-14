@@ -147,6 +147,11 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             offstudy_action=MATERNAL_DEATH_STUDY_ACTION)
 
         self.get_offstudy_message(offstudy_cls=caregiver_offstudy_cls)
+
+        if self.is_flourish_eligible and not \
+                self.consent_wrapped.bhp_prior_screening_model_obj:
+            messages.info(self.request,
+                          'This subject is eligible for Flourish Enrolment.')
         context.update(
             is_flourish_eligible=self.is_flourish_eligible,
             infant_registered_subjects=self.infant_registered_subjects,

@@ -2,10 +2,18 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 from django.apps import apps as django_apps
+from django.conf import settings
+from django.contrib.auth.models import Group
+from django.core.mail import send_mail
 
 
 class MatchHelper:
     matrix_pool_model = 'pre_flourish.matrixpool'
+    huu_pre_enrollment_model = 'pre_flourish.huupreenrollment'
+
+    @property
+    def huu_pre_enrollment_cls(self):
+        return django_apps.get_model(self.huu_pre_enrollment_model)
 
     @property
     def matrix_pool_cls(self):
@@ -17,11 +25,12 @@ class MatchHelper:
         (18, float('inf')): '>18'
     }
 
-    age_range_to_group = [(10, 13), (14, 16), (17, 21)]
+    age_range_to_group = [(9.5, 13), (14, 16), (17, 21)]
 
     @staticmethod
     def calculate_age(child_dob):
-        return relativedelta(datetime.now(), child_dob).years
+        return relativedelta(datetime.now(), child_dob).years + \
+            (relativedelta(datetime.now(), child_dob).months / 12)
 
     def create_matrix_pool(self, name, bmi_group, gender_group, age_group, count,
                            subject_identifiers):
@@ -60,3 +69,50 @@ class MatchHelper:
             if age_range[0] <= age < age_range[1]:
                 return age_range
         return None
+
+    def heu_huu_match_clean_up(self, subject_identifier):
+        matrix_pools = self.matrix_pool_cls.objects.filter(pool='heu')
+        for matrix_pool in matrix_pools:
+            subject_identifiers = self.remove_subject_identifier(
+                subject_identifier, matrix_pool.get_subject_identifiers)
+            matrix_pool.set_subject_identifiers(subject_identifiers)
+            matrix_pool.count = matrix_pool.count - 1
+            matrix_pool.save()
+
+    def remove_subject_identifier(self, subject_identifier, get_subject_identifiers):
+        subject_identifiers = get_subject_identifiers
+        if subject_identifier in subject_identifiers:
+            index_to_remove = subject_identifiers.index(subject_identifier)
+            del subject_identifiers[index_to_remove]
+
+        return subject_identifiers
+
+    def create_new_matrix_pool(self, pool, bmi_group, age_group, gender_group,
+                               subject_identifier):
+
+        self.heu_huu_match_clean_up(subject_identifier)
+        matrix_pool = self.matrix_pool_cls.objects.create(
+            pool=pool, bmi_group=bmi_group, age_group=age_group,
+            gender_group=gender_group, count=1)
+        matrix_pool.set_subject_identifiers([subject_identifier])
+        matrix_pool.save()
+
+    def send_email_to_pre_flourish_users(self, huu_matrix_group):
+        pre_flourish_group = Group.objects.get(name='pre_flourish')
+        pre_flourish_users = pre_flourish_group.user_set.all()
+
+        subject = 'Reminder: Enroll into Flourish'
+        subject_identifiers = '\n'.join(
+            [matrix.subject_identifiers for matrix in huu_matrix_group])
+        subject_identifiers = subject_identifiers.strip('""')
+
+        message = f'This serves as a reminder that these participants are now eligible ' \
+                  f'to ' \
+                  f'enroll to the flourish edc. Please enroll them! \n\n' \
+                  f'Subject Identifier(s):\n' \
+                  f'{subject_identifiers}\n'
+
+        recipients = [user.email for user in pre_flourish_users]
+        send_mail(subject=subject, message=message,
+                  from_email=settings.DEFAULT_FROM_EMAIL,
+                  recipient_list=recipients)

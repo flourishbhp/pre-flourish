@@ -2,6 +2,8 @@ from collections import defaultdict
 
 import django_tables2 as tables
 from django.apps import apps as django_apps
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse
 from django.utils.html import format_html
 from django_tables2 import SingleTableView
@@ -9,6 +11,8 @@ from django_tables2.export import ExportMixin
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_navbar import NavbarViewMixin
 
+from ...helper_classes import HUUPoolGeneration
+from ...helper_classes.utils import populate_heu_huu_pool_data
 from ...models import MatrixPool
 
 
@@ -38,16 +42,75 @@ class ReportsView(ExportMixin, EdcBaseViewMixin, NavbarViewMixin,
     table_class = MatrixPoolTable
     table_pagination = {'per_page': 5}
     export_formats = ('csv', 'xls')  # Specify the export formats you want to support
+    pre_flourish_caregiver_child_consent_model = \
+        'pre_flourish.preflourishcaregiverchildconsent'
+    caregiver_previously_enrolled_model = 'flourish_caregiver.caregiverpreviouslyenrolled'
+    flourish_consent_model = 'flourish_caregiver.subjectconsent'
 
     @property
     def heu_huu_match_cls(self):
         return django_apps.get_model('pre_flourish.heuhuumatch')
 
+    @property
+    def caregiver_previously_enrolled_model_cls(self):
+        return django_apps.get_model(self.caregiver_previously_enrolled_model)
+
+    @property
+    def flourish_consent_model_cls(self):
+        return django_apps.get_model(self.flourish_consent_model)
+
+    @property
+    def pre_flourish_caregiver_child_consent_model_cls(self):
+        return django_apps.get_model(self.pre_flourish_caregiver_child_consent_model)
+
+    @property
+    def pre_flourish_subjects(self):
+        return self.pre_flourish_caregiver_child_consent_model_cls.objects.all(
+        ).values_list('subject_consent__screening_identifier', flat=True).distinct()
+
+    @property
+    def caregiver_previously_enrolled_objs(self):
+        return self.caregiver_previously_enrolled_model_cls.objects.filter(
+            subject_identifier__in=self.flourish_consent_objs).values_list(
+            'subject_identifier', flat=True)
+
+    @property
+    def flourish_consent_objs(self):
+        return self.flourish_consent_model_cls.objects.only('subject_identifier').filter(
+            screening_identifier__in=self.pre_flourish_subjects).values_list(
+            'subject_identifier', flat=True)
+
+    def post(self, request, *args, **kwargs):
+        if 'action_button' in request.POST:
+            action = request.POST.get('action_button')
+            if action == 'refresh':
+                populate_heu_huu_pool_data()
+        return HttpResponseRedirect(self.request.path)
+
+    @property
+    def get_enrolled_to_flourish(self):
+        enrolled_participants = self.caregiver_previously_enrolled_objs
+        enrolled_screening_ids = self.flourish_consent_model_cls.objects.only(
+            'subject_identifier').filter(
+            subject_identifier__in=enrolled_participants).values_list(
+            'screening_identifier', flat=True)
+        enrolled_pf_participants = self.pre_flourish_caregiver_child_consent_model_cls \
+            .objects.filter(
+            subject_consent__screening_identifier__in=enrolled_screening_ids
+        ).values_list('subject_identifier', flat=True)
+        huupool_generation = HUUPoolGeneration(
+            subject_identifiers=enrolled_pf_participants)
+        return huupool_generation.breakdown_participants
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        enrolled_to_flourish = self.get_enrolled_to_flourish
+        heu_pool_dict = self.convert_to_regular_dict(self.heu_pool)
         context.update(
             heu_pool=dict(self.heu_pool),
             huu_pool=dict(self.huu_pool),
+            enrolled_to_flourish=dict(enrolled_to_flourish),
+            heu_pool_dict=heu_pool_dict,
         )
         return context
 
@@ -66,3 +129,8 @@ class ReportsView(ExportMixin, EdcBaseViewMixin, NavbarViewMixin,
     @property
     def huu_pool(self):
         return self.get_pool_data('huu')
+
+    def convert_to_regular_dict(self, d):
+        if isinstance(d, defaultdict):
+            d = {k: self.convert_to_regular_dict(v) for k, v in d.items()}
+        return d

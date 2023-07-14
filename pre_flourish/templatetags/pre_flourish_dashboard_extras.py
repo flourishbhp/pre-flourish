@@ -252,12 +252,16 @@ def child_death_report_button(model_wrapper):
     )
 
 
+age_groups = ['9.5, 13', '14, 16', '17, 21']
+
+
 @register.inclusion_tag('pre_flourish/reports/matrix_pool.html')
 def heu_matrix_pool(data):
     title = 'FLOURISH MATRIX POOL'
     return dict(
         title=title,
-        data=data
+        data=data,
+        age_groups=age_groups
     )
 
 
@@ -266,7 +270,19 @@ def huu_matrix_pool(data):
     title = 'PRE FLOURISH MATRIX POOL'
     return dict(
         title=title,
-        data=data
+        data=data,
+        age_groups=age_groups
+    )
+
+
+@register.inclusion_tag('pre_flourish/reports/matrix_pool.html')
+def enrolled_to_flourish(data):
+    title = 'Participants Enrolled to FLOURISH'
+    return dict(
+        title=title,
+        data=data,
+        none_match=True,
+        age_groups=['0, 9.5', '9.6, 13', '14, 16', '17, 21']
     )
 
 
