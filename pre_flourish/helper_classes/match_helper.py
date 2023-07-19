@@ -73,19 +73,21 @@ class MatchHelper:
     def heu_huu_match_clean_up(self, subject_identifier):
         matrix_pools = self.matrix_pool_cls.objects.filter(pool='heu')
         for matrix_pool in matrix_pools:
-            subject_identifiers = self.remove_subject_identifier(
+            subject_identifiers, is_changed = self.remove_subject_identifier(
                 subject_identifier, matrix_pool.get_subject_identifiers)
-            matrix_pool.set_subject_identifiers(subject_identifiers)
-            matrix_pool.count = matrix_pool.count - 1
-            matrix_pool.save()
+            if is_changed:
+                matrix_pool.set_subject_identifiers(subject_identifiers)
+                matrix_pool.count = matrix_pool.count - 1
+                matrix_pool.save()
 
     def remove_subject_identifier(self, subject_identifier, get_subject_identifiers):
         subject_identifiers = get_subject_identifiers
         if subject_identifier in subject_identifiers:
             index_to_remove = subject_identifiers.index(subject_identifier)
             del subject_identifiers[index_to_remove]
+            return subject_identifiers, True
 
-        return subject_identifiers
+        return subject_identifiers, False
 
     def create_new_matrix_pool(self, pool, bmi_group, age_group, gender_group,
                                subject_identifier):
