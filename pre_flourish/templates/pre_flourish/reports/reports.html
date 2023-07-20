@@ -10,175 +10,7 @@
 {% block extra-scripts %}
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
-
-    <script type="text/javascript">
-        window.onload = function () {
-            const genderData = {{ gender_data|safe }};
-            const data = {{ data|safe }};
-
-            const genderLabels = genderData?.map(d => d.gender);
-            const genderCounts = genderData?.map(d => d.count);
-
-            // Initialize the BMI group counters
-            const bmiGroups = {
-                '<15': 0,
-                '15-17.9': 0,
-                '>=18': 0
-            };
-
-            // Iterate through the data and count the number of participants in each BMI group
-            data?.forEach(d => {
-                const heuBmi = parseFloat(d.fields.heu_prt_bmi);
-                const huuBmi = parseFloat(d.fields.huu_prt_bmi);
-                const bmis = [heuBmi, huuBmi];
-
-                bmis.forEach(bmi => {
-                    if (bmi < 15) {
-                        bmiGroups['<15']++;
-                    } else if (bmi >= 15 && bmi < 18) {
-                        bmiGroups['15-17.9']++;
-                    } else if (bmi >= 18) {
-                        bmiGroups['>=18']++;
-                    }
-                });
-            });
-
-            // Separate HUU and HEU data
-            const huuData = data.filter(d => d.fields.huu_prt_age && d.fields.huu_prt_bmi);
-            const heuData = data.filter(d => d.fields.heu_prt_age && d.fields.heu_prt_bmi);
-
-            // Prepare the data for HUU and HEU charts
-            const huuAges = huuData.map(d => d.fields.huu_prt_age);
-            const huuBmis = huuData.map(d => parseFloat(d.fields.huu_prt_bmi));
-            const heuAges = heuData.map(d => d.fields.heu_prt_age);
-            const heuBmis = heuData.map(d => parseFloat(d.fields.heu_prt_bmi));
-
-            // Create the HUU Age vs. BMI chart
-            const huuCtx = document.getElementById('huuAgeBmiChart').getContext('2d');
-            const huuAgeBmiChart = new Chart(huuCtx, {
-                type: 'scatter',
-                data: {
-                    datasets: [
-                        {
-                            label: 'HUU Age vs. BMI',
-                            data: huuData.map((d, i) => ({x: huuAges[i], y: huuBmis[i]})),
-                            backgroundColor: 'rgba(75, 192, 192, 0.4)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Age'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'BMI'
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Create the HEU Age vs. BMI chart
-            const heuCtx = document.getElementById('heuAgeBmiChart').getContext('2d');
-            const heuAgeBmiChart = new Chart(heuCtx, {
-                type: 'scatter',
-                data: {
-                    datasets: [
-                        {
-                            label: 'HEU Age vs. BMI',
-                            data: heuData.map((d, i) => ({x: heuAges[i], y: heuBmis[i]})),
-                            backgroundColor: 'rgba(255, 99, 132, 0.4)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Age'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'BMI'
-                            }
-                        }
-                    }
-                }
-            });
-
-
-            // Create the chart with the BMI group data
-            const ctx = document.getElementById('matchedBmiGroupChart').getContext('2d');
-            const bmiGroupChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(bmiGroups),
-                    datasets: [
-                        {
-                            label: 'BMI Groups',
-                            data: Object.values(bmiGroups),
-                            backgroundColor: [
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(255, 99, 132, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(255, 99, 132, 1)'
-                            ],
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-
-            const genderCtx = document.getElementById('genderChart').getContext('2d');
-            const genderChart = new Chart(genderCtx, {
-                type: 'pie',
-                data: {
-                    labels: genderLabels,
-                    datasets: [
-                        {
-                            label: 'Gender Distribution',
-                            data: genderCounts,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.6)',
-                                'rgba(54, 162, 235, 0.6)',
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 1)',
-                                'rgba(54, 162, 235, 1)',
-                            ],
-                            borderWidth: 1
-                        }
-                    ]
-                },
-            });
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock extra-scripts %}
 
 {% block extra-styles %}
@@ -228,11 +60,27 @@
             justify-content: center;
             padding: 2rem;
         }
+
+        .title_header {
+            display: flex;
+            flex-direction: row;
+            align-content: center;
+            justify-content: space-between;
+        }
     </style>
 {% endblock extra-styles %}
 
 {% block main %}
-    <h1>Enrolment Summary</h1>
+    <div class="title_header">
+        <h1>Enrolment Summary</h1>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <button type="submit" name="action_button" value="refresh">
+                <i class="fa fa-refresh" aria-hidden="true"></i>
+                Refresh
+            </button>
+        </form>
+    </div>
     <div id="main">
         <div class="container">
             <div class="row">
@@ -242,8 +90,7 @@
         </div>
         <div class="container">
             <div class="row">
-                {% heu_matrix_pool heu_pool %}
-                {% huu_matrix_pool huu_pool %}
+                {% enrolled_to_flourish enrolled_to_flourish %}
             </div>
         </div>
         <div class="container">
