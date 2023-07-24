@@ -55,7 +55,7 @@ class HEUPoolGeneration(MatchHelper):
 
     def get_heu_bmi_age_data(self, participants):
         if not participants:
-            return {}
+            return {}, {}
         bmi_age_data = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
         subject_data = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
 
