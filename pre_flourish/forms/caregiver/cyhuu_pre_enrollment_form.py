@@ -22,31 +22,40 @@ class CyhuuPreEnrollmentForm(SubjectModelFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.pre_flourish_visit_obj = None
 
-        self.subject_identifier = self.initial.get(
-            'subject_identifier', None)
+        pre_flourish_visit_id = self.initial.get('pre_flourish_visit', None)
+        if pre_flourish_visit_id:
+            try:
+                self.pre_flourish_visit_obj = self.visit_model.objects.get(
+                    id=pre_flourish_visit_id)
+            except self.visit_model.DoesNotExist:
+                self.pre_flourish = None
 
-        self.initial['biological_mother'] = getattr(
-            self.screening_obj, 'biological_mother')
+        if self.screening_obj:
+            self.initial['biological_mother'] = getattr(
+                self.screening_obj, 'biological_mother')
 
     @property
     def screening_obj(self):
-        try:
-            return self.screening_model_cls.objects.get(
-                screening_identifier=self.consent_obj_screening
-            )
-        except self.screening_model_cls.DoesNotExist:
-            raise
+        if self.consent_obj_screening:
+            try:
+                return self.screening_model_cls.objects.get(
+                    screening_identifier=self.consent_obj_screening
+                )
+            except self.screening_model_cls.DoesNotExist:
+                raise
 
     @property
     def consent_obj_screening(self):
-        try:
-            return self.consent_model_cls.objects.get(
-                subject_identifier=self.subject_identifier
-            ).screening_identifier
+        if self.pre_flourish_visit_obj:
+            try:
+                return self.consent_model_cls.objects.get(
+                    subject_identifier=self.pre_flourish_visit_obj.subject_identifier
+                ).screening_identifier
 
-        except self.consent_model_cls.DoesNotExist:
-            raise
+            except self.consent_model_cls.DoesNotExist:
+                raise
 
     class Meta:
         model = CyhuuPreEnrollment
