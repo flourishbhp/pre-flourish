@@ -30,7 +30,7 @@ class CyhuuPreEnrollmentForm(SubjectModelFormMixin, forms.ModelForm):
                 self.pre_flourish_visit_obj = self.visit_model.objects.get(
                     id=pre_flourish_visit_id)
             except self.visit_model.DoesNotExist:
-                self.pre_flourish = None
+                self.pre_flourish_visit_obj = None
 
         if self.screening_obj:
             self.initial['biological_mother'] = getattr(
