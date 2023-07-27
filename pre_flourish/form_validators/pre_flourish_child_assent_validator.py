@@ -36,6 +36,11 @@ class PreFlourishChildAssentFormValidator(LocatorChangeMixin, FormValidator):
             field='is_literate',
             field_required='witness_name')
 
+        self.applicable_if(
+            FEMALE,
+            field='gender',
+            field_applicable='preg_testing')
+
         self.validate_against_child_consent()
         self.clean_full_name_syntax()
         self.clean_initials_with_full_name()
