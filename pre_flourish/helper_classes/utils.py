@@ -1,7 +1,7 @@
 from celery.app import shared_task
 from django.db.models import Q
 from edc_action_item import site_action_items
-from edc_constants.constants import NEG, NEW, NO, OPEN
+from edc_constants.constants import FEMALE, MALE, NEG, NEW, NO, OPEN
 from edc_visit_schedule import site_visit_schedules
 
 from flourish_caregiver.models import MaternalDataset
@@ -23,7 +23,7 @@ def get_or_create_caregiver_dataset(consent):
         'protocol': 'BCPP',
         'screening_identifier': consent.screening_identifier,
     }
-    obj, _ = MaternalDataset.objects.get_or_create(
+    obj, _ = MaternalDataset.objects.update_or_create(
         defaults=defaults,
         study_maternal_identifier=pre_flourish_screening_obj(
             consent.screening_identifier).study_maternal_identifier)
@@ -31,11 +31,12 @@ def get_or_create_caregiver_dataset(consent):
 
 
 def get_or_create_child_dataset(consent):
+    genders = {MALE: 'Male', FEMALE: 'Female'}
     defaults = {
         'first_name': consent.first_name,
         'last_name': consent.last_name,
         'dob': consent.child_dob,
-        'infant_sex': consent.gender,
+        'infant_sex': genders.get(consent.gender),
         'infant_hiv_exposed': 'Unexposed',
         'infant_hiv_status': NEG,
         'infant_breastfed': NO,
@@ -47,7 +48,7 @@ def get_or_create_child_dataset(consent):
         'infant_offstudy_reason': 'Completion of protocol',
         'infant_vitalstatus_final': 'Alive'
     }
-    ChildDataset.objects.get_or_create(
+    ChildDataset.objects.update_or_create(
         defaults=defaults,
         study_child_identifier=consent.subject_identifier)
 
