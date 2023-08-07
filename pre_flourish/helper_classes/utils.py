@@ -18,11 +18,14 @@ from pre_flourish.models.child.pre_flourish_child_dummy_consent import \
 
 def get_or_create_caregiver_dataset(consent):
     defaults = {
-        'first_name': consent.first_name,
-        'last_name': consent.last_name,
         'protocol': 'BCPP',
         'screening_identifier': consent.screening_identifier,
     }
+    if 'B' in consent.subject_identifier:
+        defaults.update({
+            'first_name': consent.first_name,
+            'last_name': consent.last_name,
+        })
     obj, _ = MaternalDataset.objects.update_or_create(
         defaults=defaults,
         study_maternal_identifier=pre_flourish_screening_obj(
