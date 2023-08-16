@@ -1,9 +1,10 @@
 from django import forms
 from django.apps import apps as django_apps
-from django.db.models import Q
-from edc_base.sites import SiteModelFormMixin
-from edc_form_validators import FormValidatorMixin
 from django.core.exceptions import ValidationError
+from edc_base.sites import SiteModelFormMixin
+from edc_constants.constants import YES
+from edc_form_validators import FormValidatorMixin
+
 from pre_flourish.form_validators import PreFlourishConsentFormValidator
 from ...models import PreFlourishConsent
 from ...models import PreFlourishSubjectScreening
@@ -36,8 +37,9 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
         super().__init__(*args, **kwargs)
 
         self.screening_identifier = self.initial.get('screening_identifier', None)
+        biological_caregiver = self.initial.get('biological_caregiver', None)
 
-        if self.caregiver_locator_model_obj:
+        if self.caregiver_locator_model_obj and biological_caregiver == YES:
 
             if self.caregiver_locator_model_obj.first_name:
                 self.initial['first_name'] = self.caregiver_locator_model_obj.first_name
@@ -51,8 +53,7 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
                 last_name = self.caregiver_locator_model_obj.last_name
                 self.initial['initials'] = f'{first_name[0]}{last_name[0]}'.upper()
 
-            self.initial['biological_caregiver'] = getattr(
-                self.screening_obj, 'biological_mother')
+        self.initial['biological_caregiver'] = biological_caregiver
 
     @property
     def caregiver_locator_model_obj(self):
