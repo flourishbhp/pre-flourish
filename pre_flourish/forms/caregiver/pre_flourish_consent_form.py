@@ -37,7 +37,7 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
         super().__init__(*args, **kwargs)
 
         self.screening_identifier = self.initial.get('screening_identifier', None)
-        biological_caregiver = self.initial.get('biological_caregiver', None)
+        biological_caregiver = getattr(self.screening_obj, 'biological_mother', None)
 
         if self.caregiver_locator_model_obj and biological_caregiver == YES:
 
