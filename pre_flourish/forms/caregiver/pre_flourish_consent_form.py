@@ -77,12 +77,13 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
 
     @property
     def screening_obj(self):
-        try:
-            return self.screening_model_cls.objects.get(
-                screening_identifier=self.screening_identifier
-            )
-        except self.screening_model_cls.DoesNotExist:
-            raise
+        if self.screening_identifier:
+            try:
+                return self.screening_model_cls.objects.get(
+                    screening_identifier=self.screening_identifier
+                )
+            except self.screening_model_cls.DoesNotExist:
+                raise
 
     def has_changed(self):
         return True

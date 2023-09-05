@@ -1,6 +1,9 @@
+from datetime import datetime
+
 from django.apps import apps as django_apps
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from edc_base.utils import age, get_utcnow
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_constants.constants import MALE
 from edc_dashboard.views import DashboardView as BaseDashboardView
@@ -234,6 +237,17 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         return latest_huu_pre_enrollment_objs
 
     @property
+    def valid_by_age(self):
+        """Returns True if subject is valid by age.
+        """
+        is_valid = []
+        for obj in self.pre_flourish_child_consent_model_objs:
+            _age = age(obj.child_dob, datetime.now())
+            _age = _age.years + (_age.months / 12)
+            is_valid.append(7 <= _age <= 9.5)
+        return any(is_valid)
+
+    @property
     def is_flourish_eligible(self):
         """Returns True if subject is flourish eligible.
         """
@@ -249,4 +263,4 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             matrix_group.append(self.matrix_pool_cls.objects.filter(
                 pool='heu', bmi_group=bmi_group, age_group=age_range,
                 gender_group=gender, ).exists())
-        return any(matrix_group)
+        return any(matrix_group) or self.valid_by_age
