@@ -3,7 +3,7 @@ from datetime import datetime
 from django.apps import apps as django_apps
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-from edc_base.utils import age, get_utcnow
+from edc_base.utils import age
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_constants.constants import MALE
 from edc_dashboard.views import DashboardView as BaseDashboardView
@@ -240,19 +240,17 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     def valid_by_age(self):
         """Returns True if subject is valid by age.
         """
-        is_valid = []
         for obj in self.pre_flourish_child_consent_model_objs:
             _age = age(obj.child_dob, datetime.now())
             _age = _age.years + (_age.months / 12)
-            is_valid.append(7 <= _age <= 9.5)
-        return any(is_valid)
+            if 7 <= _age <= 9.5:
+                return True
 
     @property
     def is_flourish_eligible(self):
         """Returns True if subject is flourish eligible.
         """
         match_helper = MatchHelper()
-        matrix_group = []
         for obj in self.latest_huu_pre_enrollment_objs:
             bmi = obj.child_weight_kg / ((obj.child_height / 100) ** 2)
             bmi_group = match_helper.bmi_group(bmi)
@@ -260,7 +258,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             gender = 'male' if obj.gender == MALE else 'female'
             if bmi_group is None or age_range is None:
                 continue
-            matrix_group.append(self.matrix_pool_cls.objects.filter(
-                pool='heu', bmi_group=bmi_group, age_group=age_range,
-                gender_group=gender, ).exists())
-        return any(matrix_group) or self.valid_by_age
+            if self.matrix_pool_cls.objects.filter(
+                    pool='heu', bmi_group=bmi_group, age_group=age_range,
+                    gender_group=gender, ).exists() or self.valid_by_age:
+                return True
