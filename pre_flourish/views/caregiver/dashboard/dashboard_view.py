@@ -252,6 +252,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         """
         match_helper = MatchHelper()
         matrix_group = []
+        if self.valid_by_age:
+            return True
         for obj in self.latest_huu_pre_enrollment_objs:
             bmi = obj.child_weight_kg / ((obj.child_height / 100) ** 2)
             bmi_group = match_helper.bmi_group(bmi)
@@ -259,7 +261,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             gender = 'male' if obj.gender == MALE else 'female'
             if bmi_group is None or age_range is None:
                 continue
-            matrix_group.append(self.matrix_pool_cls.objects.filter(
+            return matrix_group.append(self.matrix_pool_cls.objects.filter(
                 pool='heu', bmi_group=bmi_group, age_group=age_range,
                 gender_group=gender, ).exists())
-        return any(matrix_group) or self.valid_by_age
