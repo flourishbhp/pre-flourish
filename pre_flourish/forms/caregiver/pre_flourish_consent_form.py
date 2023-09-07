@@ -2,7 +2,7 @@ from django import forms
 from django.apps import apps as django_apps
 from django.core.exceptions import ValidationError
 from edc_base.sites import SiteModelFormMixin
-from edc_constants.constants import YES
+from edc_constants.constants import FEMALE, YES
 from edc_form_validators import FormValidatorMixin
 
 from pre_flourish.form_validators import PreFlourishConsentFormValidator
@@ -52,6 +52,8 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
                 first_name = self.caregiver_locator_model_obj.first_name
                 last_name = self.caregiver_locator_model_obj.last_name
                 self.initial['initials'] = f'{first_name[0]}{last_name[0]}'.upper()
+
+            self.initial['gender'] = FEMALE
 
         self.initial['biological_caregiver'] = biological_caregiver
 
