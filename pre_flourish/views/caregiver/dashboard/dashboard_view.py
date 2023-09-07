@@ -251,7 +251,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         """Returns True if subject is flourish eligible.
         """
         match_helper = MatchHelper()
-        matrix_group = []
         if self.valid_by_age:
             return True
         for obj in self.latest_huu_pre_enrollment_objs:
@@ -261,6 +260,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             gender = 'male' if obj.gender == MALE else 'female'
             if bmi_group is None or age_range is None:
                 continue
-            return matrix_group.append(self.matrix_pool_cls.objects.filter(
-                pool='heu', bmi_group=bmi_group, age_group=age_range,
-                gender_group=gender, ).exists())
+            if self.matrix_pool_cls.objects.filter(
+                    pool='heu', bmi_group=bmi_group, age_group=age_range,
+                    gender_group=gender, ).exists():
+                return True
