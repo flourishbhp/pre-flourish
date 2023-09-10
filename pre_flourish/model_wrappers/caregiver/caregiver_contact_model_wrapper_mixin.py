@@ -1,0 +1,7 @@
+from flourish_dashboard.model_wrappers.caregiver_contact_model_wrapper_mixin import \
+    CaregiverContactModelWrapperMixin as BaseCaregiverContactModelWrapperMixin
+from .caregiver_contact_model_wrapper import CaregiverContactModelWrapper
+
+
+class CaregiverContactModelWrapperMixin(BaseCaregiverContactModelWrapperMixin):
+    caregiver_contact_model_wrapper_cls = CaregiverContactModelWrapper

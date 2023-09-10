@@ -5,17 +5,17 @@ IDENTITY_TYPE = (
     ('country_id', 'Country ID number'),
     ('country_id_rcpt', 'Country ID receipt'),
     ('passport', 'Passport'),
-    (OTHER, 'Other'),
+    ('drivers_license', 'Drivers license'),
+    ('marriage_certificate', 'Marriage certificate'),
 )
 
 POS_NEG_IND = (
-  (POS, 'Positive'),
-  (NEG, 'Negative'),
-  (IND, 'Indeterminate')
+    (POS, 'Positive'),
+    (NEG, 'Negative'),
+    (IND, 'Indeterminate')
 )
 
 RECRUIT_SOURCE = (
-    ('ANC clinic staff', 'ANC clinic staff'),
     ('BHP recruiter/clinician', 'BHP recruiter/clinician'),
     (OTHER, 'Other, specify'),
 )
@@ -31,7 +31,7 @@ RECRUIT_CLINIC = (
     ('Old Naledi', 'Old Naledi'),
     ('Mafitlhakgosi', 'Mafitlhakgosi'),
     ('Schools', 'Schools'),
-    (OTHER, 'Other health facilities not associated with study site'),
+    (OTHER, 'Other, specify'),
 )
 
 UNCERTAIN_GEST_AGE = (
@@ -51,6 +51,12 @@ YES_NO_UNKNOWN = (
     (YES, YES),
     (NO, NO),
     ('Unknown', 'Unknown'),
+)
+
+YES_NO_THINKING = (
+    (YES, YES),
+    (NO, NO),
+    ('thinking', 'Still thinking'),
 )
 
 APPT_STATUS = (
@@ -92,7 +98,8 @@ APPT_TYPE = (
 
 CONTACT_FAIL_REASON = (
     ('no_response', 'Phone rang, no response but voicemail left'),
-    ('no_response_vm_not_left', 'Phone rang no response and no option to leave voicemail'),
+    (
+    'no_response_vm_not_left', 'Phone rang no response and no option to leave voicemail'),
     ('disconnected', 'Phone did not ring/number disconnected'),
     ('number_changed', 'No longer the phone number of BHP participant'),
     (NOT_APPLICABLE, 'Not Applicable'),
@@ -100,8 +107,10 @@ CONTACT_FAIL_REASON = (
 
 MAY_CALL = (
     (YES, 'Yes, we may continue to contact the participant.'),
-    ('no_flourish_study_calls', 'No, the participant has asked to not be contacted about the FLOURISH study.'),
-    ('no_any_bhp_study_calls', 'No, the participant has asked not to be contacted about ANY BHP study'),
+    ('no_flourish_study_calls',
+     'No, the participant has asked to not be contacted about the FLOURISH study.'),
+    ('no_any_bhp_study_calls',
+     'No, the participant has asked not to be contacted about ANY BHP study'),
     (NOT_APPLICABLE, 'Not Applicable')
 )
 

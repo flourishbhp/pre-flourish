@@ -1,3 +1,3 @@
-from .search_slug_model_mixin import SearchSlugModelMixin
+from pre_flourish.models.model_mixins.search_slug_model_mixin import SearchSlugModelMixin
 from .review_fields_mixin import ReviewFieldsMixin
 from .off_study_mixin import OffStudyModelMixin

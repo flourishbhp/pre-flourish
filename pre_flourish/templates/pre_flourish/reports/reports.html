@@ -1,0 +1,110 @@
+{% extends 'pre_flourish/base.html' %}
+{% load django_tables2 %}
+{% load render_table from django_tables2 %}
+{% load static %}
+{% load pre_flourish_dashboard_extras %}
+{% load export_url from django_tables2 %}
+
+
+
+{% block extra-scripts %}
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock extra-scripts %}
+
+{% block extra-styles %}
+    <style>
+        .container {
+            margin-top: 20px;
+            padding-bottom: 5rem;
+        }
+
+        .panel-body {
+            height: 300px;
+        }
+
+        .table {
+            height: 50vh;
+        }
+
+        .key-body {
+            height: 10.5rem;
+        }
+
+        .table td {
+            overflow-x: auto;
+            white-space: nowrap;
+            max-height: 200px;
+            max-width: 300px;
+        }
+
+        .panel-heading-nav {
+            border-bottom: 0;
+            padding: 10px 0 0;
+        }
+
+        .panel-heading-nav .nav {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .panel.panel-default {
+            overflow-x: auto;
+        }
+
+        .table-container {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .title_header {
+            display: flex;
+            flex-direction: row;
+            align-content: center;
+            justify-content: space-between;
+        }
+    </style>
+{% endblock extra-styles %}
+
+{% block main %}
+    <div class="title_header">
+        <h1>Enrolment Summary</h1>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <button type="submit" name="action_button" value="refresh">
+                <i class="fa fa-refresh" aria-hidden="true"></i>
+                Refresh
+            </button>
+        </form>
+    </div>
+    <div id="main">
+        <div class="container">
+            <div class="row">
+                {% heu_matrix_pool heu_pool %}
+                {% huu_matrix_pool huu_pool %}
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                {% enrolled_to_flourish enrolled_to_flourish %}
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3> Matrix Pool Table </h3>
+                    </div>
+                    <div class="table-container">
+                        <!-- Table rendering -->
+                        {% render_table table %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main %}

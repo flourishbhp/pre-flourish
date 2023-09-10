@@ -7,3 +7,5 @@ from .child import ChildDashboardView
 from .child import ChildListboardView
 from .home_view import HomeView
 from .mixins import AppConfigListboardUrlsViewMixin
+from .reports import ReportsView
+from .reports import download_pool_ids_view

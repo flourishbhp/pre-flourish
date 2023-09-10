@@ -1,11 +1,31 @@
 {% load pre_flourish_dashboard_extras %}
 <table class="table table-condensed">
     <thead></thead>
-    <tbody>
-      	<tr>
-		<td>
-			Locator
-		</td>
-		</tr>
-    </tbody>
+    <tr>
+        <td>
+            {% locator_button subject_consent %}
+        </td>
+    </tr>
+    <tr>
+        <td>{% caregiver_contact_button subject_consent %}</td>
+    </tr>
+    {% if is_flourish_eligible %}
+        <tr>
+            <td>{% bhp_prior_screening_button subject_consent %}</td>
+        </tr>
+    {% endif %}
+    {% if subject_consent.caregiver_offstudy %}
+        <tr>
+            <td>
+                {% caregiver_off_study_button subject_consent %}
+            </td>
+        </tr>
+    {% endif %}
+    {% if subject_consent.caregiver_death_report %}
+        <tr>
+            <td>
+                {% caregiver_death_report_button subject_consent %}
+            </td>
+        </tr>
+    {% endif %}
 </table>

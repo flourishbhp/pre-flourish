@@ -4,11 +4,7 @@
 {% load pre_flourish_dashboard_extras %}
 
 {% block listboard_panel %}
-    <a id="maternal_screening_add" title="add screening" class="btn btn-sm btn-default"
-       role="button"
-       href="{{ maternal_screening_add_url }}?next={{ pre_flourish_screening_listboard_url }}">
-        <i class="fa fa-plus fa-sm"></i>Add Pre Flourish Screening
-    </a>
+
 {% endblock listboard_panel %}
 {% block listboard_table_header %}
     <!-- begin results header -->
@@ -47,8 +43,8 @@
 {% block listboard_table_columns %}
 
     <td>{{ result.screening_identifier }} </td>
-    <td nowrap>{{ result.has_omang }} </td>
-    <td nowrap>{{ result.age_in_years }} yrs</td>
+    <td nowrap>{{ result.valid_identification }} </td>
+    <td nowrap>{{ result.caregiver_age }} yrs</td>
     <td nowrap>{{ result.user_created }}</td>
     <td nowrap>{{ result.object.modified|date:"SHORT_DATETIME_FORMAT" }}</td>
     <td nowrap>{{ result.hostname_created }}</td>

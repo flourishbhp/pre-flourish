@@ -1,19 +1,37 @@
 from dateutil.relativedelta import relativedelta
 from edc_base.utils import get_utcnow
 from faker import Faker
+from flourish_caregiver.models import CaregiverLocator, MaternalDataset
+from flourish_child.models import ChildAssent
 from model_mommy.recipe import Recipe, seq
 from edc_visit_tracking.constants import SCHEDULED
 from edc_constants.constants import ALIVE, YES, ON_STUDY, PARTICIPANT, \
     NOT_APPLICABLE
 
 from .models import PreFlourishConsent, PreFlourishSubjectScreening, \
-    PreFlourishCaregiverChildConsent, PreFlourishChildAssent, PreFlourishVisit, HuuPreEnrollment
+    PreFlourishCaregiverChildConsent, PreFlourishChildAssent, PreFlourishVisit, \
+    HuuPreEnrollment, CyhuuPreEnrollment
 
 fake = Faker()
 
 preflourishsubjectscreening = Recipe(
     PreFlourishSubjectScreening,
     has_child=YES,
+)
+childassent = Recipe(
+    ChildAssent,
+    subject_identifier=None,
+    identity=seq('123476521'),
+    confirm_identity=seq('123476521'),
+    identity_type='OMANG',
+    first_name=fake.first_name,
+    last_name=fake.last_name,
+    gender='M',
+    hiv_testing=YES,
+    remain_in_study=YES)
+
+maternaldataset = Recipe(
+    MaternalDataset,
 )
 
 preflourishconsent = Recipe(
@@ -35,6 +53,7 @@ preflourishconsent = Recipe(
     assessment_score=YES,
     consent_signature=YES,
     consent_copy=YES,
+    child_consent=YES,
 )
 
 preflourishcaregiverchildconsent = Recipe(
@@ -81,3 +100,14 @@ preflourishvisit = Recipe(
     study_status=ON_STUDY,
     survival_status=ALIVE,
     info_source=PARTICIPANT)
+
+cyhuupreenrollment = Recipe(
+    CyhuuPreEnrollment,
+)
+
+caregiverlocator = Recipe(
+    CaregiverLocator,
+    first_name=fake.first_name,
+    last_name=fake.last_name,
+    user_created='flourish')
+

@@ -7,7 +7,6 @@ from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
 
 from ...model_wrappers import CaregiverChildConsentModelWrapper
-from ...model_wrappers.child.child_consent_model_wrapper import ChildConsentModelWrapper
 
 
 class ChildListboardView(EdcBaseViewMixin, NavbarViewMixin,
@@ -22,7 +21,7 @@ class ChildListboardView(EdcBaseViewMixin, NavbarViewMixin,
     model = 'pre_flourish.preflourishcaregiverchildconsent'
     model_wrapper_cls = CaregiverChildConsentModelWrapper
     navbar_name = 'pre_flourish_dashboard'
-    navbar_selected_item = 'child_subjects'
+    navbar_selected_item = 'pre_flourish_child_subjects'
     search_form_url = 'pre_flourish_child_listboard_url'
 
     def get_queryset_filter_options(self, request, *args, **kwargs):

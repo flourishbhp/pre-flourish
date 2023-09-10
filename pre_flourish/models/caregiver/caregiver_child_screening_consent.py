@@ -1,8 +1,9 @@
+from django.apps import apps as django_apps
 from django.db import models
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.sites import SiteModelMixin
-from edc_consent.field_mixins import IdentityFieldsMixin, CitizenFieldsMixin
+from edc_consent.field_mixins import CitizenFieldsMixin, IdentityFieldsMixin
 from edc_consent.field_mixins import (PersonalFieldsMixin, ReviewFieldsMixin,
                                       VulnerabilityFieldsMixin)
 from edc_consent.managers import ConsentManager
@@ -61,6 +62,10 @@ class CaregiverChildScreeningConsent(
         fields.extend(['identity', 'screening_identifier',
                        'first_name', 'last_name'])
         return fields
+
+    @property
+    def registration_model(self):
+        return django_apps.get_model('pre_flourish.preflourishregisteredsubject')
 
     class Meta(ConsentModelMixin.Meta):
         app_label = 'pre_flourish'

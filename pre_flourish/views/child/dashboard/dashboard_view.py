@@ -1,26 +1,33 @@
 from django.apps import apps as django_apps
-from edc_base.view_mixins import EdcBaseViewMixin
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.views.generic.base import ContextMixin
-from edc_registration.models import RegisteredSubject
+from edc_base.view_mixins import EdcBaseViewMixin
 from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_navbar import NavbarViewMixin
+from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
-from pre_flourish.model_wrappers import ChildAppointmentModelWrapper, \
-    ChildConsentModelWrapper, ActionItemModelWrapper, ChildVisitModelWrapper, \
-    PreflourishCaregiverLocatorModelWrapper, CaregiverChildConsentModelWrapper, ChildCrfModelWrapper, \
-    AppointmentModelWrapper, MaternalRegisteredSubjectModelWrapper
+
+from pre_flourish.model_wrappers import ActionItemModelWrapper, AppointmentModelWrapper, \
+    CaregiverChildConsentModelWrapper, ChildAppointmentModelWrapper, \
+    ChildConsentModelWrapper, ChildCrfModelWrapper, \
+    ChildVisitModelWrapper, MaternalRegisteredSubjectModelWrapper, \
+    PreflourishCaregiverLocatorModelWrapper
+from pre_flourish.views.view_mixins.dashboard_view_mixin import DashboardViewMixin
 
 
 class CaregiverRegisteredSubjectCls(ContextMixin):
 
     @property
+    def registration_model(self):
+        return django_apps.get_model('pre_flourish.preflourishregisteredsubject')
+
+    @property
     def caregiver_registered_subject(self):
         try:
-            caregiver_registered_subject = RegisteredSubject.objects.get(
+            caregiver_registered_subject = self.registration_model.objects.get(
                 subject_identifier=self.caregiver_subject_identifier)
-        except RegisteredSubject.DoesNotExist:
+        except self.registration_model.DoesNotExist:
             raise ValidationError(
                 "Registered subject for the mother is expected to exist.")
         else:
@@ -41,12 +48,12 @@ class CaregiverRegisteredSubjectCls(ContextMixin):
         return context
 
 
-class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
+class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMixin,
                     NavbarViewMixin, BaseDashboardView, CaregiverRegisteredSubjectCls):
     dashboard_url = 'pre_flourish_child_dashboard_url'
     dashboard_template = 'pre_flourish_child_dashboard_template'
     appointment_model = 'pre_flourish.appointment'
-    appointment_model_wrapper_cls = AppointmentModelWrapper
+    appointment_model_wrapper_cls = ChildAppointmentModelWrapper
     consent_model = 'pre_flourish.preflourishchilddummysubjectconsent'
     consent_model_wrapper_cls = ChildConsentModelWrapper
     subject_locator_model = 'flourish_caregiver.caregiverlocator'
@@ -59,9 +66,11 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
     mother_infant_study = True
     infant_links = False
     maternal_links = True
-    maternal_dashboard_include_value = 'pre_flourish/child/dashboard/caregiver_dashboard_links.html'
+    maternal_dashboard_include_value = \
+        'pre_flourish/child/dashboard/caregiver_dashboard_links.html'
     special_forms_include_value = 'pre_flourish/child/dashboard/special_forms.html'
     visit_attr = 'preflourishvisit'
+    registered_subject_model = 'pre_flourish.preflourishregisteredsubject'
 
     def get_subject_locator_or_message(self):
         """
@@ -92,8 +101,9 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
                 self.current_onschedule_model = onschedule_model_obj
             else:
                 model_name = f'pre_flourish.{onschedule_model_obj._meta.model_name}'
-                visit_schedule, schedule = site_visit_schedules.get_by_onschedule_model_schedule_name(
-                    model_name, onschedule_model_obj.schedule_name)
+                visit_schedule, schedule = \
+                    site_visit_schedules.get_by_onschedule_model_schedule_name(
+                        model_name, onschedule_model_obj.schedule_name)
                 self.current_schedule = schedule
                 self.current_visit_schedule = visit_schedule
                 self.current_onschedule_model = onschedule_model_obj
@@ -113,6 +123,7 @@ class DashboardView(EdcBaseViewMixin, SubjectDashboardViewMixin,
         context = super().get_context_data(**kwargs)
         context.update(
             caregiver_child_consent=self.caregiver_child_consent,
-            schedule_names=[getattr(model, 'schedule_name') for model in self.onschedule_models]
+            schedule_names=[getattr(model, 'schedule_name') for model in
+                            self.onschedule_models]
         )
         return context

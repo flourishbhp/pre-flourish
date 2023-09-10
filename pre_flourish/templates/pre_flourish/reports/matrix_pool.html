@@ -1,0 +1,68 @@
+{% load pre_flourish_dashboard_extras %}
+
+<div class="col-md-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ title }} </h3>
+        </div>
+        <div class="panel-body key-body">
+            <h4>Note: Key for BMI and Age Groups</h4>
+            <ul>
+                <li>Headers represent the age groups</li>
+                <li>Columns represent the BMI groups</li>
+            </ul>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th></th>
+                {% for age_group in age_groups %}
+                    <th colspan="2">{{ age_group }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th></th>
+                {% for age_group in age_groups %}
+                    <th>M</th>
+                    <th>F</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for key, value in data.items %}
+                <tr>
+                    <td>
+                        {{ key }}
+                    </td>
+                    {% if data|get_item:key|get_item:"(0, 9.4)" %}
+                        <td>
+                            {{ data|get_item:key|get_item:"(0, 9.4)"|get_item:"male" }}
+                        </td>
+                        <td>
+                            {{ data|get_item:key|get_item:'(0, 9.4)'|get_item:'female' }}
+                        </td>
+                    {% endif %}
+                    <td>
+                        {{ data|get_item:key|get_item:"(9.5, 13)"|get_item:"male" }}
+                    </td>
+                    <td>
+                        {{ data|get_item:key|get_item:'(9.5, 13)'|get_item:'female' }}
+                    </td>
+                    <td>
+                        {{ data|get_item:key|get_item:'(14, 16)'|get_item:'male' }}
+                    </td>
+                    <td>
+                        {{ data|get_item:key|get_item:'(14, 16)'|get_item:'female' }}
+                    </td>
+                    <td>
+                        {{ data|get_item:key|get_item:'(17, 21)'|get_item:'male' }}
+                    </td>
+                    <td>
+                        {{ data|get_item:key|get_item:'(17, 21)'|get_item:'female' }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

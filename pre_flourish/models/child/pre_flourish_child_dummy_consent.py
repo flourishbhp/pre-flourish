@@ -1,11 +1,12 @@
+from django.apps import apps as django_apps
 from django.db import models
 from django_crypto_fields.fields import IdentityField
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.sites.site_model_mixin import SiteModelMixin
 from edc_base.utils import get_utcnow
-from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_consent.model_mixins import ConsentModelMixin
+from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_registration.model_mixins import (
     UpdatesOrCreatesRegistrationModelMixin)
 from edc_search.model_mixins import SearchSlugManager
@@ -53,6 +54,10 @@ class PreFlourishChildDummySubjectConsent(
 
     def natural_key(self):
         return self.subject_identifier
+
+    @property
+    def registration_model(self):
+        return django_apps.get_model('pre_flourish.preflourishregisteredsubject')
 
     class Meta(ConsentModelMixin.Meta):
         app_label = 'pre_flourish'

@@ -14,9 +14,8 @@ class PreflourishCaregiverLocatorModelWrapper(MaternalScreeningModelWrapperMixin
     model = 'flourish_caregiver.caregiverlocator'
     querystring_attrs = ['screening_identifier', 'subject_identifier',
                          'study_maternal_identifier', 'first_name', 'last_name']
-    next_url_attrs = ['screening_identifier', 'subject_identifier',
-                      'study_maternal_identifier', ]
-    next_url_name = settings.DASHBOARD_URL_NAMES.get('maternal_dataset_listboard_url')
+    next_url_attrs = ['subject_identifier']
+    next_url_name = settings.DASHBOARD_URL_NAMES.get('pre_flourish_subject_dashboard_url')
     inperson_contact_model = 'pre_flourish_follow.preflourishinpersoncontactattempt'
     log_entry_model = 'pre_flourish_follow.preflourishlogentry'
 
@@ -29,7 +28,7 @@ class PreflourishCaregiverLocatorModelWrapper(MaternalScreeningModelWrapperMixin
         return django_apps.get_model(self.log_entry_model)
 
     @property
-    def previous_subject_identifier(self):
+    def study_maternal_identifier(self):
         return self.object.study_maternal_identifier
 
     @property
@@ -65,12 +64,7 @@ class PreflourishCaregiverLocatorModelWrapper(MaternalScreeningModelWrapperMixin
         except self.log_entry_cls.DoesNotExist:
             return False
         else:
-            return log_entry.willing_consent == YES \
-                and log_entry.has_child == YES \
-                and log_entry.caregiver_age == YES \
-                and log_entry.caregiver_omang == YES \
-                and log_entry.willing_assent == YES \
-                and log_entry.study_interest == YES
+            return log_entry.has_child == YES
 
     @property
     def call_log_model_wrappers(self):

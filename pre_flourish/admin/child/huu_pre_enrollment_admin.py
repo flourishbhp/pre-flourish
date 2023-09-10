@@ -18,13 +18,11 @@ class HuuPreEnrollmentAdmin(ChildCrfModelAdminMixin, admin.ModelAdmin):
             'fields': [
                 'pre_flourish_visit',
                 'report_datetime',
-                'child_dob',
                 'child_hiv_docs',
                 'child_hiv_result',
                 'child_test_date',
-                'weight',
-                'height',
-                'sex',
+                'child_weight_kg',
+                'child_height',
                 'knows_gest_age',
                 'gestational_age',
                 'premature_at_birth',
@@ -35,9 +33,6 @@ class HuuPreEnrollmentAdmin(ChildCrfModelAdminMixin, admin.ModelAdmin):
 
     radio_fields = {'child_hiv_docs': admin.VERTICAL,
                     'child_hiv_result': admin.VERTICAL,
-                    'sex': admin.VERTICAL,
                     'knows_gest_age': admin.VERTICAL,
                     'premature_at_birth': admin.VERTICAL,
                     'breastfed': admin.VERTICAL}
-
-    search_fields = ['screening_identifier']

@@ -25,16 +25,11 @@
             </sup>
         </span>
     </a>
-
     <a class="list-group-item">
         <i class="fa fa-users"></i>
-        {{ consent.get_cohort|default:'?? Cohort' }}
-        <span data-toggle="tooltip" data-placement="right" title="Cohorts"
-              class="text text-default">
-            <sup></sup>
-        </span> |
-<span data-toggle="tooltip" data-placement="right" title="Cohorts" class="text text-default">Consent Version {{child_version}}</span>
-
+			<span data-toggle="tooltip" data-placement="right" title="Cohorts" class="text text-default">
+				Consent Version {{ caregiver_child_consent.object.subject_consent.version }}
+			</span>
     </a>
 
 </div>

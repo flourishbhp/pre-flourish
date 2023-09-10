@@ -1,4 +1,3 @@
-from statistics import mode
 from django.db import models
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
@@ -10,11 +9,10 @@ from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_protocol.validators import datetime_not_before_study_start
 from edc_search.model_mixins import SearchSlugManager
 
+from flourish_caregiver.identifiers import ScreeningIdentifier
 from pre_flourish_follow.models import EligibilityMixin
-from ...identifiers import ScreeningIdentifier
 from .eligibility import Eligibility
 from .model_mixins import SearchSlugModelMixin
-from flourish_caregiver.models import CaregiverLocator
 
 
 class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):
@@ -23,7 +21,7 @@ class PreFlourishSubjectScreeningManager(SearchSlugManager, models.Manager):
         return self.get(screening_identifier=eligibility_identifier)
 
 
-class PreFlourishSubjectScreening(EligibilityMixin,NonUniqueSubjectIdentifierFieldMixin,
+class PreFlourishSubjectScreening(EligibilityMixin, NonUniqueSubjectIdentifierFieldMixin,
                                   SiteModelMixin, SearchSlugModelMixin, BaseUuidModel):
     """ A model completed by the user to test and capture the result of
     the pre-consent eligibility checks.
@@ -39,10 +37,30 @@ class PreFlourishSubjectScreening(EligibilityMixin,NonUniqueSubjectIdentifierFie
         null=True,
         unique=True)
 
-    previous_subject_identifier = models.CharField(
-        verbose_name='Prev. Subject Identifier',
+    study_maternal_identifier = models.CharField(
+        verbose_name='Study Maternal Identifier',
         max_length=17,
         null=True, )
+
+    valid_identification = models.CharField(
+        verbose_name="Do you have any valid Botswana identification document?",
+        max_length=20,
+        null=True,
+        help_text='If no, participant is not eligible.',
+        choices=YES_NO)
+
+    biological_mother = models.CharField(
+        verbose_name="Are you the biological mother",
+        max_length=3,
+        null=True,
+        choices=YES_NO)
+
+    biological_mother_in_bcpp = models.CharField(
+        verbose_name="Is this child the biological child of the woman who was enrolled "
+                     "in the BCPP study",
+        max_length=3,
+        null=True,
+        choices=YES_NO)
 
     report_datetime = models.DateTimeField(
         verbose_name="Report Date and Time",

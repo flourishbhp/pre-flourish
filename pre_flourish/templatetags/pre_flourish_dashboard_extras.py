@@ -1,10 +1,10 @@
 from datetime import datetime
-from urllib.parse import urlencode, unquote
+from urllib.parse import unquote, urlencode
 
 from django import template
 from django.conf import settings
-from edc_base.utils import age, get_utcnow
 from django.utils.safestring import mark_safe
+from edc_base.utils import age, get_utcnow
 from edc_visit_schedule.models import SubjectScheduleHistory
 
 register = template.Library()
@@ -12,7 +12,8 @@ register = template.Library()
 
 @register.filter
 def get_item(dictionary, key):
-    return dictionary.get(key)
+    if dictionary is not None:
+        return dictionary.get(key)
 
 
 @register.inclusion_tag('pre_flourish/buttons/consent_button.html')
@@ -35,7 +36,7 @@ def dashboard_button(model_wrapper):
         subject_identifier=model_wrapper.subject_identifier)
 
 
-@register.inclusion_tag('flourish_dashboard/buttons/locator_button.html')
+@register.inclusion_tag('pre_flourish/buttons/locator_button.html')
 def locator_button(model_wrapper):
     return dict(
         add_locator_href=model_wrapper.caregiver_locator.href,
@@ -57,8 +58,8 @@ def screening_button(model_wrapper):
     add_screening_href = ''
     subject_screening_obj = None
     if hasattr(model_wrapper, 'maternal_screening'):
-        add_screening_href = f'{model_wrapper.maternal_screening.href}&previous_subject_identifier={model_wrapper.study_maternal_identifier}'
-    if hasattr(model_wrapper, 'screening_model_obj'):
+        add_screening_href = model_wrapper.maternal_screening.href
+    if model_wrapper.screening_model_obj:
         subject_screening_obj = model_wrapper.screening_model_obj
 
     return dict(
@@ -139,6 +140,37 @@ def caregiver_dashboard_button(model_wrapper):
         subject_identifier=subject_identifier)
 
 
+@register.inclusion_tag(
+    'flourish_dashboard/buttons/caregiver_contact_button.html')
+def caregiver_contact_button(model_wrapper):
+    title = ['Caregiver Contact.']
+    return dict(
+        subject_identifier=model_wrapper.object.subject_identifier,
+        add_caregiver_contact_href=model_wrapper.caregiver_contact.href,
+        title=' '.join(title), )
+
+
+@register.inclusion_tag('flourish_dashboard/buttons/caregiver_off_study.html')
+def caregiver_off_study_button(model_wrapper):
+    title = 'Caregiver Off Study'
+    return dict(
+        title=title,
+        href=model_wrapper.caregiver_offstudy.href,
+        subject_identifier=model_wrapper.subject_identifier
+    )
+
+
+@register.inclusion_tag(
+    'flourish_dashboard/buttons/caregiver_death_report_button.html')
+def caregiver_death_report_button(model_wrapper):
+    title = 'Caregiver Death Report'
+    return dict(
+        title=title,
+        href=model_wrapper.caregiver_death_report.href,
+        subject_identifier=model_wrapper.subject_identifier
+    )
+
+
 @register.simple_tag(takes_context=True)
 def get_age(context, born=None):
     if born:
@@ -208,3 +240,57 @@ def subject_schedule_footer_row(subject_identifier, visit_schedule, schedule,
         schedule=schedule,
         verbose_name=visit_schedule.offstudy_model_cls._meta.verbose_name)
     return context
+
+
+@register.inclusion_tag('flourish_dashboard/buttons/child_death_report_button.html')
+def child_death_report_button(model_wrapper):
+    title = 'Child Death Report'
+    return dict(
+        title=title,
+        href=model_wrapper.child_death_report.href,
+        subject_identifier=model_wrapper.subject_identifier
+    )
+
+
+age_groups = ['9.5, 13', '14, 16', '17, 21']
+
+
+@register.inclusion_tag('pre_flourish/reports/matrix_pool.html')
+def heu_matrix_pool(data):
+    title = 'FLOURISH MATRIX POOL'
+    return dict(
+        title=title,
+        data=data,
+        age_groups=age_groups
+    )
+
+
+@register.inclusion_tag('pre_flourish/reports/matrix_pool.html')
+def huu_matrix_pool(data):
+    title = 'PRE FLOURISH MATRIX POOL'
+    return dict(
+        title=title,
+        data=data,
+        age_groups=age_groups
+    )
+
+
+@register.inclusion_tag('pre_flourish/reports/matrix_pool.html')
+def enrolled_to_flourish(data):
+    title = 'Participants Enrolled to FLOURISH'
+    return dict(
+        title=title,
+        data=data,
+        none_match=True,
+        age_groups=['0, 9.5', '9.6, 13', '14, 16', '17, 21']
+    )
+
+
+@register.inclusion_tag(
+    'flourish_dashboard/buttons/bhp_prior_screening_button.html')
+def bhp_prior_screening_button(model_wrapper):
+    return dict(
+        add_screening_href=model_wrapper.bhp_prior_screening.href,
+        screening_identifier=model_wrapper.screening_identifier,
+        prior_screening_obj=model_wrapper.bhp_prior_screening_model_obj,
+        caregiver_locator_obj=model_wrapper.locator_model_obj)

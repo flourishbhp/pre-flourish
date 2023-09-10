@@ -1,30 +1,20 @@
-from django.apps import apps as django_apps
-from django.core.exceptions import ValidationError
 from django.db import models
 from django_crypto_fields.fields import IdentityField
-from edc_action_item.model_mixins import ActionModelMixin
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.model_validators import datetime_not_future
 from edc_base.sites.site_model_mixin import SiteModelMixin
-from edc_consent.field_mixins import (
-    CitizenFieldsMixin, VulnerabilityFieldsMixin, ReviewFieldsMixin,
-    VerificationFieldsMixin)
+from edc_consent.field_mixins import CitizenFieldsMixin, ReviewFieldsMixin, \
+    VerificationFieldsMixin, VulnerabilityFieldsMixin
 from edc_consent.field_mixins import IdentityFieldsMixin, PersonalFieldsMixin
-from edc_consent.validators import eligible_if_yes
+from edc_constants.choices import YES_NO, YES_NO_NA
+from edc_constants.constants import NOT_APPLICABLE
 from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_protocol.validators import datetime_not_before_study_start
 from edc_search.model_mixins import SearchSlugManager
 
-from edc_constants.choices import YES_NO, GENDER, YES_NO_NA
-from edc_constants.constants import NOT_APPLICABLE
 from flourish_caregiver.choices import CHILD_IDENTITY_TYPE
 
-
-# from ..action_items import CHILDASSENT_ACTION
-# from ..choices import IDENTITY_TYPE
-# from .eligibility import AssentEligibility
-# from .model_mixins import SearchSlugModelMixin
 class PreFlourishChildAssentManager(SearchSlugManager, models.Manager):
 
     def get_by_natural_key(self, subject_identifier):
@@ -59,7 +49,7 @@ class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixi
         verbose_name=('Are you willing to continue the study when you reach 18'
                       ' years of age?'),
         choices=YES_NO,
-        help_text='If no, participant is not eligible.')
+        )
 
     hiv_testing = models.CharField(
         max_length=3,

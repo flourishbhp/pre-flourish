@@ -1,4 +1,4 @@
 from .dashboard import DashboardView
 from .listboard_view import ScreeningListBoardView
 from .subject_listboard_view import SubjectListboardView
-from .pre_flourish_carefiverlocator_listboard_view import PreFlourishCaregiverLocatorListBoardView
+from .pre_flourish_caregiverlocator_listboard_view import PreFlourishCaregiverLocatorListBoardView

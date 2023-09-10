@@ -11,7 +11,8 @@ pre_flourish_dashboard.append_item(
         title='Pre Flourish Dataset',
         label='pre flourish dataset',
         fa_icon='far fa-user-circle',
-        url_name=settings.DASHBOARD_URL_NAMES['pre_flourish_caregiver_locator_listboard_url'],
+        url_name=settings.DASHBOARD_URL_NAMES[
+            'pre_flourish_caregiver_locator_listboard_url'],
         no_url_namespace=False))
 
 pre_flourish_dashboard.append_item(
@@ -41,6 +42,13 @@ pre_flourish_dashboard.append_item(
         url_name='pre_flourish_child_listboard_url',
         no_url_namespace=False))
 
+pre_flourish_dashboard.append_item(
+    NavbarItem(
+        name='pre_flourish_reports',
+        title='pre_flourish_reports',
+        label='Pre Flourish Reports',
+        fa_icon='fa-cogs',
+        url_name='pre_flourish:pre_flourish_reports_url'))
 
 pre_flourish_dashboard.append_item(
     NavbarItem(
