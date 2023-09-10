@@ -2,7 +2,7 @@ from django import forms
 from django.apps import apps as django_apps
 from django.core.exceptions import ValidationError
 from edc_base.sites import SiteModelFormMixin
-from edc_constants.constants import YES
+from edc_constants.constants import FEMALE, YES
 from edc_form_validators import FormValidatorMixin
 
 from pre_flourish.form_validators import PreFlourishConsentFormValidator
@@ -37,7 +37,7 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
         super().__init__(*args, **kwargs)
 
         self.screening_identifier = self.initial.get('screening_identifier', None)
-        biological_caregiver = self.initial.get('biological_caregiver', None)
+        biological_caregiver = getattr(self.screening_obj, 'biological_mother', None)
 
         if self.caregiver_locator_model_obj and biological_caregiver == YES:
 
@@ -52,6 +52,8 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
                 first_name = self.caregiver_locator_model_obj.first_name
                 last_name = self.caregiver_locator_model_obj.last_name
                 self.initial['initials'] = f'{first_name[0]}{last_name[0]}'.upper()
+
+            self.initial['gender'] = FEMALE
 
         self.initial['biological_caregiver'] = biological_caregiver
 
@@ -77,12 +79,13 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
 
     @property
     def screening_obj(self):
-        try:
-            return self.screening_model_cls.objects.get(
-                screening_identifier=self.screening_identifier
-            )
-        except self.screening_model_cls.DoesNotExist:
-            raise
+        if self.screening_identifier:
+            try:
+                return self.screening_model_cls.objects.get(
+                    screening_identifier=self.screening_identifier
+                )
+            except self.screening_model_cls.DoesNotExist:
+                raise
 
     def has_changed(self):
         return True
