@@ -16,13 +16,13 @@ from flourish_caregiver.choices import CHILD_IDENTITY_TYPE
 from ..caregiver import PreFlourishConsent
 from ...constants import INFANT
 from ...subject_identifier import PFInfantIdentifier
+from ..model_mixins import SearchSlugModelMixin
 
 
-class PreFlourishCaregiverChildConsent(SiteModelMixin,
-                                       NonUniqueSubjectIdentifierFieldMixin,
+class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixin,
                                        IdentityFieldsMixin, ReviewFieldsMixin,
                                        PersonalFieldsMixin, VerificationFieldsMixin,
-                                       BaseUuidModel):
+                                       SearchSlugModelMixin, BaseUuidModel):
     """Inline table for caregiver's children"""
 
     subject_consent = models.ForeignKey(

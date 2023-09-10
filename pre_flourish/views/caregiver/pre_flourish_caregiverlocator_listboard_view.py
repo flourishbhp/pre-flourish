@@ -7,38 +7,26 @@ from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
 
 from ...model_wrappers import PreflourishCaregiverLocatorModelWrapper
-from ...model_wrappers import PreFlourishMaternalScreeningModelWrapper
-
-
-# from ...model_wrappers import MaternalDatasetModelWrapper
 
 
 class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin,
-                                               ListboardFilterViewMixin,
-                                               SearchFormViewMixin,
+                                               ListboardFilterViewMixin, SearchFormViewMixin,
                                                ListboardView):
+
     listboard_template = 'pre_flourish_caragiver_locator_listboard_template'
     listboard_url = 'pre_flourish_caregiver_locator_listboard_url'
     listboard_panel_style = 'info'
     listboard_fa_icon = "fa-user-plus"
     model = 'flourish_caregiver.caregiverlocator'
-    # listboard_view_filters = ListboardViewFilters()
+    model_wrapper_cls = PreflourishCaregiverLocatorModelWrapper
     navbar_name = 'pre_flourish_dashboard'
-    # navbar_selected_item = 'pre_flourish_caregiver_locator'
-    # ordering = '-locatorlog__locatorlogentry__report_datetime'
+    navbar_selected_item = 'pre_flourish_caregiver_locator'
     paginate_by = 10
     search_form_url = 'pre_flourish_caregiver_locator_listboard_url'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
-
-    @property
-    def model_wrapper_cls(self):
-        model_wrapper_cls = PreflourishCaregiverLocatorModelWrapper
-        model_wrapper_cls.subject_screening_wrapper = \
-            PreFlourishMaternalScreeningModelWrapper
-        return model_wrapper_cls
 
     def get_queryset(self):
         """
@@ -49,10 +37,6 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
         Returns:
             Queryset with BCCP participants
         """
-        # participants = super().get_queryset().filter(
-        #     subject_identifier__istartswith='066'
-        # )
-
         participants = super().get_queryset().filter(
             study_maternal_identifier__istartswith='066'
         )
@@ -74,6 +58,7 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
             options.update(
                 {'study_maternal_identifier': kwargs.get('study_maternal_identifier')})
         return options
+
 
     def extra_search_options(self, search_term):
         q = Q()
