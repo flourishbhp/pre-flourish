@@ -1,7 +1,7 @@
 import json
 
 from django.db import models
-from edc_base import get_utcnow
+from django.utils import timezone
 from edc_base.model_mixins import BaseUuidModel
 
 
@@ -48,7 +48,7 @@ class HeuHuuMatch(BaseUuidModel):
 
     match_datetime = models.DateField(
         verbose_name='Date Match',
-        default=get_utcnow().date(),
+        default=timezone.now,
         help_text='Date and time of this report')
 
     class Meta:
