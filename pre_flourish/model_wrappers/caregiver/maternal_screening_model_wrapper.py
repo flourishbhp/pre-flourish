@@ -5,7 +5,6 @@ from edc_base.utils import get_uuid
 from edc_consent import ConsentModelWrapperMixin
 from edc_model_wrapper import ModelWrapper
 
-from .caregiver_locator_model_wrapper import PreflourishCaregiverLocatorModelWrapper
 from .pre_flourish_caregiverlocator_modelwrapper_mixin import \
     PreflourishCaregiverLocatorModelWrapperMixin
 from .pre_flourish_subject_consent_model_wrapper import \
