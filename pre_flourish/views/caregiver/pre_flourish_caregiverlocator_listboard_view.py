@@ -6,13 +6,14 @@ from edc_dashboard.view_mixins import ListboardFilterViewMixin, SearchFormViewMi
 from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
 
-from ...model_wrappers import PreflourishCaregiverLocatorModelWrapper
+from ...model_wrappers import PreflourishCaregiverLocatorModelWrapper, \
+    PreFlourishMaternalScreeningModelWrapper
 
 
 class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin,
-                                               ListboardFilterViewMixin, SearchFormViewMixin,
+                                               ListboardFilterViewMixin,
+                                               SearchFormViewMixin,
                                                ListboardView):
-
     listboard_template = 'pre_flourish_caragiver_locator_listboard_template'
     listboard_url = 'pre_flourish_caregiver_locator_listboard_url'
     listboard_panel_style = 'info'
@@ -27,6 +28,17 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
+
+    def get_wrapped_queryset(self, queryset):
+        """Returns a list of wrapped model instances.
+        """
+        object_list = []
+        for obj in queryset:
+            wrapped_obj = self.model_wrapper_cls(obj)
+            wrapped_obj.subject_screening_wrapper = (
+                PreFlourishMaternalScreeningModelWrapper)
+            object_list.append(wrapped_obj)
+        return object_list
 
     def get_queryset(self):
         """
@@ -58,7 +70,6 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
             options.update(
                 {'study_maternal_identifier': kwargs.get('study_maternal_identifier')})
         return options
-
 
     def extra_search_options(self, search_term):
         q = Q()
