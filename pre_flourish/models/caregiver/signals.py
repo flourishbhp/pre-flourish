@@ -13,7 +13,7 @@ class PreFlourishSubjectScreeningError(Exception):
     pass
 
 
-def update_locator(consent, screening):
+def update_locator(consent=None, screening=None):
     locator_model = 'flourish_caregiver.caregiverlocator'
     locator_cls = django_apps.get_model(locator_model)
     try:
@@ -23,15 +23,15 @@ def update_locator(consent, screening):
     except locator_cls.DoesNotExist:
         pass
     else:
-        locator_obj.subject_identifier = consent.subject_identifier
-        locator_obj.screening_identifier = screening.screening_identifier
+        locator_obj.subject_identifier = getattr(consent, 'subject_identifier', None)
+        locator_obj.screening_identifier = getattr(screening, 'screening_identifier', None)
         locator_obj.save()
 
 
 @receiver(post_save, weak=False, sender=PreFlourishConsent,
           dispatch_uid='pre_flourish_consent_on_post_save')
 def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
-    """Creates an onschedule instance for this enrolled subject.
+    """ Updates locator instance with subject and screening identifier once consented.
     """
     if not raw:
         try:
@@ -50,6 +50,15 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
             caregiver_screening.has_passed_consent = True
             caregiver_screening.subject_identifier = instance.subject_identifier
             caregiver_screening.save()
+
+
+@receiver(post_save, weak=False, sender=PreFlourishSubjectScreening,
+          dispatch_uid='pre_flourish_screening_on_post_save')
+def pre_flourish_screening_on_post_save(sender, instance, raw, created, **kwargs):
+    """ Updates screening identifier to locator model once successfully screened.
+    """
+    if not raw and instance.is_eligible:
+        update_locator(screening=instance)
 
 
 @receiver(post_save, weak=False, sender=PreFlourishChildAssent,

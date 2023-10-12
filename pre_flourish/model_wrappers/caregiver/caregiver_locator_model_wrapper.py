@@ -14,10 +14,20 @@ class PreflourishCaregiverLocatorModelWrapper(MaternalScreeningModelWrapperMixin
     model = 'flourish_caregiver.caregiverlocator'
     querystring_attrs = ['screening_identifier', 'subject_identifier',
                          'study_maternal_identifier', 'first_name', 'last_name']
-    next_url_attrs = ['subject_identifier']
-    next_url_name = settings.DASHBOARD_URL_NAMES.get('pre_flourish_subject_dashboard_url')
+    next_url_attrs = ['subject_identifier', 'study_maternal_identifier']
     inperson_contact_model = 'pre_flourish_follow.preflourishinpersoncontactattempt'
     log_entry_model = 'pre_flourish_follow.preflourishlogentry'
+
+    @property
+    def next_url_name(self):
+        url_name = None
+        if not self.object.subject_identifier:
+            url_name = settings.DASHBOARD_URL_NAMES.get(
+                'pre_flourish_caregiver_locator_listboard_url')
+        else:
+            url_name = settings.DASHBOARD_URL_NAMES.get(
+                'pre_flourish_subject_dashboard_url')
+        return url_name
 
     @property
     def inperson_contact_cls(self):

@@ -89,15 +89,6 @@ def log_entry_button(model_wrapper):
     )
 
 
-@register.inclusion_tag('pre_flourish/buttons/edit_screening_button.html')
-def edit_screening_button(model_wrapper):
-    title = ['Edit Subject Screening form.']
-    return dict(
-        screening_identifier=model_wrapper.object.screening_identifier,
-        href=model_wrapper.href,
-        title=' '.join(title))
-
-
 @register.inclusion_tag('pre_flourish/buttons/assents_button.html')
 def assents_button(model_wrapper):
     title = ['Child Assent(s)']
