@@ -23,10 +23,11 @@ def update_locator(consent=None, screening=None):
     except locator_cls.DoesNotExist:
         pass
     else:
-        locator_obj.subject_identifier = consent.subject_identifier
-        locator_obj.screening_identifier = screening.screening_identifier
-        report = consent if consent.report_datetime else screening
-        locator_obj.report_datetime = report.report_datetime
+        if screening:
+            locator_obj.screening_identifier = getattr(
+                screening, 'screening_identifier', None)
+        if consent:
+            locator_obj.subject_identifier = getattr(consent, 'subject_identifier', None)
         locator_obj.save()
 
 
