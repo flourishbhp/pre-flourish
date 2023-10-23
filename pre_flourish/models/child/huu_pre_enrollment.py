@@ -46,6 +46,18 @@ class HuuPreEnrollment(CrfModelMixin):
         max_length=3,
         choices=YES_NO)
 
+    gestational_age_weeks = models.IntegerField(
+        verbose_name='What was the gestation age in weeks',
+        validators=[MinValueValidator(20), MaxValueValidator(43), ],
+        blank=True,
+        null=True)
+
+    gestational_age_months = models.IntegerField(
+        verbose_name='What was the gestation age in months',
+        validators=[MinValueValidator(5), MaxValueValidator(9), ],
+        blank=True,
+        null=True)
+
     gestational_age = models.IntegerField(
         verbose_name='What is the Gestational Age of the child/adolescent?',
         null=True,
