@@ -30,7 +30,7 @@ class HuuPreEnrollment(CrfModelMixin):
 
     child_weight_kg = models.IntegerField(
         verbose_name='Weight (kg)',
-        validators=[MinValueValidator(15), MaxValueValidator(140), ],
+        validators=[MinValueValidator(5), MaxValueValidator(200), ],
     )
 
     child_height = models.IntegerField(
