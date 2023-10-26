@@ -2,6 +2,7 @@ from django.apps import apps as django_apps
 from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from dateutil.relativedelta import relativedelta
 from edc_action_item import site_action_items
 from edc_base import get_utcnow
 from edc_base.utils import age
@@ -65,12 +66,18 @@ def huu_pre_enrollment_post_save(sender, instance, raw, created, **kwargs):
                 action_name=CHILD_OFF_STUDY_ACTION,
                 subject_identifier=instance.subject_identifier,
             )
-        test_age = None
-        if instance.child_test_date:
-            test_age = (age(instance.child_test_date, get_utcnow()).years * 12) + (age(
-                instance.child_test_date, get_utcnow()).months)
 
-        if instance.child_hiv_result == NEG and test_age is not None and test_age <= 3:
+        current_date = get_utcnow().date()
+
+        child_test_date = instance.child_test_date
+
+        three_months_ago = current_date - relativedelta(months=3)
+
+        # check if the child was tested within three months from now
+        # child_test_date is when the child was tested
+        within_three_months = three_months_ago <= child_test_date <= current_date
+
+        if instance.child_hiv_result == NEG and within_three_months:
             caregiver_child_consent = pre_flourish_caregiver_child_consent(instance)
             get_or_create_caregiver_dataset(caregiver_child_consent.subject_consent)
             get_or_create_child_dataset(caregiver_child_consent)
