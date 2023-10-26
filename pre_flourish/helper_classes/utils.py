@@ -1,3 +1,4 @@
+from dateutil.relativedelta import relativedelta
 from celery.app import shared_task
 from django.db.models import Q
 from edc_action_item import site_action_items
@@ -139,3 +140,19 @@ def put_on_schedule(instance=None, subject_identifier=None,
 def populate_heu_huu_pool_data():
     HUUPoolGeneration().generate_pool()
     HEUPoolGeneration().generate_pool()
+
+
+def date_within_specific_months(value, upper_bond, months=0):
+    """
+    Compare date if its within a lower_bond and upper bond, and should be type of date
+    :param value: value of interest
+    :param upper_bond: date limit
+    :param months: offset months
+    :return: return a true/false if the value with limits
+    """
+
+    lower_bond = value - relativedelta(months=months)
+
+    return lower_bond <= value <= upper_bond
+
+
