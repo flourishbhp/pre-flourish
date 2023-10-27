@@ -67,22 +67,24 @@ def huu_pre_enrollment_post_save(sender, instance, raw, created, **kwargs):
                 subject_identifier=instance.subject_identifier,
             )
 
-        current_date = get_utcnow().date()
+        if instance.child_test_date:
 
-        child_test_date = instance.child_test_date
+            current_date = get_utcnow().date()
 
-        within_three_months = date_within_specific_months(child_test_date, current_date, 3)
+            child_test_date = instance.child_test_date
 
-        if instance.child_hiv_result == NEG and within_three_months:
-            caregiver_child_consent = pre_flourish_caregiver_child_consent(instance)
-            get_or_create_caregiver_dataset(caregiver_child_consent.subject_consent)
-            get_or_create_child_dataset(caregiver_child_consent)
+            within_three_months = date_within_specific_months(child_test_date, current_date, 3)
+
+            if instance.child_hiv_result == NEG and within_three_months:
+                caregiver_child_consent = pre_flourish_caregiver_child_consent(instance)
+                get_or_create_caregiver_dataset(caregiver_child_consent.subject_consent)
+                get_or_create_child_dataset(caregiver_child_consent)
 
 
 @receiver(post_save, weak=False, sender=PFChildHIVRapidTestCounseling,
           dispatch_uid='pf_child_hiv_rapid_test_counseling_post_save')
 def pf_child_hiv_rapid_test_counseling_post_save(sender, instance, raw, created, **kwargs):
-    if not raw:
+    if not raw and instance.rapid_test_done:
 
         current_date = get_utcnow().date()
 
