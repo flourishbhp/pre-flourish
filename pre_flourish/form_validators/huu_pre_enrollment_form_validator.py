@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from edc_constants.choices import YES
+from edc_constants.constants import NO
 
 from edc_form_validators import FormValidator
 
@@ -30,10 +31,10 @@ class HuuPreEnrollmentFormValidator(FormValidator):
         gestational_age_months = self.cleaned_data.get('gestational_age_months')
         knows_gest_age = self.cleaned_data.get('knows_gest_age')
 
-        if knows_gest_age == YES:
-            if gestational_age_weeks and gestational_age_months:
-                raise ValidationError(
-                    'Please enter either weeks or months, not both.')
-            elif not gestational_age_weeks and not gestational_age_months:
-                raise ValidationError(
-                    'Please enter either weeks or months.')
+        if knows_gest_age == 'yes_weeks' and not gestational_age_weeks:
+            raise ValidationError('Please enter either weeks, not both.')
+        elif knows_gest_age == 'yes_months' and not gestational_age_months:
+            raise ValidationError('Please enter either months, not both.')
+        elif knows_gest_age == NO and (gestational_age_weeks or gestational_age_months):
+            raise ValidationError('Gestational age should not be entered if caregiver '
+                                  'does not know it.')
