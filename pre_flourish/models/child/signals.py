@@ -2,6 +2,7 @@ from django.apps import apps as django_apps
 from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from dateutil.relativedelta import relativedelta
 from edc_action_item import site_action_items
 from edc_base import get_utcnow
 from edc_base.utils import age
@@ -12,9 +13,9 @@ from pre_flourish.action_items import CHILD_OFF_STUDY_ACTION
 from pre_flourish.helper_classes.utils import create_child_dummy_consent, \
     get_or_create_caregiver_dataset, \
     get_or_create_child_dataset, pre_flourish_caregiver_child_consent, \
-    put_on_schedule, trigger_action_item
+    put_on_schedule, trigger_action_item, date_within_specific_months
 from pre_flourish.models.child import HuuPreEnrollment, PreFlourishChildAssent, \
-    PreFlourishChildDummySubjectConsent
+    PreFlourishChildDummySubjectConsent, PFChildHIVRapidTestCounseling
 
 
 class CaregiverConsentError(Exception):
@@ -65,12 +66,35 @@ def huu_pre_enrollment_post_save(sender, instance, raw, created, **kwargs):
                 action_name=CHILD_OFF_STUDY_ACTION,
                 subject_identifier=instance.subject_identifier,
             )
-        test_age = None
-        if instance.child_test_date:
-            test_age = (age(instance.child_test_date, get_utcnow()).years * 12) + (age(
-                instance.child_test_date, get_utcnow()).months)
 
-        if instance.child_hiv_result == NEG and test_age is not None and test_age <= 3:
+        if instance.child_test_date:
+
+            current_date = get_utcnow().date()
+
+            child_test_date = instance.child_test_date
+
+            within_three_months = date_within_specific_months(child_test_date, current_date, 3)
+
+            if instance.child_hiv_result == NEG and within_three_months:
+                caregiver_child_consent = pre_flourish_caregiver_child_consent(instance)
+                get_or_create_caregiver_dataset(caregiver_child_consent.subject_consent)
+                get_or_create_child_dataset(caregiver_child_consent)
+
+
+@receiver(post_save, weak=False, sender=PFChildHIVRapidTestCounseling,
+          dispatch_uid='pf_child_hiv_rapid_test_counseling_post_save')
+def pf_child_hiv_rapid_test_counseling_post_save(sender, instance, raw, created, **kwargs):
+    if not raw and instance.rapid_test_done:
+
+        current_date = get_utcnow().date()
+
+        result_date = instance.result_date
+
+        # check if the child was tested within three months from now
+        # child_test_date is when the child was tested
+        within_three_months = date_within_specific_months(result_date, current_date, 3)
+
+        if instance.result == NEG and within_three_months:
             caregiver_child_consent = pre_flourish_caregiver_child_consent(instance)
             get_or_create_caregiver_dataset(caregiver_child_consent.subject_consent)
             get_or_create_child_dataset(caregiver_child_consent)

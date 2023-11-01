@@ -235,3 +235,9 @@ CHILD_OFF_STUDY_REASON = (
     ('incarcerated', 'Adolescent is incarcerated'),
     (OTHER, ' Other'),
 )
+
+GESTATIONAL_AGE_KNOWN = (
+    ('yes_weeks', 'Yes (in weeks)'),
+    ('yes_months', 'Yes (in months)'),
+    (NO, NO)
+)

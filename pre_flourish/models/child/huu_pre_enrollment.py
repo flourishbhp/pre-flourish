@@ -6,7 +6,7 @@ from edc_base.utils import age, get_utcnow
 from edc_constants.choices import YES_NO
 
 from ..model_mixins import CrfModelMixin
-from ...choices import POS_NEG_IND, YES_NO_UNKNOWN
+from ...choices import GESTATIONAL_AGE_KNOWN, POS_NEG_IND, YES_NO_UNKNOWN
 
 
 class HuuPreEnrollment(CrfModelMixin):
@@ -30,7 +30,7 @@ class HuuPreEnrollment(CrfModelMixin):
 
     child_weight_kg = models.IntegerField(
         verbose_name='Weight (kg)',
-        validators=[MinValueValidator(15), MaxValueValidator(140), ],
+        validators=[MinValueValidator(5), MaxValueValidator(200), ],
     )
 
     child_height = models.IntegerField(
@@ -43,8 +43,8 @@ class HuuPreEnrollment(CrfModelMixin):
     knows_gest_age = models.CharField(
         verbose_name='Does the caregiver know the gestational age of the '
                      'child?',
-        max_length=3,
-        choices=YES_NO)
+        max_length=20,
+        choices=GESTATIONAL_AGE_KNOWN)
 
     gestational_age_weeks = models.IntegerField(
         verbose_name='What was the gestation age in weeks',

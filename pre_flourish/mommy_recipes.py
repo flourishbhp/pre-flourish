@@ -10,7 +10,7 @@ from edc_constants.constants import ALIVE, YES, ON_STUDY, PARTICIPANT, \
 
 from .models import PreFlourishConsent, PreFlourishSubjectScreening, \
     PreFlourishCaregiverChildConsent, PreFlourishChildAssent, PreFlourishVisit, \
-    HuuPreEnrollment, CyhuuPreEnrollment
+    HuuPreEnrollment, CyhuuPreEnrollment, PFChildHIVRapidTestCounseling
 
 fake = Faker()
 
@@ -111,3 +111,5 @@ caregiverlocator = Recipe(
     last_name=fake.last_name,
     user_created='flourish')
 
+pfchildhivrapidtestcounseling = Recipe(
+    PFChildHIVRapidTestCounseling)

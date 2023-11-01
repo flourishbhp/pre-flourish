@@ -1,7 +1,7 @@
 from dateutil.relativedelta import relativedelta
 from django.test import TestCase, tag
 from edc_base import get_utcnow
-from edc_constants.constants import NEG, NOT_APPLICABLE, YES
+from edc_constants.constants import NEG, NOT_APPLICABLE, YES, NO
 from edc_facility.import_holidays import import_holidays
 from edc_registration.models import RegisteredSubject
 from edc_visit_schedule.models import SubjectScheduleHistory
@@ -127,6 +127,33 @@ class TestFlourishEnrolment(TestCase):
             child_test_date=get_utcnow(),
             child_hiv_result=NEG,
             report_datetime=get_utcnow(), )
+
+        self.assertEqual(MaternalDataset.objects.filter(
+            study_maternal_identifier=self.study_maternal_identifier).count(), 1)
+
+        self.assertEqual(ChildDataset.objects.filter(
+            study_child_identifier=self.pf_child_assent.subject_identifier).count(), 1)
+
+    def test_rapid_hiv_create_maternal_dataset(self):
+        visit = mommy.make_recipe(
+            'pre_flourish.preflourishvisit',
+            appointment=Appointment.objects.get(
+                visit_code='0200',
+                subject_identifier=self.pf_caregiver_child_consent.subject_identifier),
+            report_datetime=get_utcnow(),
+            reason=SCHEDULED)
+
+        hiv_test_data = {
+            'report_datetime': get_utcnow(),
+            'rapid_test_done': YES,
+            'result_date': get_utcnow(),
+            'result': NEG,
+            'comments': None, }
+
+        mommy.make_recipe(
+            'pre_flourish.pfchildhivrapidtestcounseling',
+            pre_flourish_visit=visit,
+            **hiv_test_data)
 
         self.assertEqual(MaternalDataset.objects.filter(
             study_maternal_identifier=self.study_maternal_identifier).count(), 1)
