@@ -1,14 +1,15 @@
 from django.apps import apps as django_apps
+from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.views.generic.base import ContextMixin
 from edc_base.view_mixins import EdcBaseViewMixin
 from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_navbar import NavbarViewMixin
-from edc_registration.models import RegisteredSubject
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
-from pre_flourish.model_wrappers import ActionItemModelWrapper, AppointmentModelWrapper, \
+from pre_flourish.helper_classes.utils import is_flourish_eligible
+from pre_flourish.model_wrappers import ActionItemModelWrapper, \
     CaregiverChildConsentModelWrapper, ChildAppointmentModelWrapper, \
     ChildConsentModelWrapper, ChildCrfModelWrapper, \
     ChildVisitModelWrapper, MaternalRegisteredSubjectModelWrapper, \
@@ -72,6 +73,11 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     visit_attr = 'preflourishvisit'
     registered_subject_model = 'pre_flourish.preflourishregisteredsubject'
 
+    @property
+    def child_consent_cls(self):
+        return django_apps.get_model(
+            'pre_flourish.preflourishcaregiverchildconsent')
+
     def get_subject_locator_or_message(self):
         """
         Overridden to stop system from generating subject locator
@@ -81,12 +87,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
     @property
     def caregiver_child_consent(self):
-        child_consent_cls = django_apps.get_model(
-            'pre_flourish.preflourishcaregiverchildconsent')
 
-        child_consent = child_consent_cls.objects.filter(
-            subject_identifier=self.subject_identifier).latest('consent_datetime')
-
+        child_consent = self.child_consent_obj
         if child_consent:
             return CaregiverChildConsentModelWrapper(child_consent)
 
@@ -119,8 +121,22 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         except ObjectDoesNotExist:
             return None
 
+    @property
+    def child_consent_obj(self):
+        try:
+            return self.child_consent_cls.objects.filter(
+                subject_identifier=self.subject_identifier).latest('consent_datetime')
+        except self.child_consent_cls.DoesNotExist:
+            return None
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        is_fl_eligible = is_flourish_eligible(self.caregiver_subject_identifier)
+
+        if is_fl_eligible:
+            messages.error(self.request,
+                           'This subject is eligible for Flourish Enrolment.')
         context.update(
             caregiver_child_consent=self.caregiver_child_consent,
             schedule_names=[getattr(model, 'schedule_name') for model in
