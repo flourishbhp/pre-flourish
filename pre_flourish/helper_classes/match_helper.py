@@ -6,19 +6,18 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from edc_base import get_utcnow
-from model_mommy import mommy
 
 
-def create_reminder(title, end_date, remainder_time, note, color='yellow',
+def create_reminder(title, start_date, end_date, remainder_time, note, color='yellow',
                     repeat='once'):
-    mommy.make_recipe(
-        'flourish_calendar.reminder',
-        title=title,
-        end_date=end_date,
-        remainder_time=remainder_time,
-        note=note,
-        color=color,
-        repeat=repeat)
+    reminder_cls = django_apps.get_model('flourish_calendar.reminder')
+    reminder = reminder_cls.objects.create(title=title,
+                                           start_date=start_date,
+                                           end_date=end_date,
+                                           remainder_time=remainder_time, note=note,
+                                           color=color, repeat=repeat)
+    reminder.save()
+    return reminder
 
 
 class MatchHelper:
@@ -129,7 +128,7 @@ class MatchHelper:
                   f'{subject_identifiers}\n'
 
         recipients = [user.email for user in pre_flourish_users]
-        create_reminder(title=subject,
+        create_reminder(title=subject, start_date=get_utcnow().date(),
                         end_date=get_utcnow().date(),
                         remainder_time=get_utcnow().time(),
                         note=message, )
