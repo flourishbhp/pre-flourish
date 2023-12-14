@@ -8,8 +8,8 @@ pre_flourish_dashboard = Navbar(name='pre_flourish_dashboard')
 pre_flourish_dashboard.append_item(
     NavbarItem(
         name='pre_flourish_caregiver_locator',
-        title='Pre Flourish Dataset',
-        label='pre flourish dataset',
+        title='PF Dataset',
+        label='PF dataset',
         fa_icon='far fa-user-circle',
         url_name=settings.DASHBOARD_URL_NAMES[
             'pre_flourish_caregiver_locator_listboard_url'],
@@ -18,8 +18,8 @@ pre_flourish_dashboard.append_item(
 pre_flourish_dashboard.append_item(
     NavbarItem(
         name='pre_flourish_screening',
-        title='Pre Flourish Screening',
-        label='pre flourish screening',
+        title='PF Screening',
+        label='PF screening',
         fa_icon='far fa-user-circle',
         url_name='pre_flourish_screening_listboard_url',
         no_url_namespace=False))
@@ -46,7 +46,7 @@ pre_flourish_dashboard.append_item(
     NavbarItem(
         name='pre_flourish_reports',
         title='pre_flourish_reports',
-        label='Pre Flourish Reports',
+        label='PF Reports',
         fa_icon='fa-cogs',
         url_name='pre_flourish:pre_flourish_reports_url'))
 
@@ -54,7 +54,7 @@ pre_flourish_dashboard.append_item(
     NavbarItem(
         name='home_url',
         title='pre_flourish_follow_up',
-        label='Pre Flourish Follow up',
+        label='PF Follow up',
         fa_icon='fa-phone',
         url_name='pre_flourish_follow:home_url'))
 

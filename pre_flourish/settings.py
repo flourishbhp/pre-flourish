@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import configparser
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
 from django.core.management.color import color_style
 
@@ -258,23 +258,36 @@ DASHBOARD_URL_NAMES = {
     'data_manager_listboard_url': 'edc_data_manager:data_manager_listboard_url',
     'export_listboard_url': 'flourish_export:export_listboard_url',
     'flourish_calendar_url': 'flourish_calendar:calendar',
-    'flourish_follow_appt_listboard_url':'flourish_follow:flourish_follow_appt_listboard_url',
-    'flourish_follow_book_listboard_url':'flourish_follow:flourish_follow_book_listboard_url',
-    'flourish_follow_booking_listboard_url':'flourish_follow:flourish_follow_booking_listboard_url',
+    'flourish_follow_appt_listboard_url':
+        'flourish_follow:flourish_follow_appt_listboard_url',
+    'flourish_follow_book_listboard_url':
+        'flourish_follow:flourish_follow_book_listboard_url',
+    'flourish_follow_booking_listboard_url':
+        'flourish_follow:flourish_follow_booking_listboard_url',
     'flourish_follow_listboard_url': 'flourish_follow:flourish_follow_listboard_url',
     'maternal_dataset_listboard_url': 'flourish_dashboard:maternal_dataset_listboard_url',
-    'maternal_screening_listboard_url':'flourish_dashboard:maternal_screening_listboard_url',
+    'maternal_screening_listboard_url':
+        'flourish_dashboard:maternal_screening_listboard_url',
     'odk_listboard_url': 'edc_odk:odk_listboard_url',
     'pre_flourish_child_listboard_url': 'pre_flourish:pre_flourish_child_listboard_url',
-    'pre_flourish_consent_listboard_url':'pre_flourish:pre_flourish_consent_listboard_url',
-    'pre_flourish_follow_appt_listboard_url': 'pre_flourish_follow:pre_flourish_follow_appt_listboard_url',
-    'pre_flourish_follow_book_listboard_url': 'pre_flourish_follow:pre_flourish_follow_book_listboard_url',
-    'pre_flourish_follow_booking_listboard_url': 'pre_flourish_follow:pre_flourish_follow_booking_listboard_url',
-    'pre_flourish_follow_listboard_url': 'pre_flourish_follow:pre_flourish_follow_listboard_url',
-    'pre_flourish_caregiver_locator_listboard_url': 'pre_flourish:pre_flourish_caregiver_locator_listboard_url',
-    'pre_flourish_maternal_dataset_listboard_url':'pre_flourish:pre_flourish_maternal_dataset_listboard_url',
-    'pre_flourish_screening_listboard_url':'pre_flourish:pre_flourish_screening_listboard_url',
-    'pre_flourish_subject_dashboard_url':'pre_flourish:pre_flourish_subject_dashboard_url',
+    'pre_flourish_consent_listboard_url':
+        'pre_flourish:pre_flourish_consent_listboard_url',
+    'pre_flourish_follow_appt_listboard_url':
+        'pre_flourish_follow:pre_flourish_follow_appt_listboard_url',
+    'pre_flourish_follow_book_listboard_url':
+        'pre_flourish_follow:pre_flourish_follow_book_listboard_url',
+    'pre_flourish_follow_booking_listboard_url':
+        'pre_flourish_follow:pre_flourish_follow_booking_listboard_url',
+    'pre_flourish_follow_listboard_url':
+        'pre_flourish_follow:pre_flourish_follow_listboard_url',
+    'pre_flourish_caregiver_locator_listboard_url':
+        'pre_flourish:pre_flourish_caregiver_locator_listboard_url',
+    'pre_flourish_maternal_dataset_listboard_url':
+        'pre_flourish:pre_flourish_maternal_dataset_listboard_url',
+    'pre_flourish_screening_listboard_url':
+        'pre_flourish:pre_flourish_screening_listboard_url',
+    'pre_flourish_subject_dashboard_url':
+        'pre_flourish:pre_flourish_subject_dashboard_url',
     'senaite_result_listboard_url': 'flourish_dashboard:caregiver_result_listboard_url',
     'subject_dashboard_url': 'flourish_dashboard:subject_dashboard_url',
     'subject_listboard_url': 'flourish_dashboard:subject_listboard_url',
@@ -284,7 +297,15 @@ DASHBOARD_URL_NAMES = {
     'facet_child_listboard_url': 'flourish_facet:facet_child_listboard_url',
     'facet_mother_dashboard_url': 'flourish_facet:facet_mother_dashboard_url',
     'facet_child_dashboard_url': 'flourish_facet:facet_child_dashboard_url',
-    'facet_flourish_consent_listboard_url': 'flourish_facet:facet_flourish_consent_listboard_url',
+    'facet_flourish_consent_listboard_url':
+        'flourish_facet:facet_flourish_consent_listboard_url',
+    'group_interview_listboard_url': 'flourish_facet:group_interview_listboard_url',
+
+    # Senaite Interface URLs
+    # Use caregiver result listboard as default/entry listboard.
+    'senaite_result_listboard_url': 'flourish_dashboard:caregiver_result_listboard_url',
+    'child_result_listboard_url': 'flourish_dashboard:child_result_listboard_url',
+    'missing_crf_report_url': 'flourish_reports:missing_crf_report_url'
 }
 
 DASHBOARD_BASE_TEMPLATES = {
@@ -318,18 +339,31 @@ DASHBOARD_BASE_TEMPLATES = {
     'export_listboard_template': 'flourish_export/listboard.html',
     # Preflourish_follow_templates
     'pre_flourish_follow_listboard_template': 'pre_flourish_follow/follow_listboard.html',
-    'pre_flourish_follow_appt_listboard_template': 'pre_flourish_follow/appointments_windows_listboards.html',
-    'pre_flourish_follow_booking_listboard_template': 'pre_flourish_follow/bookings_listboard.html',
-    'pre_flourish_follow_book_listboard_template': 'pre_flourish_follow/book_listboard.html',
+    'pre_flourish_follow_appt_listboard_template':
+        'pre_flourish_follow/appointments_windows_listboards.html',
+    'pre_flourish_follow_booking_listboard_template':
+        'pre_flourish_follow/bookings_listboard.html',
+    'pre_flourish_follow_book_listboard_template':
+        'pre_flourish_follow/book_listboard.html',
+
     # Override senaite result template
     'senaite_result_listboard_template': 'flourish_dashboard/result_listboard.html',
+    'missing_crf_listboard_template':
+        'flourish_reports/missing_crfs/missing_crf_listview.html',
     # flourish facet templates
-    'facet_mother_listboard_template': 'flourish_facet/mother/flourish_facet_listboard.html',
-    'facet_child_listboard_template': 'flourish_facet/child/flourish_facet_listboard.html',
-    'facet_mother_dashboard_template': 'flourish_facet/mother/flourish_facet_dashboard.html',
-    'facet_child_dashboard_template': 'flourish_facet/child/flourish_facet_dashboard.html',
-    'facet_flourish_consent_template': 'flourish_facet/mother/flourish_consent_listboard.html',
-    'facet_child_listboard_template': 'flourish_facet/child/flourish_facet_listboard.html',
+    'facet_mother_listboard_template':
+        'flourish_facet/mother/flourish_facet_listboard.html',
+    'facet_child_listboard_template':
+        'flourish_facet/child/flourish_facet_listboard.html',
+    'facet_mother_dashboard_template':
+        'flourish_facet/mother/flourish_facet_dashboard.html',
+    'facet_child_dashboard_template':
+        'flourish_facet/child/flourish_facet_dashboard.html',
+    'facet_flourish_consent_template':
+        'flourish_facet/mother/flourish_consent_listboard.html',
+    'facet_child_listboard_template':
+        'flourish_facet/child/flourish_facet_listboard.html',
+    'group_interview_listboard_template': 'flourish_facet/interview/listboard.html',
 }
 
 # Static files (CSS, JavaScript, Images)

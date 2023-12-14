@@ -19,6 +19,7 @@ from pre_flourish.model_wrappers import (MaternalVisitModelWrapper,
                                          PreFlourishDataActionItemModelWrapper)
 from ...view_mixins.dashboard_view_mixin import DashboardViewMixin
 from ....helper_classes.match_helper import MatchHelper
+from ....helper_classes.utils import is_flourish_eligible
 from ....models import PFDataActionItem, PreFlourishRegisteredSubject
 
 
@@ -45,22 +46,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     special_forms_include_value = 'pre_flourish/caregiver/dashboard/special_forms.html'
     visit_attr = 'preflourishvisit'
     registered_subject_model = 'pre_flourish.preflourishregisteredsubject'
-
-    huu_pre_enrollment_model = 'pre_flourish.huupreenrollment'
-    pre_flourish_child_consent_model = 'pre_flourish.preflourishcaregiverchildconsent'
-    matrix_pool_model = 'pre_flourish.matrixpool'
-
-    @property
-    def matrix_pool_cls(self):
-        return django_apps.get_model(self.matrix_pool_model)
-
-    @property
-    def huu_pre_enrollment_cls(self):
-        return django_apps.get_model(self.huu_pre_enrollment_model)
-
-    @property
-    def pre_flourish_child_consent_model_cls(self):
-        return django_apps.get_model(self.pre_flourish_child_consent_model)
 
     @property
     def appointments(self):
@@ -150,13 +135,14 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             offstudy_action=MATERNAL_DEATH_STUDY_ACTION)
 
         self.get_offstudy_message(offstudy_cls=caregiver_offstudy_cls)
+        is_fl_eligible = is_flourish_eligible(self.subject_identifier)
 
-        if self.is_flourish_eligible and not \
+        if is_fl_eligible and not \
                 self.consent_wrapped.bhp_prior_screening_model_obj:
-            messages.info(self.request,
+            messages.error(self.request,
                           'This subject is eligible for Flourish Enrolment.')
         context.update(
-            is_flourish_eligible=self.is_flourish_eligible,
+            is_flourish_eligible=is_fl_eligible,
             infant_registered_subjects=self.infant_registered_subjects,
             locator_obj=locator_obj,
             data_action_item_add_url=self.data_action_item.href,
@@ -215,52 +201,3 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     def prompt_locator(self):
         message = 'Please update caregiver locator information.'
         messages.error(self.request, message)
-
-    @property
-    def pre_flourish_child_consent_model_objs(self):
-        return self.pre_flourish_child_consent_model_cls.objects.filter(
-            subject_consent__subject_identifier=self.subject_identifier)
-
-    @property
-    def latest_huu_pre_enrollment_objs(self):
-        latest_huu_pre_enrollment_objs = []
-
-        for obj in self.pre_flourish_child_consent_model_objs:
-            try:
-                huu_pre_enrollment_obj = self.huu_pre_enrollment_cls.objects.filter(
-                    pre_flourish_visit__subject_identifier=obj.subject_identifier
-                ).latest('report_datetime')
-            except self.huu_pre_enrollment_cls.DoesNotExist:
-                pass
-            else:
-                latest_huu_pre_enrollment_objs.append(huu_pre_enrollment_obj)
-        return latest_huu_pre_enrollment_objs
-
-    @property
-    def valid_by_age(self):
-        """Returns True if subject is valid by age.
-        """
-        for obj in self.pre_flourish_child_consent_model_objs:
-            _age = age(obj.child_dob, datetime.now())
-            _age = _age.years + (_age.months / 12)
-            if 7 <= _age <= 9.5:
-                return True
-
-    @property
-    def is_flourish_eligible(self):
-        """Returns True if subject is flourish eligible.
-        """
-        match_helper = MatchHelper()
-        if self.valid_by_age:
-            return True
-        for obj in self.latest_huu_pre_enrollment_objs:
-            bmi = obj.child_weight_kg / ((obj.child_height / 100) ** 2)
-            bmi_group = match_helper.bmi_group(bmi)
-            age_range = match_helper.age_range(obj.child_age)
-            gender = 'male' if obj.gender == MALE else 'female'
-            if bmi_group is None or age_range is None:
-                continue
-            if self.matrix_pool_cls.objects.filter(
-                    pool='heu', bmi_group=bmi_group, age_group=age_range,
-                    gender_group=gender, ).exists():
-                return True

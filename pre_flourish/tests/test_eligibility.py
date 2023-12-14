@@ -86,7 +86,7 @@ class TestEligibility(TestCase):
             remain_in_study=YES)
 
         self.assertFalse(eligibility.is_eligible)
-        self.assertIn('Does not have a child > 10 years', eligibility.error_message)
+        self.assertIn('Does not have a child > 7 years', eligibility.error_message)
 
     def test_participant_remain_in_study_ineligible(self):
         eligibility = Eligibility(
