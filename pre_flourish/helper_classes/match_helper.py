@@ -1,3 +1,5 @@
+import json
+import logging
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
@@ -6,6 +8,8 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from edc_base import get_utcnow
+
+logger = logging.getLogger(__name__)
 
 
 def create_reminder(title, start_date, end_date, remainder_time, note, color='yellow',
@@ -45,11 +49,14 @@ class MatchHelper:
         return relativedelta(datetime.now(), child_dob).years + \
             (relativedelta(datetime.now(), child_dob).months / 12)
 
-    def create_matrix_pool(self, name, bmi_group, gender_group, age_group, count,
+    def create_matrix_pool(self, name, bmi_group, gender_group, age_group,
                            subject_identifiers):
         defaults = {
-            'count': count,
+            'count': len(subject_identifiers),
         }
+
+        for subject_identifier in subject_identifiers:
+            self.heu_huu_match_clean_up(subject_identifier)
         obj, _ = self.matrix_pool_cls.objects.update_or_create(
             pool=name, bmi_group=bmi_group, age_group=age_group,
             gender_group=gender_group, defaults=defaults
@@ -65,7 +72,7 @@ class MatchHelper:
                     self.create_matrix_pool(
                         name=name, age_group=age_group,
                         bmi_group=bmi_group, gender_group=gender_group,
-                        count=count, subject_identifiers=subject_identifiers)
+                        subject_identifiers=subject_identifiers)
 
     def bmi_group(self, bmi):
         if bmi is None:
@@ -84,14 +91,16 @@ class MatchHelper:
         return None
 
     def heu_huu_match_clean_up(self, subject_identifier):
-        matrix_pools = self.matrix_pool_cls.objects.filter(pool='heu')
-        for matrix_pool in matrix_pools:
-            subject_identifiers, is_changed = self.remove_subject_identifier(
-                subject_identifier, matrix_pool.get_subject_identifiers)
-            if is_changed:
-                matrix_pool.set_subject_identifiers(subject_identifiers)
-                matrix_pool.count = matrix_pool.count - 1
-                matrix_pool.save()
+        matrix_pool = self.matrix_pool_cls.objects.filter(
+            subject_identifiers__contains=subject_identifier).first()
+
+        if matrix_pool:
+            subject_identifiers = matrix_pool.get_subject_identifiers
+            if subject_identifier in subject_identifiers:
+                subject_identifiers.remove(subject_identifier)
+            matrix_pool.set_subject_identifiers(subject_identifiers)
+            matrix_pool.count = len(subject_identifiers)
+            matrix_pool.save()
 
     def remove_subject_identifier(self, subject_identifier, get_subject_identifiers):
         subject_identifiers = get_subject_identifiers
@@ -117,8 +126,9 @@ class MatchHelper:
         pre_flourish_users = pre_flourish_group.user_set.all()
 
         subject = 'Reminder: Enroll into Flourish'
-        subject_identifiers = '\n'.join(
-            [matrix.subject_identifiers for matrix in huu_matrix_group])
+        subject_identifiers = '\n'.join([identifier for matrix in huu_matrix_group for
+                                         identifier in matrix.subject_identifiers])
+
         subject_identifiers = subject_identifiers.strip('""')
 
         message = f'This serves as a reminder that these participants are now eligible ' \
@@ -135,3 +145,5 @@ class MatchHelper:
         send_mail(subject=subject, message=message,
                   from_email=settings.DEFAULT_FROM_EMAIL,
                   recipient_list=recipients)
+
+        logger.info('Reminder email sent to pre_flourish users.')
