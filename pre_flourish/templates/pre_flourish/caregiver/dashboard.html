@@ -53,7 +53,7 @@
 
 
 {% block side_bar %}
-	{{ block.super }}
+	{% include 'pre_flourish/caregiver/dashboard/sidebar.html' %}
 	
 	{% if locator_obj %}
     <div class="panel panel-default">

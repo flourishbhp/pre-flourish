@@ -1,5 +1,5 @@
-from edc_constants.constants import OTHER, YES, NO, DWTA, NOT_APPLICABLE
-from edc_constants.constants import NEG, POS, IND
+from edc_constants.constants import DWTA, NO, NOT_APPLICABLE, OTHER, YES
+from edc_constants.constants import IND, NEG, POS
 
 IDENTITY_TYPE = (
     ('country_id', 'Country ID number'),
@@ -99,7 +99,8 @@ APPT_TYPE = (
 CONTACT_FAIL_REASON = (
     ('no_response', 'Phone rang, no response but voicemail left'),
     (
-    'no_response_vm_not_left', 'Phone rang no response and no option to leave voicemail'),
+        'no_response_vm_not_left',
+        'Phone rang no response and no option to leave voicemail'),
     ('disconnected', 'Phone did not ring/number disconnected'),
     ('number_changed', 'No longer the phone number of BHP participant'),
     (NOT_APPLICABLE, 'Not Applicable'),
@@ -240,4 +241,14 @@ GESTATIONAL_AGE_KNOWN = (
     ('yes_weeks', 'Yes (in weeks)'),
     ('yes_months', 'Yes (in months)'),
     (NO, NO)
+)
+
+CHILD_CONSENT_VERSION = (
+    ('1', 'Consent version 1'),
+    ('4', 'Consent version 4')
+)
+
+CONSENT_VERSION = (
+    ('1', 'Consent version 1'),
+    ('4', 'Consent version 4'),
 )

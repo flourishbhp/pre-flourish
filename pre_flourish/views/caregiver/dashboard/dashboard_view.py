@@ -1,11 +1,7 @@
-from datetime import datetime
-
 from django.apps import apps as django_apps
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-from edc_base.utils import age
 from edc_base.view_mixins import EdcBaseViewMixin
-from edc_constants.constants import MALE
 from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_navbar import NavbarViewMixin
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
@@ -18,9 +14,11 @@ from pre_flourish.model_wrappers import (MaternalVisitModelWrapper,
                                          PreflourishCaregiverLocatorModelWrapper,
                                          PreFlourishDataActionItemModelWrapper)
 from ...view_mixins.dashboard_view_mixin import DashboardViewMixin
-from ....helper_classes.match_helper import MatchHelper
-from ....helper_classes.utils import is_flourish_eligible
+from ....helper_classes.utils import get_consent_version_obj, \
+    get_is_latest_consent_version, is_flourish_eligible
 from ....models import PFDataActionItem, PreFlourishRegisteredSubject
+
+pre_flourish_config = django_apps.get_app_config('pre_flourish')
 
 
 class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMixin,
@@ -72,13 +70,11 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     @property
     def subject_consent(self):
         try:
-            consent = self.consent_model_cls.objects.get(
-                subject_identifier=self.subject_identifier[:17]
-            )
+            return self.consent_model_cls.objects.filter(
+                subject_identifier=self.subject_identifier
+            ).latest('consent_datetime')
         except self.consent_model_cls.DoesNotExist:
             pass
-        else:
-            return consent
 
     @property
     def subject_locator(self):
@@ -137,14 +133,20 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         self.get_offstudy_message(offstudy_cls=caregiver_offstudy_cls)
         is_fl_eligible = is_flourish_eligible(self.subject_identifier)
 
+        consent_version_obj = get_consent_version_obj(
+            self.subject_consent.screening_identifier)
+
+        is_latest_consent_version = get_is_latest_consent_version(consent_version_obj)
+
         if is_fl_eligible and not \
                 self.consent_wrapped.bhp_prior_screening_model_obj:
             messages.error(self.request,
-                          'This subject is eligible for Flourish Enrolment.')
+                           'This subject is eligible for Flourish Enrolment.')
         context.update(
             is_flourish_eligible=is_fl_eligible,
             infant_registered_subjects=self.infant_registered_subjects,
             locator_obj=locator_obj,
+            is_latest_consent_version=is_latest_consent_version,
             data_action_item_add_url=self.data_action_item.href,
             subject_consent=self.consent_wrapped,
             pre_flourish_subject_dashboard_url=self.dashboard_url,

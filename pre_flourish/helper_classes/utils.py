@@ -35,6 +35,9 @@ def matrix_pool_cls():
     return django_apps.get_model('pre_flourish.matrixpool')
 
 
+pre_flourish_config = django_apps.get_app_config('pre_flourish')
+
+
 def get_or_create_caregiver_dataset(consent):
     defaults = {
         'protocol': 'BCPP',
@@ -221,3 +224,19 @@ def is_flourish_eligible(subject_identifier):
                 pool='heu', bmi_group=bmi_group, age_group=age_range,
                 gender_group=gender, ).exists():
             return True
+
+
+def get_consent_version_obj(screening_identifier=None):
+    consent_version_cls = django_apps.get_model('pre_flourish.pfconsentversion')
+    try:
+        return consent_version_cls.objects.get(
+            screening_identifier=screening_identifier)
+    except consent_version_cls.DoesNotExist:
+        return None
+
+
+def get_is_latest_consent_version(consent_version_obj):
+    if not consent_version_obj:
+        return False
+    return str(consent_version_obj.version) == str(
+        pre_flourish_config.consent_version)
