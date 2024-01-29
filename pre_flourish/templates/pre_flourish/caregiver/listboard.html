@@ -27,13 +27,9 @@
             {% if result.object.is_eligible %}
                 {% consent_button result %}
                 {% if result.consent %}
-                    {% if not result.pf_consent_version and not is_latest_consent_version %}
-                        {% consent_version_button result is_latest_consent_version %}
-                    {% elif result.pf_consent_version %}
-                        {% locator_button result %}
-                        {% if result.locator_model_obj %}
-                            {% dashboard_button result %}
-                        {% endif %}
+                    {% locator_button result %}
+                    {% if result.locator_model_obj %}
+                        {% dashboard_button result %}
                     {% endif %}
                 {% endif %}
             {% else %}

@@ -3,31 +3,31 @@
     <thead></thead>
     <tr>
         <td>
-            {% locator_button subject_consent %}
+            {% locator_button consent %}
         </td>
     </tr>
     <tr>
-        <td>{% caregiver_contact_button subject_consent %}</td>
+        <td>{% caregiver_contact_button consent %}</td>
     </tr>
     <tr>
-        <td>{% consent_version_button subject_consent is_latest_consent_version %}</td>
+        <td>{% consent_version_button consent is_latest_consent_version %}</td>
     </tr>
     {% if is_flourish_eligible %}
         <tr>
-            <td>{% bhp_prior_screening_button subject_consent %}</td>
+            <td>{% bhp_prior_screening_button consent %}</td>
         </tr>
     {% endif %}
-    {% if subject_consent.caregiver_offstudy %}
+    {% if consent.caregiver_offstudy %}
         <tr>
             <td>
-                {% caregiver_off_study_button subject_consent %}
+                {% caregiver_off_study_button consent %}
             </td>
         </tr>
     {% endif %}
-    {% if subject_consent.caregiver_death_report %}
+    {% if consent.caregiver_death_report %}
         <tr>
             <td>
-                {% caregiver_death_report_button subject_consent %}
+                {% caregiver_death_report_button consent %}
             </td>
         </tr>
     {% endif %}

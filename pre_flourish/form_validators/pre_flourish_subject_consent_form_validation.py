@@ -25,7 +25,6 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
         self.validate_is_literate()
         self.validate_dob(cleaned_data=self.cleaned_data)
         self.validate_identity_number(cleaned_data=self.cleaned_data)
-        self.validate_breastfeed_intent()
         self.validate_child_consent()
         self.validate_birth_date()
 

@@ -3,19 +3,19 @@
 
 <div class="list-group">
     <a class="list-group-item"><i class="fa fa-birthday-cake fa-fw"></i>
-        {{ subject_consent.dob }}
-        {%    get_age subject_consent.dob %}
+        {{ consent.dob }}
+        {% get_age consent.dob %}
 
     </a>
     <a class="list-group-item"><i class="far fa-address-card fa-fw"></i>
-        {{ subject_consent.identity|default:'?? identity' }}
+        {{ consent.identity|default:'?? identity' }}
         <span data-toggle="tooltip" data-placement="right"
-              title="{{ subject_consent.first_name }} {{ subject_consent.last_name }}"
+              title="{{ consent.first_name }} {{ consent.last_name }}"
               class="text text-default">
-            {% if subject_consent %}
+            {% if consent %}
 
-                {{ subject_consent.first_name }}
-                {{ subject_consent.initials }}
+                {{ consent.first_name }}
+                {{ consent.initials }}
             {% endif %}
 
             <sup>
@@ -29,7 +29,7 @@
         <i class="fa fa-users"></i>
         <span data-toggle="tooltip" data-placement="right" title="Cohorts"
               class="text text-default">
-				Consent Version {{ subject_consent.version }}
+				Consent Version {{ consent.version }}
 			</span>
     </a>
 </div>

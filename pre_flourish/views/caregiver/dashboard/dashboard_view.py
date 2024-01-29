@@ -77,6 +77,12 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             pass
 
     @property
+    def consent(self):
+        """Returns a consent model instance or None for the current period.
+        """
+        return self.subject_consent
+
+    @property
     def subject_locator(self):
         """Returns a model instance either saved or unsaved.
 
@@ -148,7 +154,6 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
             locator_obj=locator_obj,
             is_latest_consent_version=is_latest_consent_version,
             data_action_item_add_url=self.data_action_item.href,
-            subject_consent=self.consent_wrapped,
             pre_flourish_subject_dashboard_url=self.dashboard_url,
             schedule_names=[model.schedule_name for model in self.onschedule_models], )
         return context
