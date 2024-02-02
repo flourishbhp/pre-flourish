@@ -23,3 +23,5 @@ from .pf_action_item import PFActionItem
 from .pf_data_action_item import PFDataActionItem
 from .pre_flourish_registered_subject import PreFlourishRegisteredSubject
 from .pre_flourish_visit import PreFlourishVisit
+from .clinicial_notes import PreFlourishClinicianNotes
+from .clinicial_notes import ClinicianNotesImage
