@@ -38,7 +38,7 @@ class MatchHelper:
         (18, float('inf')): '>18'
     }
 
-    age_range_to_group = [(9.5, 13), (14, 16), (17, 21)]
+    age_range_to_group = [(9.5, 14), (14, 17), (17, 21)]
 
     @staticmethod
     def calculate_age(child_dob):
