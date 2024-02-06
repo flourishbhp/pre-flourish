@@ -123,7 +123,7 @@ class TestVisitScheduleSetup(TestCase):
 
         try:
             action_item_model_cls.objects.get(
-                pre_flourish_visit__subject_identifier=self.child_subject_identifier,
+                pre_flourish_visit__subject_identifier=caregiver_child_consent.subject_identifier,
                 action_type__name=child_off_study_cls.action_name,
                 status=NEW)
         except action_item_model_cls.DoesNotExist:

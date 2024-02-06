@@ -74,8 +74,10 @@ def pre_flourish_assent_post_save(sender, instance, raw, created, **kwargs):
     if not raw:
         # get caregiver's consent
         try:
-            caregiver_consent = PreFlourishConsent.objects.get(
-                subject_identifier=instance.subject_identifier[:-3])
+            caregiver_consent = PreFlourishConsent.objects.filter(
+                subject_identifier=instance.subject_identifier[:-3]).latest(
+                'consent_datetime'
+            )
         except PreFlourishConsent.DoesNotExist:
             raise ValidationError("Missing caregiver consent")
         else:

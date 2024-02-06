@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 from celery.app import shared_task
 from dateutil.relativedelta import relativedelta
@@ -173,6 +173,9 @@ def date_within_specific_months(value, upper_bond, months=0):
     """
 
     lower_bond = value - relativedelta(months=months)
+
+    if not isinstance(value, datetime.date):
+        value = datetime.datetime.combine(value, datetime.datetime.min.time())
 
     return lower_bond <= value <= upper_bond
 
