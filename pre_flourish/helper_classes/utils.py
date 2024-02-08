@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 from django.apps import apps as django_apps
 from django.db.models import Q
 from edc_action_item import site_action_items
-from edc_base.utils import age
+from edc_base.utils import age, get_utcnow
 from edc_constants.constants import FEMALE, MALE, NEG, NEW, NO, OPEN
 from edc_visit_schedule import site_visit_schedules
 
@@ -204,7 +204,7 @@ def valid_by_age(subject_identifier):
     """Returns True if subject is valid by age.
     """
     for obj in pre_flourish_child_consent_model_objs(subject_identifier):
-        _age = age(obj.child_dob, datetime.now())
+        _age = age(obj.child_dob, get_utcnow())
         _age = _age.years + (_age.months / 12)
         if 7 <= _age <= 9.5:
             return True
