@@ -165,14 +165,6 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin, ConsentMixi
                 form.previous_instance = initial_values
         return form
 
-    def get_subject_identifier(self, screening_identifier):
-        try:
-            return self.consent_cls.objects.filter(
-                screening_identifier=screening_identifier).latest(
-                'consent_datetime').subject_identifier
-        except self.consent_cls.DoesNotExist:
-            return None
-
     def prepare_initial_values_based_on_subject(self, obj, subject_identifier):
         return [self.prepare_subject_consent(consent) for consent in
                 self.consents_filtered_by_subject(obj, subject_identifier)]

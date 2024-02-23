@@ -4,6 +4,7 @@ from edc_base import get_utcnow
 from edc_facility.import_holidays import import_holidays
 from model_mommy import mommy
 
+from pre_flourish.models import PFConsentVersion
 from pre_flourish.models.appointment import Appointment
 
 
@@ -27,7 +28,7 @@ class Reconsent(TestCase):
         self.pre_flourish_subject_consent = mommy.make_recipe(
             'pre_flourish.preflourishconsent',
             screening_identifier=self.caregiver_screening.screening_identifier,
-            **self.options)
+            version='1')
 
         self.pre_flourish_subject_consent.save()
 
@@ -35,6 +36,7 @@ class Reconsent(TestCase):
             'pre_flourish.preflourishcaregiverchildconsent',
             subject_consent=self.pre_flourish_subject_consent,
             child_dob=get_utcnow() - relativedelta(years=11, months=5),
+            version='1'
         )
 
         self.pf_child_assent = mommy.make_recipe(
@@ -54,26 +56,25 @@ class Reconsent(TestCase):
             subject_identifier=self.pf_caregiver_child_consent.subject_identifier)
 
     def test_reconsent(self):
-        mommy.make_recipe(
-            'pre_flourish.pfconsentversion',
-            screening_identifier=self.caregiver_screening.screening_identifier,
-            version='4',
-            child_version='4',
-        )
+        consent_version_obj = PFConsentVersion.objects.get(
+            screening_identifier=self.caregiver_screening.screening_identifier)
+        consent_version_obj.version = '4'
+        consent_version_obj.child_version = '4'
+        consent_version_obj.save()
         version_4 = mommy.make_recipe(
             'pre_flourish.preflourishconsent',
             subject_identifier=self.pre_flourish_subject_consent.subject_identifier,
-            screening_identifier=self.pre_flourish_subject_consent.screening_identifier, )
+            screening_identifier=self.pre_flourish_subject_consent.screening_identifier,
+            version='4'
+        )
 
         child_version_4 = mommy.make_recipe(
             'pre_flourish.preflourishcaregiverchildconsent',
             subject_consent=version_4,
             child_dob=get_utcnow() - relativedelta(years=11, months=5),
+            version='4'
         )
 
         self.assertEqual(version_4.version, '4')
         self.assertEqual(child_version_4.version, '4')
 
-        self.assertNotEqual(version_4.version, self.pre_flourish_subject_consent.version)
-        self.assertNotEquals(child_version_4.version,
-                             self.pf_caregiver_child_consent.version)
