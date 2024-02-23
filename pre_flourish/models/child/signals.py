@@ -147,6 +147,7 @@ def create_child_dummy_consent(instance, caregiver_child_consent_obj=None):
             consent_datetime=caregiver_child_consent_obj.consent_datetime,
             identity=caregiver_child_consent_obj.identity,
             dob=caregiver_child_consent_obj.dob,
+            version=caregiver_child_consent_obj.version,
         )
 
 
