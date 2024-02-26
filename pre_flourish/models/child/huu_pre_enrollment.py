@@ -28,17 +28,25 @@ class HuuPreEnrollment(CrfModelMixin):
         blank=True,
         null=True)
 
-    child_weight_kg = models.IntegerField(
+    child_weight_kg = models.DecimalField(
         verbose_name='Weight (kg)',
         validators=[MinValueValidator(5), MaxValueValidator(200), ],
+        decimal_places=2,
+        max_digits=6,
     )
 
-    child_height = models.IntegerField(
+    child_height = models.DecimalField(
         verbose_name='Height (cm)',
         validators=[MinValueValidator(40), MaxValueValidator(210), ],
+        decimal_places=2,
+        max_digits=6,
     )
 
-    bmi = models.IntegerField(blank=True, null=True)
+    bmi = models.DecimalField(
+        blank=True,
+        null=True,
+        decimal_places=3,
+        max_digits=6, )
 
     knows_gest_age = models.CharField(
         verbose_name='Does the caregiver know the gestational age of the '

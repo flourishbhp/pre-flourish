@@ -1,20 +1,38 @@
-from dateutil.relativedelta import relativedelta
+from datetime import datetime
+
 from celery.app import shared_task
+from dateutil.relativedelta import relativedelta
+from django.apps import apps as django_apps
 from django.db.models import Q
 from edc_action_item import site_action_items
+from edc_base.utils import age
 from edc_constants.constants import FEMALE, MALE, NEG, NEW, NO, OPEN
 from edc_visit_schedule import site_visit_schedules
 
-from flourish_caregiver.models import MaternalDataset
+from flourish_caregiver.models.maternal_dataset import MaternalDataset
 from flourish_child.models import ChildDataset
 from pre_flourish.helper_classes.heu_pool_generation import HEUPoolGeneration
 from pre_flourish.helper_classes.huu_pool_generation import HUUPoolGeneration
+from pre_flourish.helper_classes.match_helper import MatchHelper
 from pre_flourish.models.caregiver.pre_flourish_subject_screening import \
     PreFlourishSubjectScreening
 from pre_flourish.models.child.pre_flourish_child_consent import \
     PreFlourishCaregiverChildConsent
 from pre_flourish.models.child.pre_flourish_child_dummy_consent import \
     PreFlourishChildDummySubjectConsent
+
+
+def huu_pre_enrollment_cls():
+    return django_apps.get_model('pre_flourish.huupreenrollment')
+
+
+def pre_flourish_child_consent_model_cls():
+    return django_apps.get_model(
+        'pre_flourish.preflourishcaregiverchildconsent')
+
+
+def matrix_pool_cls():
+    return django_apps.get_model('pre_flourish.matrixpool')
 
 
 def get_or_create_caregiver_dataset(consent):
@@ -156,3 +174,50 @@ def date_within_specific_months(value, upper_bond, months=0):
     return lower_bond <= value <= upper_bond
 
 
+def pre_flourish_child_consent_model_objs(subject_identifier):
+    return pre_flourish_child_consent_model_cls().objects.filter(
+        subject_consent__subject_identifier=subject_identifier)
+
+
+def latest_huu_pre_enrollment_objs(subject_identifier):
+    latest_huu_pre_enrollment_objs = []
+
+    for obj in pre_flourish_child_consent_model_objs(subject_identifier):
+        try:
+            huu_pre_enrollment_obj = huu_pre_enrollment_cls().objects.filter(
+                pre_flourish_visit__subject_identifier=obj.subject_identifier
+            ).latest('report_datetime')
+        except huu_pre_enrollment_cls().DoesNotExist:
+            pass
+        else:
+            latest_huu_pre_enrollment_objs.append(huu_pre_enrollment_obj)
+    return latest_huu_pre_enrollment_objs
+
+
+def valid_by_age(subject_identifier):
+    """Returns True if subject is valid by age.
+    """
+    for obj in pre_flourish_child_consent_model_objs(subject_identifier):
+        _age = age(obj.child_dob, datetime.now())
+        _age = _age.years + (_age.months / 12)
+        if 7 <= _age <= 9.5:
+            return True
+
+
+def is_flourish_eligible(subject_identifier):
+    """Returns True if subject is flourish eligible.
+    """
+    match_helper = MatchHelper()
+    if valid_by_age(subject_identifier):
+        return True
+    for obj in latest_huu_pre_enrollment_objs(subject_identifier):
+        bmi = obj.child_weight_kg / ((obj.child_height / 100) ** 2)
+        bmi_group = match_helper.bmi_group(bmi)
+        age_range = match_helper.age_range(obj.child_age)
+        gender = 'male' if obj.gender == MALE else 'female'
+        if bmi_group is None or age_range is None:
+            continue
+        if matrix_pool_cls().objects.filter(
+                pool='heu', bmi_group=bmi_group, age_group=age_range,
+                gender_group=gender, ).exists():
+            return True
