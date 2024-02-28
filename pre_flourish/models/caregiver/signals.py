@@ -2,6 +2,7 @@ from django.apps import apps as django_apps
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from edc_constants.constants import NO
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
 from .pre_flourish_consent import PreFlourishConsent
@@ -13,7 +14,7 @@ class PreFlourishSubjectScreeningError(Exception):
     pass
 
 
-def update_locator(consent=None, screening=None):
+def update_locator(consent, screening):
     locator_model = 'flourish_caregiver.caregiverlocator'
     locator_cls = django_apps.get_model(locator_model)
     try:
@@ -23,11 +24,15 @@ def update_locator(consent=None, screening=None):
     except locator_cls.DoesNotExist:
         pass
     else:
-        if screening:
-            locator_obj.screening_identifier = getattr(
-                screening, 'screening_identifier', None)
+        locator_obj.screening_identifier = getattr(
+            screening, 'screening_identifier', None)
         if consent:
-            locator_obj.subject_identifier = getattr(consent, 'subject_identifier', None)
+            locator_obj.subject_identifier = getattr(
+                consent, 'subject_identifier', None)
+        is_bio_mother = getattr(consent, 'biological_caregiver', None)
+        if is_bio_mother == NO:
+            locator_obj.first_name = getattr(consent, 'first_name', None)
+            locator_obj.last_name = getattr(consent, 'last_name', None)
         locator_obj.save()
 
 
@@ -36,7 +41,7 @@ def update_locator(consent=None, screening=None):
 def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
     """ Updates locator instance with subject and screening identifier once consented.
     """
-    if not raw:
+    if not raw and instance.is_eligible:
         try:
             caregiver_screening = PreFlourishSubjectScreening.objects.get(
                 screening_identifier=instance.screening_identifier)
@@ -44,15 +49,12 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
             raise PreFlourishSubjectScreeningError(
                 'Missing PreFlourishSubjectScreening form.')
         else:
-            caregiver_screening.is_consented = True
-            caregiver_screening.save()
-
-        if instance.is_eligible and caregiver_screening:
-            if hasattr(caregiver_screening, 'study_maternal_identifier'):
-                update_locator(consent=instance, screening=caregiver_screening)
-            caregiver_screening.has_passed_consent = True
             caregiver_screening.subject_identifier = instance.subject_identifier
-            caregiver_screening.save()
+            caregiver_screening.is_consented = True
+            caregiver_screening.has_passed_consent = True
+            caregiver_screening.save()  
+
+            update_locator(consent=instance, screening=caregiver_screening)
 
 
 @receiver(post_save, weak=False, sender=PreFlourishSubjectScreening,
@@ -61,7 +63,7 @@ def pre_flourish_screening_on_post_save(sender, instance, raw, created, **kwargs
     """ Updates screening identifier to locator model once successfully screened.
     """
     if not raw and instance.is_eligible:
-        update_locator(screening=instance)
+        update_locator(consent=None, screening=instance)
 
 
 @receiver(post_save, weak=False, sender=PreFlourishChildAssent,
