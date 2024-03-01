@@ -40,9 +40,9 @@ class HEUPoolGeneration(MatchHelper):
                     '-report_datetime').values('id')[:1]
 
         participants = self.child_clinical_measurements_cls.objects.filter(
-            id__in=latest_clinical_measurements_ids,
-          id=Subquery(latest_measurements), ).select_related('child_visit')
+            id=Subquery(latest_measurements), ).select_related('child_visit')
         self.heu_obj_clean_up()
+
         return self.get_heu_bmi_age_data(participants)
 
     def child_consent(self, caregiver_child_consent_cls, participant):
