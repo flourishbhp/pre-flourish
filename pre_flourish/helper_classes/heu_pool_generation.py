@@ -41,6 +41,7 @@ class HEUPoolGeneration(MatchHelper):
 
         participants = self.child_clinical_measurements_cls.objects.filter(
             id=Subquery(latest_measurements), ).select_related('child_visit')
+        self.heu_obj_clean_up()
 
         return self.get_heu_bmi_age_data(participants)
 
@@ -89,6 +90,9 @@ class HEUPoolGeneration(MatchHelper):
                 subject_data[bmi_group][age_range][gender].append(subj_id)
 
         self.prepare_create_pool('heu', bmi_age_data, subject_data)
+
+    def heu_obj_clean_up(self):
+        self.matrix_pool_cls.objects.filter(pool='heu').delete()
 
     @property
     def exposed_participants(self):
