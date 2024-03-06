@@ -34,8 +34,8 @@ class HEUPoolGeneration(MatchHelper):
         latest_clinical_measurements_ids = \
             self.child_clinical_measurements_cls.objects.values(
                 'child_visit__subject_identifier').annotate(
-                latest_report_date=Max('report_datetime')).values_list('id',
-                                                                       flat=True)
+                latest_report_date=Max('report_datetime')).values_list(
+                'id', flat=True)
 
         participants = self.child_clinical_measurements_cls.objects.filter(
             id__in=latest_clinical_measurements_ids,
