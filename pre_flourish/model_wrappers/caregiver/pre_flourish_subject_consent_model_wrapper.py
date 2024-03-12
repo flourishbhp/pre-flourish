@@ -12,19 +12,23 @@ from .child_assent_model_wrapper import \
     PreFlourishChildAssentModelWrapper as AssentModelWrapper
 from .pre_flourish_caregiverlocator_modelwrapper_mixin import \
     PreflourishCaregiverLocatorModelWrapperMixin
+from .consent_model_wrapper_mixin import ConsentModelWrapperMixin
+from ..pf_consent_version_model_wrapper_mixin import PfConsentVersionModelWrapperMixin
 from ...models import PreFlourishChildAssent as Assent
 
 
 class PreFlourishSubjectConsentModelWrapper(CaregiverContactModelWrapperMixin,
                                             CaregiverOffstudyModelWrapperMixin,
+                                            ConsentModelWrapperMixin,
                                             BhpPriorScreeningModelWrapperMixin,
                                             CaregiverDeathReportModelWrapperMixin,
                                             PreflourishCaregiverLocatorModelWrapperMixin,
+                                            PfConsentVersionModelWrapperMixin,
                                             ModelWrapper):
     model = 'pre_flourish.preflourishconsent'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
         'pre_flourish_screening_listboard_url')
-    next_url_attrs = ['screening_identifier']
+    next_url_attrs = ['screening_identifier', 'subject_identifier']
     querystring_attrs = ['screening_identifier', 'subject_identifier']
 
     @property

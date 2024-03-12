@@ -1,3 +1,4 @@
+from django.apps import apps as django_apps
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django_crypto_fields.fields import IdentityField
@@ -11,15 +12,18 @@ from edc_consent.field_mixins import ReviewFieldsMixin, VerificationFieldsMixin
 from edc_constants.choices import YES_NO, YES_NO_NA
 from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
 from edc_protocol.validators import datetime_not_before_study_start
-from flourish_caregiver.choices import CHILD_IDENTITY_TYPE
 
+from flourish_caregiver.choices import CHILD_IDENTITY_TYPE
 from ..caregiver import PreFlourishConsent
+from ..model_mixins import SearchSlugModelMixin
 from ...constants import INFANT
 from ...subject_identifier import PFInfantIdentifier
-from ..model_mixins import SearchSlugModelMixin
+
+pre_flourish_config = django_apps.get_app_config('pre_flourish')
 
 
-class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixin,
+class PreFlourishCaregiverChildConsent(SiteModelMixin,
+                                       NonUniqueSubjectIdentifierFieldMixin,
                                        IdentityFieldsMixin, ReviewFieldsMixin,
                                        PersonalFieldsMixin, VerificationFieldsMixin,
                                        SearchSlugModelMixin, BaseUuidModel):
@@ -148,6 +152,9 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifie
     def save(self, *args, **kwargs):
         self.child_age_at_enrollment = age(self.child_dob, get_utcnow()).years
 
+        self.version = self.child_consent_version or str(
+            pre_flourish_config.child_consent_version)
+
         if not self.subject_identifier:
             self.subject_identifier = PFInfantIdentifier(
                 maternal_identifier=self.subject_consent.subject_identifier,
@@ -158,6 +165,18 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin, NonUniqueSubjectIdentifie
             self.subject_identifier = f'{self.subject_identifier}'
 
         return super().save(*args, **kwargs)
+
+    @property
+    def child_consent_version(self):
+
+        consent_version_cls = django_apps.get_model('pre_flourish.pfconsentversion')
+        try:
+            consent_version_obj = consent_version_cls.objects.get(
+                screening_identifier=self.subject_consent.screening_identifier)
+        except consent_version_cls.DoesNotExist:
+            return None
+        else:
+            return consent_version_obj.child_version
 
     @property
     def child_dataset(self):

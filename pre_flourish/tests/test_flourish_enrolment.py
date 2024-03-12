@@ -124,7 +124,7 @@ class TestFlourishEnrolment(TestCase):
         mommy.make_recipe(
             'pre_flourish.huupreenrollment',
             pre_flourish_visit=visit,
-            child_test_date=get_utcnow(),
+            child_test_date=get_utcnow().date(),
             child_hiv_result=NEG,
             report_datetime=get_utcnow(), )
 
@@ -146,7 +146,7 @@ class TestFlourishEnrolment(TestCase):
         hiv_test_data = {
             'report_datetime': get_utcnow(),
             'rapid_test_done': YES,
-            'result_date': get_utcnow(),
+            'result_date': get_utcnow().date(),
             'result': NEG,
             'comments': None, }
 
@@ -174,7 +174,7 @@ class TestFlourishEnrolment(TestCase):
         mommy.make_recipe(
             'pre_flourish.huupreenrollment',
             pre_flourish_visit=visit,
-            child_test_date=get_utcnow(),
+            child_test_date=get_utcnow().date(),
             child_hiv_result=NEG,
             report_datetime=get_utcnow(), )
 

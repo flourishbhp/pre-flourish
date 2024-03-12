@@ -1,3 +1,4 @@
+from django.apps import apps as django_apps
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.utils.decorators import method_decorator
@@ -24,6 +25,19 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
     navbar_selected_item = 'pre_flourish_caregiver_locator'
     paginate_by = 10
     search_form_url = 'pre_flourish_caregiver_locator_listboard_url'
+
+    log_entry_model = 'pre_flourish_follow.preflourishlogentry'
+
+    @property
+    def log_entry_cls(self):
+        return django_apps.get_model(self.log_entry_model)
+
+    @property
+    def call_log_model_objs(self):
+        log_entries = self.log_entry_cls.objects.values_list(
+            'study_maternal_identifier', flat=True)
+
+        return set(list(log_entries))
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -69,6 +83,8 @@ class PreFlourishCaregiverLocatorListBoardView(NavbarViewMixin, EdcBaseViewMixin
         if kwargs.get('study_maternal_identifier'):
             options.update(
                 {'study_maternal_identifier': kwargs.get('study_maternal_identifier')})
+        options.update(
+            {'study_maternal_identifier__in': self.call_log_model_objs})
         return options
 
     def extra_search_options(self, search_term):

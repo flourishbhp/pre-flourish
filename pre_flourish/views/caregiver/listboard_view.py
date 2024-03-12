@@ -1,4 +1,6 @@
 import re
+
+from django.apps import apps as django_apps
 # from django.apps import apps as django_apps
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -7,14 +9,18 @@ from edc_base.view_mixins import EdcBaseViewMixin
 from edc_dashboard.view_mixins import ListboardFilterViewMixin, SearchFormViewMixin
 from edc_dashboard.views import ListboardView
 from edc_navbar import NavbarViewMixin
+
+from ...helper_classes.utils import get_consent_version_obj, get_is_latest_consent_version
 from ...model_wrappers import PreFlourishMaternalScreeningModelWrapper
+
 # from .filters import ListboardViewFilters
+
+pre_flourish_config = django_apps.get_app_config('pre_flourish')
 
 
 class ScreeningListBoardView(NavbarViewMixin, EdcBaseViewMixin,
                              ListboardFilterViewMixin, SearchFormViewMixin,
                              ListboardView):
-
     listboard_template = 'pre_flourish_screening_listboard_template'
     listboard_url = 'pre_flourish_screening_listboard_url'
     listboard_panel_style = 'info'
@@ -35,7 +41,15 @@ class ScreeningListBoardView(NavbarViewMixin, EdcBaseViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        is_latest_consent_version = False
+
+        if self.kwargs.get('screening_identifier'):
+            consent_version_obj = get_consent_version_obj(
+                self.kwargs.get('screening_identifier'))
+
+            is_latest_consent_version = get_is_latest_consent_version(consent_version_obj)
         context.update(
+            is_latest_consent_version=is_latest_consent_version,
             maternal_screening_add_url=self.model_cls().get_absolute_url())
         return context
 

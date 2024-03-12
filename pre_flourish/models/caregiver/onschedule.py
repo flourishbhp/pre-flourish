@@ -5,7 +5,9 @@ from edc_base.sites import CurrentSiteManager
 from edc_identifier.managers import SubjectIdentifierManager
 
 from edc_visit_schedule.model_mixins import OnScheduleModelMixin as BaseOnScheduleModelMixin
+from django.apps import apps as django_apps
 
+pre_flourish_config = django_apps.get_app_config('pre_flourish')
 
 class OnScheduleModelMixin(BaseOnScheduleModelMixin, BaseUuidModel):
     """A model used by the system. Auto-completed by enrollment model.
@@ -31,7 +33,7 @@ class OnScheduleModelMixin(BaseOnScheduleModelMixin, BaseUuidModel):
         pass
 
     def save(self, *args, **kwargs):
-        self.consent_version = '1'
+        self.consent_version = str(pre_flourish_config.consent_version)
         super().save(*args, **kwargs)
 
     class Meta:
