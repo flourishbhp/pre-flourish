@@ -1,8 +1,8 @@
 from datetime import datetime
-from django.apps import AppConfig as DjangoAppConfig
-from django.conf import settings
 
 from dateutil.tz import gettz
+from django.apps import AppConfig as DjangoAppConfig
+from django.conf import settings
 from edc_constants.constants import FAILED_ELIGIBILITY
 from edc_visit_tracking.constants import COMPLETED_PROTOCOL_VISIT, LOST_VISIT, \
     MISSED_VISIT, \
@@ -14,8 +14,11 @@ class AppConfig(DjangoAppConfig):
     verbose_name = 'Pre Flourish'
     admin_site_name = 'pre_flourish_admin'
 
+    consent_version = 4
+    child_consent_version = 4
+
     def ready(self):
-        from .models.caregiver import pre_flourish_consent_on_post_save
+        pass
 
 
 if settings.APP_NAME == 'pre_flourish':

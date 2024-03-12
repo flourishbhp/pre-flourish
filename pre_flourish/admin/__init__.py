@@ -14,6 +14,7 @@ from .child import PFChildHIVRapidTestCounselingAdmin
 from .child import PreFlourishCaregiverChildConsentAdmin
 from .child import PreFlourishChildAssentAdmin
 from .child import PreFlourishChildOffStudyAdmin
+from .pf_consent_version_admin import PFConsentVersionAdmin
 from .pf_data_action_item_admin import PFDataActionItemAdmin
 from .pre_flourish_action_item_admin import PreFlourishActionItemAdmin
 from .pre_flourish_registered_subject import PreFlourishRegisteredSubjectAdmin

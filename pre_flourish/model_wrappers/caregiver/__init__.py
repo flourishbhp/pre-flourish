@@ -1,5 +1,6 @@
 from .appointment_model_wrapper import AppointmentModelWrapper
 from .caregiver_locator_model_wrapper import PreflourishCaregiverLocatorModelWrapper
+from .consent_model_wrapper_mixin import ConsentModelWrapperMixin
 from .log_entry_model_wrapper import PreFlourishLogEntryModelWrapper
 from .maternal_crf_model_wrapper import MaternalCrfModelWrapper
 from .maternal_dataset_model_wrapper import MaternalDatasetModelWrapper

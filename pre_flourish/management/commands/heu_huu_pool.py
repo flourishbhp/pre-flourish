@@ -10,6 +10,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("Generating HUU matching pool...")
         HUUPoolGeneration().generate_pool()
-        print("Generating HUU matching pool...")
+        print("Generating HEU matching pool...")
         HEUPoolGeneration().generate_pool()
         print("Done.🚀")

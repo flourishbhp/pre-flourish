@@ -2,7 +2,7 @@ from collections import defaultdict
 
 from dateutil.relativedelta import relativedelta
 from django.apps import apps as django_apps
-from django.db.models import Max
+from django.db.models import OuterRef, Subquery
 from edc_base import get_utcnow
 from edc_constants.constants import MALE
 from tqdm import tqdm
@@ -16,6 +16,7 @@ class HEUPoolGeneration(MatchHelper):
     child_dataset_model = 'flourish_child.childdataset'
     maternal_dataset_model = 'flourish_caregiver.maternaldataset'
     screening_prior_model = 'flourish_caregiver.screeningpriorbhpparticipants'
+    child_offstudy_model = 'flourish_prn.childoffstudy'
     bmi_age_data = None
 
     def __init__(self):
@@ -29,29 +30,35 @@ class HEUPoolGeneration(MatchHelper):
             self.maternal_dataset_model)
         self.screening_prior_model_cls = django_apps.get_model(
             self.screening_prior_model)
+        self.child_offstudy_model_cls = django_apps.get_model(
+            self.child_offstudy_model)
 
     def generate_pool(self):
-        latest_clinical_measurements_ids = \
-            self.child_clinical_measurements_cls.objects.values(
-                'child_visit__subject_identifier').annotate(
-                latest_report_date=Max('report_datetime')).values_list('id',
-                                                                       flat=True)
+        latest_measurements = self.child_clinical_measurements_cls.objects.filter(
+            child_visit__subject_identifier=OuterRef(
+                'child_visit__subject_identifier')).order_by(
+                    '-report_datetime').values('id')[:1]
 
         participants = self.child_clinical_measurements_cls.objects.filter(
-            id__in=latest_clinical_measurements_ids,
-        ).select_related('child_visit')
+            id=Subquery(latest_measurements), ).select_related('child_visit')
+
         return self.get_heu_bmi_age_data(participants)
 
     def child_consent(self, caregiver_child_consent_cls, participant):
-        ten_years_ago = get_utcnow() - relativedelta(years=10)
+        age_limit = get_utcnow() - relativedelta(years=9, months=6)
         try:
             return caregiver_child_consent_cls.objects.filter(
                 subject_identifier=participant.child_visit.subject_identifier,
-                child_dob__lte=ten_years_ago,
+                child_dob__lte=age_limit,
                 study_child_identifier__in=self.exposed_participants
             ).latest('consent_datetime')
         except caregiver_child_consent_cls.DoesNotExist:
             pass
+
+    def check_offstudy(self, participant):
+        offstudy = self.child_offstudy_model_cls.objects.filter(
+            subject_identifier=participant.child_visit.subject_identifier)
+        return offstudy.exists()
 
     def get_heu_bmi_age_data(self, participants):
         if not participants:
@@ -62,7 +69,8 @@ class HEUPoolGeneration(MatchHelper):
         for participant in tqdm(participants):
             child_consent = self.child_consent(self.caregiver_child_consent_cls,
                                                participant)
-            if not child_consent:
+            child_offstudy = self.check_offstudy(participant)
+            if not child_consent or child_offstudy:
                 continue
             child_dob = child_consent.child_dob
             gender = child_consent.gender
