@@ -35,3 +35,5 @@ class SubjectListboardView(EdcBaseViewMixin, NavbarViewMixin,
         if re.match('^[A-Z]+$', search_term):
             q = Q(first_name__exact=search_term)
         return q
+
+

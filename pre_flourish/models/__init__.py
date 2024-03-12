@@ -20,6 +20,7 @@ from .child import PreFlourishChildAssent
 from .child import PreFlourishChildDummySubjectConsent
 from .child import PreFlourishChildOffStudy
 from .pf_action_item import PFActionItem
+from .pf_consent_version import PFConsentVersion
 from .pf_data_action_item import PFDataActionItem
 from .pre_flourish_registered_subject import PreFlourishRegisteredSubject
 from .pre_flourish_visit import PreFlourishVisit

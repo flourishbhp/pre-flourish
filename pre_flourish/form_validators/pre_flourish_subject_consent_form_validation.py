@@ -1,10 +1,11 @@
 import re
+
 from django import forms
 from django.apps import apps as django_apps
 from django.core.exceptions import ValidationError
 from edc_base.utils import relativedelta
-from edc_constants.constants import FEMALE, MALE, NO, YES, NOT_APPLICABLE
-from edc_form_validators import FormValidator
+from edc_constants.constants import NOT_APPLICABLE
+
 from flourish_form_validations.form_validators import SubjectConsentFormValidator
 
 
@@ -25,7 +26,6 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
         self.validate_is_literate()
         self.validate_dob(cleaned_data=self.cleaned_data)
         self.validate_identity_number(cleaned_data=self.cleaned_data)
-        self.validate_breastfeed_intent()
         self.validate_child_consent()
         self.validate_birth_date()
 
@@ -117,7 +117,8 @@ class PreFlourishConsentFormValidator(SubjectConsentFormValidator):
                 self._errors.update(message)
                 raise ValidationError(message)
 
-            if self.pre_flourish_screening.caregiver_age != consent_age:
+            if (self.pre_flourish_screening and
+                    self.pre_flourish_screening.caregiver_age != consent_age):
                 message = {'dob': f'Expected {self.pre_flourish_screening.caregiver_age} '
                                   f'years old, got {consent_age} years old'}
                 self._errors.update(message)

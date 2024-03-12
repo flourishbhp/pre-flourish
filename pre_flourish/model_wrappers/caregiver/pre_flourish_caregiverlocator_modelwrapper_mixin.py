@@ -96,12 +96,11 @@ class PreflourishCaregiverLocatorModelWrapperMixin:
     def subject_consent_obj(self):
         if self.subject_screening_obj:
             try:
-                subject_consent = self.subject_consent_model_cls.objects.get(
-                    screening_identifier=self.subject_screening_obj.screening_identifier)
+                return self.subject_consent_model_cls.objects.filter(
+                    screening_identifier=self.subject_screening_obj
+                    .screening_identifier).latest('consent_datetime')
             except self.subject_consent_model_cls.DoesNotExist:
                 pass
-            else:
-                return subject_consent
 
     @property
     def log_entry_model_wrapper(self):

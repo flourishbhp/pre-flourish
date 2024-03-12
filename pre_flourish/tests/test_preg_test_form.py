@@ -1,5 +1,5 @@
 from dateutil.relativedelta import relativedelta
-from django.test import TestCase, tag
+from django.test import tag, TestCase
 from edc_base import get_utcnow
 from edc_constants.constants import FEMALE, YES
 from edc_facility.import_holidays import import_holidays
@@ -16,9 +16,14 @@ class TestPregnancyTestForm(TestCase):
 
     def setUp(self):
         import_holidays()
+        self.study_maternal_identifier = '89721'
+        self.locator = mommy.make_recipe(
+            'pre_flourish.caregiverlocator',
+            study_maternal_identifier=self.study_maternal_identifier, )
 
         self.caregiver_screening = mommy.make_recipe(
-            'pre_flourish.preflourishsubjectscreening', )
+            'pre_flourish.preflourishsubjectscreening',
+            study_maternal_identifier=self.study_maternal_identifier)
 
         self.subject_consent = mommy.make_recipe(
             'pre_flourish.preflourishconsent',

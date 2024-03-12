@@ -1,18 +1,20 @@
 from django.apps import apps as django_apps
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from edc_base.utils import get_uuid
-from edc_consent import ConsentModelWrapperMixin
 from edc_model_wrapper import ModelWrapper
 
+from .consent_model_wrapper_mixin import ConsentModelWrapperMixin
 from .pre_flourish_caregiverlocator_modelwrapper_mixin import \
     PreflourishCaregiverLocatorModelWrapperMixin
 from .pre_flourish_subject_consent_model_wrapper import \
     PreFlourishSubjectConsentModelWrapper
+from ..pf_consent_version_model_wrapper_mixin import PfConsentVersionModelWrapperMixin
 
 
-class PreFlourishMaternalScreeningModelWrapper(
-    PreflourishCaregiverLocatorModelWrapperMixin, ConsentModelWrapperMixin, ModelWrapper):
+class PreFlourishMaternalScreeningModelWrapper(PfConsentVersionModelWrapperMixin,
+                                               PreflourishCaregiverLocatorModelWrapperMixin,
+                                               ConsentModelWrapperMixin,
+                                               ModelWrapper):
     consent_model_wrapper_cls = PreFlourishSubjectConsentModelWrapper
     model = 'pre_flourish.preflourishsubjectscreening'
     querystring_attrs = ['screening_identifier',
@@ -29,23 +31,10 @@ class PreFlourishMaternalScreeningModelWrapper(
         'pre_flourish_screening_listboard_url')
 
     @property
-    def consent_version(self):
-        return '1'
-
-    @property
     def subject_identifier(self):
-        if self.consent_model_obj:
-            return self.consent_model_obj.subject_identifier
+        if self.consent_older_version_model_obj:
+            return self.consent_older_version_model_obj.subject_identifier
         return None
-
-    @property
-    def consent_model_obj(self):
-        """Returns a consent model instance or None.
-        """
-        try:
-            return self.subject_consent_cls.objects.get(**self.consent_options)
-        except ObjectDoesNotExist:
-            return None
 
     @property
     def subject_consent_cls(self):
@@ -77,3 +66,7 @@ class PreFlourishMaternalScreeningModelWrapper(
 
     def eligible_at_enrol(self):
         return self.object.is_eligible
+
+    @property
+    def screening_report_datetime(self):
+        return self.object.report_datetime

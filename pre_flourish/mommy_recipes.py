@@ -1,16 +1,16 @@
 from dateutil.relativedelta import relativedelta
 from edc_base.utils import get_utcnow
+from edc_constants.constants import ALIVE, NOT_APPLICABLE, ON_STUDY, PARTICIPANT, YES
+from edc_visit_tracking.constants import SCHEDULED
 from faker import Faker
+from model_mommy.recipe import Recipe, seq
+
 from flourish_caregiver.models import CaregiverLocator, MaternalDataset
 from flourish_child.models import ChildAssent
-from model_mommy.recipe import Recipe, seq
-from edc_visit_tracking.constants import SCHEDULED
-from edc_constants.constants import ALIVE, YES, ON_STUDY, PARTICIPANT, \
-    NOT_APPLICABLE
-
-from .models import PreFlourishConsent, PreFlourishSubjectScreening, \
-    PreFlourishCaregiverChildConsent, PreFlourishChildAssent, PreFlourishVisit, \
-    HuuPreEnrollment, CyhuuPreEnrollment, PFChildHIVRapidTestCounseling
+from .models import CyhuuPreEnrollment, HuuPreEnrollment, PFChildHIVRapidTestCounseling, \
+    PFConsentVersion, PreFlourishCaregiverChildConsent, PreFlourishChildAssent, \
+    PreFlourishConsent, \
+    PreFlourishSubjectScreening, PreFlourishVisit
 
 fake = Faker()
 
@@ -113,3 +113,6 @@ caregiverlocator = Recipe(
 
 pfchildhivrapidtestcounseling = Recipe(
     PFChildHIVRapidTestCounseling)
+
+pfconsentversion = Recipe(
+    PFConsentVersion)
