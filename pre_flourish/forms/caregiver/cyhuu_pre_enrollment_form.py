@@ -50,9 +50,9 @@ class CyhuuPreEnrollmentForm(SubjectModelFormMixin, forms.ModelForm):
     def consent_obj_screening(self):
         if self.pre_flourish_visit_obj:
             try:
-                return self.consent_model_cls.objects.get(
+                return self.consent_model_cls.objects.filter(
                     subject_identifier=self.pre_flourish_visit_obj.subject_identifier
-                ).screening_identifier
+                ).latest('consent_datetime').screening_identifier
 
             except self.consent_model_cls.DoesNotExist:
                 raise

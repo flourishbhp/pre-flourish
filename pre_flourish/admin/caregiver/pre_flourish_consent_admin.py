@@ -1,29 +1,31 @@
 from collections import OrderedDict
+
+from django.apps import apps as django_apps
 from django.contrib import admin
 from django.urls.base import reverse
 from django.urls.exceptions import NoReverseMatch
 from django_revision.modeladmin_mixin import ModelAdminRevisionMixin
 from edc_consent.actions import (
     flag_as_verified_against_paper, unflag_as_verified_against_paper)
-from edc_model_admin import (
-    ModelAdminFormAutoNumberMixin, ModelAdminInstitutionMixin,
-    audit_fieldset_tuple, audit_fields, ModelAdminNextUrlRedirectMixin,
-    ModelAdminNextUrlRedirectError, ModelAdminReplaceLabelTextMixin)
+from edc_model_admin import audit_fields, audit_fieldset_tuple, \
+    ModelAdminFormAutoNumberMixin, ModelAdminInstitutionMixin, \
+    ModelAdminNextUrlRedirectError, ModelAdminNextUrlRedirectMixin, \
+    ModelAdminReplaceLabelTextMixin
 from edc_model_admin import ModelAdminBasicMixin, ModelAdminReadOnlyMixin
 from simple_history.admin import SimpleHistoryAdmin
 
+from flourish_caregiver.admin import ConsentMixin
+from .exportaction_mixin import ExportActionMixin
+from ..child import PreFlourishCaregiverChildConsentInline
 from ...admin_site import pre_flourish_admin
 from ...forms import PreFlourishConsentForm
 from ...models import PreFlourishConsent
-from .exportaction_mixin import ExportActionMixin
-from ..child import PreFlourishCaregiverChildConsentInline
 
 
 class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormAutoNumberMixin,
                       ModelAdminRevisionMixin, ModelAdminReplaceLabelTextMixin,
                       ModelAdminInstitutionMixin, ModelAdminReadOnlyMixin,
                       ExportActionMixin):
-
     list_per_page = 10
     date_hierarchy = 'modified'
     empty_value_display = '-'
@@ -45,11 +47,12 @@ class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormAutoNumberMi
 
 
 @admin.register(PreFlourishConsent, site=pre_flourish_admin)
-class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
+class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin, ConsentMixin,
                               SimpleHistoryAdmin, admin.ModelAdmin):
-
     form = PreFlourishConsentForm
-    inlines =  [ PreFlourishCaregiverChildConsentInline, ]
+    inlines = [PreFlourishCaregiverChildConsentInline, ]
+
+    consent_cls = django_apps.get_model('pre_flourish.preflourishconsent')
 
     fieldsets = (
         (None, {
@@ -127,12 +130,10 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
     search_fields = ('subject_identifier', 'dob',)
 
     def get_actions(self, request):
-
         super_actions = super().get_actions(request)
 
         if ('pre_flourish.change_preflourishconsent'
                 in request.user.get_group_permissions()):
-
             consent_actions = [
                 flag_as_verified_against_paper,
                 unflag_as_verified_against_paper]
@@ -152,6 +153,30 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin,
             super_actions.update(actions)
 
         return super_actions
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj=obj, **kwargs)
+        if 'screening_identifier' in request.GET:
+            screening_identifier = request.GET.get('screening_identifier')
+            subject_identifier = self.get_subject_identifier(screening_identifier)
+            if subject_identifier:
+                initial_values = self.prepare_initial_values_based_on_subject(
+                    obj=obj, subject_identifier=subject_identifier)
+                form.previous_instance = initial_values
+        return form
+
+    def prepare_initial_values_based_on_subject(self, obj, subject_identifier):
+        return [self.prepare_subject_consent(consent) for consent in
+                self.consents_filtered_by_subject(obj, subject_identifier)]
+
+    def get_difference(self, model_objs, obj=None):
+        cc_ids = obj.preflourishcaregiverchildconsent_set.values_list(
+            'subject_identifier', 'version')
+        consent_version_obj = self.consent_version_obj(
+            obj.screening_identifier)
+        child_version = getattr(consent_version_obj, 'child_version', None)
+        return [x for x in model_objs if (
+            x.subject_identifier, x.version) not in cc_ids or x.version != child_version]
 
     def get_readonly_fields(self, request, obj=None):
         return (super().get_readonly_fields(request, obj=obj) +

@@ -20,10 +20,11 @@ def get_item(dictionary, key):
 def consent_button(model_wrapper):
     title = ['Consent subject to participate.']
     return dict(
+        consent_model_obj=model_wrapper.consent_model_obj,
         subject_identifier=model_wrapper.consent.object.subject_identifier,
         subject_screening_obj=model_wrapper.object,
         add_consent_href=model_wrapper.consent.href,
-        # consent_version=model_wrapper.consent_version,
+        consent_version=model_wrapper.consent_version,
         title=' '.join(title))
 
 
@@ -285,3 +286,16 @@ def bhp_prior_screening_button(model_wrapper):
         screening_identifier=model_wrapper.screening_identifier,
         prior_screening_obj=model_wrapper.bhp_prior_screening_model_obj,
         caregiver_locator_obj=model_wrapper.locator_model_obj)
+
+
+@register.inclusion_tag(
+    'pre_flourish/buttons/consent_version_button.html')
+def consent_version_button(model_wrapper, is_latest_consent_version):
+    title = ['Add Consent Version.']
+
+    return dict(
+        consent_versioned=model_wrapper.consent_version_model_obj,
+        screening_identifier=model_wrapper.object.screening_identifier,
+        add_consent_version_href=model_wrapper.pf_consent_version.href,
+        is_latest_consent_version=is_latest_consent_version,
+        title=' '.join(title))

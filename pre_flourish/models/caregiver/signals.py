@@ -2,6 +2,7 @@ from django.apps import apps as django_apps
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from edc_base import get_utcnow
 from edc_constants.constants import NO
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
@@ -9,6 +10,7 @@ from .pre_flourish_consent import PreFlourishConsent
 from .pre_flourish_subject_screening import PreFlourishSubjectScreening
 from ..child.pre_flourish_child_assent import PreFlourishChildAssent
 
+pre_flourish_config = django_apps.get_app_config('pre_flourish')
 
 class PreFlourishSubjectScreeningError(Exception):
     pass
@@ -52,7 +54,7 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
             caregiver_screening.subject_identifier = instance.subject_identifier
             caregiver_screening.is_consented = True
             caregiver_screening.has_passed_consent = True
-            caregiver_screening.save()  
+            caregiver_screening.save()
 
             update_locator(consent=instance, screening=caregiver_screening)
 
@@ -65,6 +67,8 @@ def pre_flourish_screening_on_post_save(sender, instance, raw, created, **kwargs
     if not raw and instance.is_eligible:
         update_locator(consent=None, screening=instance)
 
+    create_consent_version(instance, pre_flourish_config.consent_version)
+
 
 @receiver(post_save, weak=False, sender=PreFlourishChildAssent,
           dispatch_uid='pre_flourish_assent_post_save')
@@ -72,8 +76,10 @@ def pre_flourish_assent_post_save(sender, instance, raw, created, **kwargs):
     if not raw:
         # get caregiver's consent
         try:
-            caregiver_consent = PreFlourishConsent.objects.get(
-                subject_identifier=instance.subject_identifier[:-3])
+            caregiver_consent = PreFlourishConsent.objects.filter(
+                subject_identifier=instance.subject_identifier[:-3]).latest(
+                'consent_datetime'
+            )
         except PreFlourishConsent.DoesNotExist:
             raise ValidationError("Missing caregiver consent")
         else:
@@ -117,3 +123,20 @@ def put_on_schedule(instance, subject_identifier,
             else:
                 onschedule_obj.child_subject_identifier = child_subject_identifier
                 onschedule_obj.save()
+
+
+def create_consent_version(instance, version):
+    consent_version_cls = django_apps.get_model(
+        'pre_flourish.pfconsentversion')
+
+    try:
+        consent_version_cls.objects.get(
+            screening_identifier=instance.screening_identifier)
+    except consent_version_cls.DoesNotExist:
+        consent_version = consent_version_cls(
+            screening_identifier=instance.screening_identifier,
+            version=version,
+            child_version=pre_flourish_config.child_consent_version,
+            user_created=instance.user_modified or instance.user_created,
+            created=get_utcnow())
+        consent_version.save()

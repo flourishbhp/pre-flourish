@@ -1,11 +1,11 @@
-from datetime import datetime
+import datetime
 
 from celery.app import shared_task
 from dateutil.relativedelta import relativedelta
 from django.apps import apps as django_apps
 from django.db.models import Q
 from edc_action_item import site_action_items
-from edc_base.utils import age
+from edc_base.utils import age, get_utcnow
 from edc_constants.constants import FEMALE, MALE, NEG, NEW, NO, OPEN
 from edc_visit_schedule import site_visit_schedules
 
@@ -33,6 +33,9 @@ def pre_flourish_child_consent_model_cls():
 
 def matrix_pool_cls():
     return django_apps.get_model('pre_flourish.matrixpool')
+
+
+pre_flourish_config = django_apps.get_app_config('pre_flourish')
 
 
 def get_or_create_caregiver_dataset(consent):
@@ -171,6 +174,9 @@ def date_within_specific_months(value, upper_bond, months=0):
 
     lower_bond = value - relativedelta(months=months)
 
+    if not isinstance(value, datetime.date):
+        value = datetime.datetime.combine(value, datetime.datetime.min.time())
+
     return lower_bond <= value <= upper_bond
 
 
@@ -198,7 +204,7 @@ def valid_by_age(subject_identifier):
     """Returns True if subject is valid by age.
     """
     for obj in pre_flourish_child_consent_model_objs(subject_identifier):
-        _age = age(obj.child_dob, datetime.now())
+        _age = age(obj.child_dob, get_utcnow())
         _age = _age.years + (_age.months / 12)
         if 7 <= _age <= 9.5:
             return True
@@ -221,3 +227,19 @@ def is_flourish_eligible(subject_identifier):
                 pool='heu', bmi_group=bmi_group, age_group=age_range,
                 gender_group=gender, ).exists():
             return True
+
+
+def get_consent_version_obj(screening_identifier=None):
+    consent_version_cls = django_apps.get_model('pre_flourish.pfconsentversion')
+    try:
+        return consent_version_cls.objects.get(
+            screening_identifier=screening_identifier)
+    except consent_version_cls.DoesNotExist:
+        return None
+
+
+def get_is_latest_consent_version(consent_version_obj):
+    if not consent_version_obj:
+        return False
+    return str(consent_version_obj.version) == str(
+        pre_flourish_config.consent_version)

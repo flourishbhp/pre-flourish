@@ -2,20 +2,18 @@ from django.apps import apps as django_apps
 from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from dateutil.relativedelta import relativedelta
 from edc_action_item import site_action_items
 from edc_base import get_utcnow
-from edc_base.utils import age
 from edc_constants.constants import NEG, NEW, OPEN, POS
 from edc_visit_schedule import site_visit_schedules
 
 from pre_flourish.action_items import CHILD_OFF_STUDY_ACTION
 from pre_flourish.helper_classes.utils import create_child_dummy_consent, \
-    get_or_create_caregiver_dataset, \
-    get_or_create_child_dataset, pre_flourish_caregiver_child_consent, \
-    put_on_schedule, trigger_action_item, date_within_specific_months
-from pre_flourish.models.child import HuuPreEnrollment, PreFlourishChildAssent, \
-    PreFlourishChildDummySubjectConsent, PFChildHIVRapidTestCounseling
+    date_within_specific_months, get_or_create_caregiver_dataset, \
+    get_or_create_child_dataset, pre_flourish_caregiver_child_consent, put_on_schedule, \
+    trigger_action_item
+from pre_flourish.models.child import HuuPreEnrollment, PFChildHIVRapidTestCounseling, \
+    PreFlourishChildAssent, PreFlourishChildDummySubjectConsent
 
 
 class CaregiverConsentError(Exception):
@@ -31,8 +29,9 @@ def child_assent_on_post_save(sender, instance, raw, created, **kwargs):
         caregiver_child_consent_cls = django_apps.get_model(
             'pre_flourish.preflourishcaregiverchildconsent')
         try:
-            caregiver_child_consent_obj = caregiver_child_consent_cls.objects.get(
-                subject_identifier=instance.subject_identifier, )
+            caregiver_child_consent_obj = caregiver_child_consent_cls.objects.filter(
+                subject_identifier=instance.subject_identifier, ).latest(
+                'consent_datetime')
         except caregiver_child_consent_cls.DoesNotExist:
             raise CaregiverConsentError('Associated caregiver consent on behalf of '
                                         'child for this participant not found')
@@ -73,7 +72,8 @@ def huu_pre_enrollment_post_save(sender, instance, raw, created, **kwargs):
 
             child_test_date = instance.child_test_date
 
-            within_three_months = date_within_specific_months(child_test_date, current_date, 3)
+            within_three_months = date_within_specific_months(child_test_date,
+                                                              current_date, 3)
 
             if instance.child_hiv_result == NEG and within_three_months:
                 caregiver_child_consent = pre_flourish_caregiver_child_consent(instance)
@@ -83,7 +83,8 @@ def huu_pre_enrollment_post_save(sender, instance, raw, created, **kwargs):
 
 @receiver(post_save, weak=False, sender=PFChildHIVRapidTestCounseling,
           dispatch_uid='pf_child_hiv_rapid_test_counseling_post_save')
-def pf_child_hiv_rapid_test_counseling_post_save(sender, instance, raw, created, **kwargs):
+def pf_child_hiv_rapid_test_counseling_post_save(sender, instance, raw, created,
+                                                 **kwargs):
     if not raw and instance.rapid_test_done:
 
         current_date = get_utcnow().date()
@@ -147,6 +148,7 @@ def create_child_dummy_consent(instance, caregiver_child_consent_obj=None):
             consent_datetime=caregiver_child_consent_obj.consent_datetime,
             identity=caregiver_child_consent_obj.identity,
             dob=caregiver_child_consent_obj.dob,
+            version=caregiver_child_consent_obj.version,
         )
 
 

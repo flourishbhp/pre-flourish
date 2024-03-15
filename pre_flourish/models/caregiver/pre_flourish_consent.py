@@ -21,7 +21,7 @@ from .model_mixins import ReviewFieldsMixin, SearchSlugModelMixin
 from ...choices import IDENTITY_TYPE, RECRUIT_CLINIC, RECRUIT_SOURCE
 from ...subject_identifier import SubjectIdentifier
 
-
+pre_flourish_config = django_apps.get_app_config('pre_flourish')
 class SubjectConsentManager(SearchSlugManager, models.Manager):
 
     def get_by_natural_key(self, subject_identifier, version):
@@ -119,12 +119,24 @@ class PreFlourishConsent(
         return f'{self.subject_identifier} V{self.version}'
 
     def save(self, *args, **kwargs):
+
+        consent_version_cls = django_apps.get_model(
+            'pre_flourish.pfconsentversion')
+
+        if not self.version:
+            try:
+                consent_version_obj = consent_version_cls.objects.get(
+                    screening_identifier=self.screening_identifier)
+            except consent_version_cls.DoesNotExist:
+                self.version = str(pre_flourish_config.consent_version)
+            else:
+                self.version = consent_version_obj.version
+
         eligibility_criteria = ConsentEligibility(
             self.consent_reviewed, self.study_questions, self.assessment_score,
             self.consent_signature, self.consent_copy, self.child_consent)
         self.is_eligible = eligibility_criteria.is_eligible
         self.ineligibility = eligibility_criteria.error_message
-        self.version = '1'
         if self.is_eligible:
             if self.created and not self.subject_identifier:
                 self.subject_identifier = self.update_subject_identifier_on_save()

@@ -1,16 +1,35 @@
 {% load edc_base_extras %}
+{% load pre_flourish_dashboard_extras %}
 
-<div class="list-group" >
-<a class="list-group-item"><i class="fa fa-birthday-cake fa-fw"></i>
+<div class="list-group">
+    <a class="list-group-item"><i class="fa fa-birthday-cake fa-fw"></i>
+        {{ consent.dob }}
+        {% get_age consent.dob %}
 
- 	<span data-toggle="tooltip" data-placement="right" title="HIV Status" > <i class="fa  fa-plus-circle  fa-fw"></i> </span>
+    </a>
+    <a class="list-group-item"><i class="far fa-address-card fa-fw"></i>
+        {{ consent.identity|default:'?? identity' }}
+        <span data-toggle="tooltip" data-placement="right"
+              title="{{ consent.first_name }} {{ consent.last_name }}"
+              class="text text-default">
+            {% if consent %}
 
- 		<span data-toggle="tooltip" data-placement="right" title="HIV Status"> <i  class="fa  fa-minus-circle  fa-fw"></i> </span>
+                {{ consent.first_name }}
+                {{ consent.initials }}
+            {% endif %}
 
-	 		<span data-toggle="tooltip" data-placement="right" title="HIV Status" > <i class="fa  fa-question-circle  fa-fw"></i> </span>
-
-</a>
-<a class="list-group-item"><i class="far fa-address-card fa-fw"></i>
-<span data-toggle="tooltip" data-placement="right" title="" class="text text-default"><sup><i class="fa fa-asterisk fa-fw"></i></sup></span>
-</a>
+            <sup>
+                <i
+                        class="fa fa-asterisk fa-fw">
+                </i>
+            </sup>
+        </span>
+    </a>
+    <a class="list-group-item">
+        <i class="fa fa-users"></i>
+        <span data-toggle="tooltip" data-placement="right" title="Cohorts"
+              class="text text-default">
+				Consent Version {{ consent.version }}
+			</span>
+    </a>
 </div>
