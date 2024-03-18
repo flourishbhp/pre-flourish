@@ -1,3 +1,5 @@
+from django.apps import apps as django_apps
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.deletion import PROTECT
 from edc_base.model_mixins import BaseUuidModel, FormAsJSONModelMixin
@@ -11,12 +13,13 @@ from edc_visit_tracking.model_mixins import PreviousVisitModelMixin
 
 from ..pre_flourish_visit import PreFlourishVisit
 
+pre_flourish_config = django_apps.get_app_config('pre_flourish')
+
 
 class CrfModelMixin(BaseCrfModelMixin, SubjectScheduleCrfModelMixin,
                     RequiresConsentFieldsModelMixin, PreviousVisitModelMixin,
                     UpdatesCrfMetadataModelMixin, SiteModelMixin,
                     FormAsJSONModelMixin, ReferenceModelMixin, BaseUuidModel):
-
     """ Base model for all scheduled models
     """
     offschedule_compare_dates_as_datetimes = True
@@ -30,9 +33,44 @@ class CrfModelMixin(BaseCrfModelMixin, SubjectScheduleCrfModelMixin,
     def natural_key(self):
         return self.pre_flourish_visit.natural_key()
 
+    def get_consent_version(self):
+        preg_subject_screening_cls = django_apps.get_model(
+            'pre_flourish.preflourishsubjectscreening')
+
+        consent_version_cls = django_apps.get_model(
+            'pre_flourish.pfconsentversion')
+
+        subject_identifier = self.subject_identifier
+
+        if len(self.subject_identifier.split('-')) == 4:
+            subject_identifier = self.subject_identifier[:-3]
+
+        try:
+            subject_screening_obj = preg_subject_screening_cls.objects.get(
+                subject_identifier=subject_identifier)
+        except preg_subject_screening_cls.DoesNotExist:
+            raise ValidationError(
+                'Missing Subject Screening form. Please complete '
+                'it before proceeding.')
+        else:
+            screening_identifiers = getattr(subject_screening_obj,
+                                            'screening_identifier', None)
+
+            try:
+                consent_version_obj = consent_version_cls.objects.get(
+                    screening_identifier=screening_identifiers)
+            except consent_version_cls.DoesNotExist:
+                raise ValidationError(
+                    'Missing Consent Version form. Please complete '
+                    'it before proceeding.')
+            else:
+                return consent_version_obj.version
+
+    def save(self, *args, **kwargs):
+        self.consent_version = self.get_consent_version()
+        super().save(*args, **kwargs)
+
     natural_key.dependencies = ['pre_flourish.pre_flourish_visit']
-
-
 
     class Meta:
         abstract = True
