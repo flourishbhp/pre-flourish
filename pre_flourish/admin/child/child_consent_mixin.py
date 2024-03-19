@@ -27,7 +27,6 @@ class ChildConsentMixin:
                 'identity_type',
                 'confirm_identity',
                 'future_studies_contact',
-                'specimen_consent',
                 'consent_datetime'
             ]}
          ),)
@@ -38,7 +37,6 @@ class ChildConsentMixin:
                     'child_preg_test': admin.VERTICAL,
                     'child_knows_status': admin.VERTICAL,
                     'identity_type': admin.VERTICAL,
-                    'specimen_consent': admin.VERTICAL,
                     'future_studies_contact': admin.VERTICAL}
     class Meta:
         abstract = True

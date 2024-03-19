@@ -95,12 +95,6 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin,
         max_length=3,
         choices=YES_NO, )
 
-    specimen_consent = models.CharField(
-        verbose_name=('Do you give us permission for us to use your child\'s blood '
-                      'samples for future studies?'),
-        max_length=3,
-        choices=YES_NO, )
-
     child_age_at_enrollment = models.DecimalField(
         decimal_places=2,
         max_digits=4)
