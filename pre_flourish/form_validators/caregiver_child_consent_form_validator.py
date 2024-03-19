@@ -56,7 +56,7 @@ class PreFlourishCaregiverChildConsentFormValidator(CaregiverChildConsentFormVal
 
         if child_dob and child_dob >= current_date:
             msg = {'child_dob':
-                           'Child age must be an older date not today'}
+                   'Child age must be an older date not today'}
             self._errors.update(msg)
             raise ValidationError(msg)
         
