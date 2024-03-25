@@ -9,7 +9,7 @@ from edc_search.model_mixins import SearchSlugModelMixin
 
 from ..choices import CHILD_CONSENT_VERSION, CONSENT_VERSION
 
-caregiver_config = django_apps.get_app_config('flourish_caregiver')
+caregiver_config = django_apps.get_app_config('pre_flourish')
 
 
 class PFConsentVersion(SiteModelMixin, SearchSlugModelMixin,

@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from edc_base import get_utcnow
+from edc_constants.constants import MALE
 
 
 def create_reminder(title, start_date, end_date, remainder_time, note, color='yellow',
@@ -83,15 +84,16 @@ class MatchHelper:
                 return age_range
         return None
 
-    def heu_huu_match_clean_up(self, subject_identifier):
-        matrix_pools = self.matrix_pool_cls.objects.filter(pool='heu')
+    def heu_huu_match_clean_up(self, subject_identifier, pool):
+        matrix_pools = self.matrix_pool_cls.objects.filter(pool=pool)
         for matrix_pool in matrix_pools:
-            subject_identifiers, is_changed = self.remove_subject_identifier(
-                subject_identifier, matrix_pool.get_subject_identifiers)
-            if is_changed:
-                matrix_pool.set_subject_identifiers(subject_identifiers)
-                matrix_pool.count = matrix_pool.count - 1
-                matrix_pool.save()
+            if subject_identifier in matrix_pool.get_subject_identifiers:
+                subject_identifiers, is_changed = self.remove_subject_identifier(
+                    subject_identifier, matrix_pool.get_subject_identifiers)
+                if is_changed:
+                    matrix_pool.set_subject_identifiers(subject_identifiers)
+                    matrix_pool.count = len(subject_identifiers)
+                    matrix_pool.save()
 
     def remove_subject_identifier(self, subject_identifier, get_subject_identifiers):
         subject_identifiers = get_subject_identifiers
@@ -105,12 +107,31 @@ class MatchHelper:
     def create_new_matrix_pool(self, pool, bmi_group, age_group, gender_group,
                                subject_identifier):
 
-        self.heu_huu_match_clean_up(subject_identifier)
-        matrix_pool = self.matrix_pool_cls.objects.create(
+        self.heu_huu_match_clean_up(subject_identifier=subject_identifier, pool=pool)
+        matrix_pool, created = self.matrix_pool_cls.objects.get_or_create(
             pool=pool, bmi_group=bmi_group, age_group=age_group,
-            gender_group=gender_group, count=1)
-        matrix_pool.set_subject_identifiers([subject_identifier])
+            gender_group=gender_group)
+        subject_identifiers = matrix_pool.get_subject_identifiers
+        subject_identifiers.append(subject_identifier)
+        matrix_pool.set_subject_identifiers(subject_identifiers)
+        matrix_pool.count = len(subject_identifiers)
         matrix_pool.save()
+
+    def update_metrix(self, obj):
+        subject_identifier = getattr(obj.pre_flourish_visit, 'subject_identifier', None)
+        bmi = getattr(obj, 'bmi', None)
+        age = getattr(obj, 'child_age', None)
+        bmi_group = self.bmi_group(bmi)
+        age_range = self.age_range(getattr(obj, 'child_age', None))
+        gender = gender = 'male' if obj.gender == MALE else 'female'
+        if bmi_group and age_range and gender:
+            self.create_new_matrix_pool(
+                pool='huu', bmi_group=bmi_group, age_group=age_range, gender_group=gender,
+                subject_identifier=subject_identifier
+            )
+        else:
+            raise ValueError(f'Could not find bmi, age and gender of the subject, '
+                             f'got BMI: {bmi}, age: {age} and gender:{gender}')
 
     def send_email_to_pre_flourish_users(self, huu_matrix_group):
         pre_flourish_group = Group.objects.get(name='pre_flourish')
