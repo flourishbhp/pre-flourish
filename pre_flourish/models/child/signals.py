@@ -8,6 +8,7 @@ from edc_constants.constants import NEG, NEW, OPEN, POS
 from edc_visit_schedule import site_visit_schedules
 
 from pre_flourish.action_items import CHILD_OFF_STUDY_ACTION
+from pre_flourish.helper_classes import MatchHelper
 from pre_flourish.helper_classes.utils import create_child_dummy_consent, \
     date_within_specific_months, get_or_create_caregiver_dataset, \
     get_or_create_child_dataset, pre_flourish_caregiver_child_consent, put_on_schedule, \
@@ -76,9 +77,11 @@ def huu_pre_enrollment_post_save(sender, instance, raw, created, **kwargs):
                                                               current_date, 3)
 
             if instance.child_hiv_result == NEG and within_three_months:
+                match_helper = MatchHelper()
                 caregiver_child_consent = pre_flourish_caregiver_child_consent(instance)
                 get_or_create_caregiver_dataset(caregiver_child_consent.subject_consent)
                 get_or_create_child_dataset(caregiver_child_consent)
+                match_helper.update_metrix(instance)
 
 
 @receiver(post_save, weak=False, sender=PFChildHIVRapidTestCounseling,
