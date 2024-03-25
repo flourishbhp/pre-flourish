@@ -244,7 +244,7 @@ def child_death_report_button(model_wrapper):
     )
 
 
-age_groups = ['9.5, 13', '14, 16', '17, 21']
+age_groups = ['9.5, 14', '14, 17', '17, 21']
 
 
 @register.inclusion_tag('pre_flourish/reports/matrix_pool.html')
@@ -274,7 +274,7 @@ def enrolled_to_flourish(data):
         title=title,
         data=data,
         none_match=True,
-        age_groups=['0, 9.5', '9.6, 13', '14, 16', '17, 21']
+        age_groups=['0, 9.5', '9.5, 14', '14, 17', '17, 21']
     )
 
 
