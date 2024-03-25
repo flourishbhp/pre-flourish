@@ -81,9 +81,12 @@ class ReportsView(ExportMixin, EdcBaseViewMixin, NavbarViewMixin,
         if self.get_enrolled_to_flourish:
             enrolled_to_flourish = self.get_enrolled_to_flourish
         heu_pool_dict = self.convert_to_regular_dict(self.heu_pool)
+        heu_pool = self.convert_to_regular_dict(self.heu_pool)
+        huu_pool = self.convert_to_regular_dict(self.huu_pool)
+
         context.update(
-            heu_pool=self.convert_to_regular_dict(self.heu_pool),
-            huu_pool=self.convert_to_regular_dict(self.huu_pool),
+            heu_pool=heu_pool,
+            huu_pool=huu_pool,
             enrolled_to_flourish=enrolled_to_flourish,
             heu_pool_dict=heu_pool_dict,
         )

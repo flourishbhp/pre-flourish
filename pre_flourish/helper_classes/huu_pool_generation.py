@@ -33,6 +33,7 @@ class HUUPoolGeneration(MatchHelper):
                                                                        flat=True)
         participants = self.get_valid_participants(latest_huu_pre_enrollment_ids)
         bmi_age_data, subject_data = self.get_huu_bmi_age_data(participants)
+        self.huu_obj_clean_up()
         self.prepare_create_pool('huu', bmi_age_data, subject_data)
 
     def get_valid_participants(self, latest_huu_pre_enrollment_ids):
@@ -44,6 +45,9 @@ class HUUPoolGeneration(MatchHelper):
             child_weight_kg__gt=0,
         )
         return participants
+
+    def huu_obj_clean_up(self):
+        self.matrix_pool_cls.objects.filter(pool='huu').delete()
 
     def get_huu_bmi_age_data(self, participants, active_match=False):
         if not participants:
