@@ -19,3 +19,5 @@ from .child import PreFlourishChildOffStudyForm
 from .pf_consent_version_form import PFConsentVersionForm
 from .pf_data_action_item_form import PFDataActionItemForm
 from .pre_flourish_visit_form import PreFlourishVisitForm
+from .clinician_notes_form import PreflourishClinicianNotesForm
+from .clinician_notes_form import PreflourishClinicianNotesImageForm
