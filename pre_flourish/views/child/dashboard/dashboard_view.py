@@ -8,6 +8,7 @@ from edc_navbar import NavbarViewMixin
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
+from pre_flourish.action_items import CHILD_OFF_STUDY_ACTION
 from pre_flourish.helper_classes.utils import is_flourish_eligible
 from pre_flourish.model_wrappers import ActionItemModelWrapper, \
     CaregiverChildConsentModelWrapper, ChildAppointmentModelWrapper, \
@@ -132,11 +133,14 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        is_fl_eligible = is_flourish_eligible(self.caregiver_subject_identifier)
+        is_fl_eligible, msg = is_flourish_eligible(self.caregiver_subject_identifier)
 
         if is_fl_eligible:
-            messages.error(self.request,
-                           'This subject is eligible for Flourish Enrolment.')
+            messages.error(self.request, msg)
+        else:
+            self.get_offstudy_or_message(
+                self.child_offstudy_cls, CHILD_OFF_STUDY_ACTION, self.subject_identifier, msg)
+
         context.update(
             caregiver_child_consent=self.caregiver_child_consent,
             schedule_names=[getattr(model, 'schedule_name') for model in

@@ -6,7 +6,7 @@ from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_navbar import NavbarViewMixin
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
 
-from pre_flourish.action_items import MATERNAL_DEATH_STUDY_ACTION
+from pre_flourish.action_items import MATERNAL_OFF_STUDY_ACTION
 from pre_flourish.model_wrappers import AppointmentModelWrapper, \
     MaternalCrfModelWrapper, \
     PreFlourishSubjectConsentModelWrapper
@@ -126,28 +126,23 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         locator_obj = self.get_locator_info()
-        caregiver_offstudy_cls = django_apps.get_model(
-            'pre_flourish.preflourishdeathreport')
-        caregiver_visit_cls = django_apps.get_model(
-            'pre_flourish.preflourishvisit')
 
-        self.get_offstudy_or_message(
-            visit_cls=caregiver_visit_cls,
-            offstudy_cls=caregiver_offstudy_cls,
-            offstudy_action=MATERNAL_DEATH_STUDY_ACTION)
-
-        self.get_offstudy_message(offstudy_cls=caregiver_offstudy_cls)
-        is_fl_eligible = is_flourish_eligible(self.subject_identifier)
+        is_fl_eligible, msg = is_flourish_eligible(
+            self.subject_identifier)
 
         consent_version_obj = get_consent_version_obj(
             self.subject_consent.screening_identifier)
 
         is_latest_consent_version = get_is_latest_consent_version(consent_version_obj)
 
-        if is_fl_eligible and not \
-                self.consent_wrapped.bhp_prior_screening_model_obj:
-            messages.error(self.request,
-                           'This subject is eligible for Flourish Enrolment.')
+        prior_screening = self.consent_wrapped.bhp_prior_screening_model_obj
+        
+        if not is_fl_eligible:
+            self.get_offstudy_or_message(
+                self.caregiver_offstudy_cls, MATERNAL_OFF_STUDY_ACTION, self.subject_identifier, msg)
+        elif not prior_screening:
+            messages.add_message(self.request, messages.ERROR, msg)
+
         context.update(
             is_flourish_eligible=is_fl_eligible,
             infant_registered_subjects=self.infant_registered_subjects,
