@@ -6,7 +6,7 @@ from django.apps import apps as django_apps
 from django.db.models import Q
 from edc_action_item import site_action_items
 from edc_base.utils import age, get_utcnow
-from edc_constants.constants import FEMALE, MALE, NEG, NEW, NO, OPEN
+from edc_constants.constants import FEMALE, MALE, NEG, NEW, NO, OPEN, POS
 from edc_visit_schedule import site_visit_schedules
 
 from flourish_caregiver.models.maternal_dataset import MaternalDataset
@@ -210,12 +210,22 @@ def valid_by_age(subject_identifier):
             return True
 
 
+def child_is_hiv_pos(subject_identifier):
+    """ Check if child's hiv test result is Positive, for eligibility
+    """
+    is_pos = any(
+        [obj.child_hiv_result == POS for obj in latest_huu_pre_enrollment_objs(subject_identifier)])
+    return is_pos
+
 def is_flourish_eligible(subject_identifier):
     """Returns True if subject is flourish eligible.
     """
+    eligibility_message = 'This subject is eligible for Flourish Enrolment.'
     match_helper = MatchHelper()
+    if child_is_hiv_pos(subject_identifier):
+        return False, 'Child is HIV Positive, please complete off study form.'
     if valid_by_age(subject_identifier):
-        return True
+        return True, eligibility_message
     for obj in latest_huu_pre_enrollment_objs(subject_identifier):
         bmi = obj.child_weight_kg / ((obj.child_height / 100) ** 2)
         bmi_group = match_helper.bmi_group(bmi)
@@ -226,7 +236,7 @@ def is_flourish_eligible(subject_identifier):
         if matrix_pool_cls().objects.filter(
                 pool='heu', bmi_group=bmi_group, age_group=age_range,
                 gender_group=gender, ).exists():
-            return True
+            return True, eligibility_message
 
 
 def get_consent_version_obj(screening_identifier=None):
