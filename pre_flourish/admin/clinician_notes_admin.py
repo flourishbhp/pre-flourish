@@ -7,7 +7,6 @@ from edc_model_admin import TabularInlineMixin
 from ..admin_site import pre_flourish_admin
 from ..forms import PreflourishClinicianNotesForm, PreflourishClinicianNotesImageForm
 from ..models import PreFlourishClinicianNotes, ClinicianNotesImage
-from ..admin_site import pre_flourish_admin
 from .caregiver.modeladmin_mixins import CrfModelAdminMixin
 
 

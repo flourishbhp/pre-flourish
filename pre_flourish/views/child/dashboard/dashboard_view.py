@@ -143,6 +143,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
         context.update(
             caregiver_child_consent=self.caregiver_child_consent,
+            is_fl_eligible=is_fl_eligible,
             schedule_names=[getattr(model, 'schedule_name') for model in
                             self.onschedule_models]
         )

@@ -253,3 +253,10 @@ def get_is_latest_consent_version(consent_version_obj):
         return False
     return str(consent_version_obj.version) == str(
         pre_flourish_config.consent_version)
+
+
+def caregiver_subject_identifier(subject_identifier):
+    subject_identifier = subject_identifier.split('-')
+    subject_identifier.pop()
+    caregiver_subject_identifier = '-'.join(subject_identifier)
+    return caregiver_subject_identifier
