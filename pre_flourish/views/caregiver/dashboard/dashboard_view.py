@@ -137,7 +137,7 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
         prior_screening = self.consent_wrapped.bhp_prior_screening_model_obj
         
-        if not is_fl_eligible:
+        if not is_fl_eligible and msg:
             self.get_offstudy_or_message(
                 self.caregiver_offstudy_cls, MATERNAL_OFF_STUDY_ACTION, self.subject_identifier, msg)
         elif not prior_screening:

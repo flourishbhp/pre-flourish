@@ -137,7 +137,8 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
 
         if is_fl_eligible:
             messages.error(self.request, msg)
-        else:
+
+        if not is_fl_eligible and msg:
             self.get_offstudy_or_message(
                 self.child_offstudy_cls, CHILD_OFF_STUDY_ACTION, self.subject_identifier, msg)
 
