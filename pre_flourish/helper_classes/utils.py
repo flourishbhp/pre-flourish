@@ -237,7 +237,7 @@ def is_flourish_eligible(subject_identifier):
                 pool='heu', bmi_group=bmi_group, age_group=age_range,
                 gender_group=gender, ).exists():
             return True, eligibility_message
-
+    return None, None
 
 def get_consent_version_obj(screening_identifier=None):
     consent_version_cls = django_apps.get_model('pre_flourish.pfconsentversion')
