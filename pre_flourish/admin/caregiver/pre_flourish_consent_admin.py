@@ -161,13 +161,12 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin, ConsentMixi
             subject_identifier = self.get_subject_identifier(screening_identifier)
             if subject_identifier:
                 initial_values = self.prepare_initial_values_based_on_subject(
-                    obj=obj, subject_identifier=subject_identifier)
+                    subject_identifier=subject_identifier)
                 form.previous_instance = initial_values
         return form
 
-    def prepare_initial_values_based_on_subject(self, obj, subject_identifier):
-        return [self.prepare_subject_consent(consent) for consent in
-                self.consents_filtered_by_subject(obj, subject_identifier)]
+    def prepare_initial_values_based_on_subject(self, subject_identifier):
+        return [self.prepare_subject_consent(subject_identifier)]
 
     def get_difference(self, model_objs, obj=None):
         cc_ids = obj.preflourishcaregiverchildconsent_set.values_list(

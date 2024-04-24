@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from edc_base.sites import SiteModelFormMixin
 from edc_constants.constants import FEMALE, YES
 from edc_form_validators import FormValidatorMixin
+from flourish_caregiver.helper_classes.utils import set_initials
 
 from pre_flourish.form_validators import PreFlourishConsentFormValidator
 from ...models import PreFlourishConsent
@@ -35,31 +36,30 @@ class PreFlourishConsentForm(SiteModelFormMixin, FormValidatorMixin,
 
     def __init__(self, *args, **kwargs):
         initial = kwargs.pop('initial', {})
-        instance = getattr(self, 'instance', None)
+        instance = kwargs.get('instance', None)
+        previous_instance = getattr(self, 'previous_instance', None)
         self.screening_identifier = initial.get('screening_identifier', None)
         biological_caregiver = getattr(self.screening_obj, 'biological_mother', None)
 
-        if self.caregiver_locator_model_obj and biological_caregiver == YES:
-
-            if self.caregiver_locator_model_obj.first_name:
-                initial['first_name'] = self.caregiver_locator_model_obj.first_name
-
-            if self.caregiver_locator_model_obj.last_name:
-                initial['last_name'] = self.caregiver_locator_model_obj.last_name
-
-            if self.caregiver_locator_model_obj.first_name and \
-                    self.caregiver_locator_model_obj.last_name:
-                first_name = self.caregiver_locator_model_obj.first_name
-                last_name = self.caregiver_locator_model_obj.last_name
-                initial['initials'] = f'{first_name[0]}{last_name[0]}'.upper()
-
-            initial['gender'] = FEMALE
-
         initial['biological_caregiver'] = biological_caregiver
-        previous_instance = getattr(self, 'previous_instance', None)
-        if not instance and previous_instance:
-            for key in self.base_fields.keys():
-                initial[key] = previous_instance[0].get(key, None)
+
+        if not instance:
+            if (not previous_instance and self.caregiver_locator_model_obj
+                    and biological_caregiver == YES):
+                first_name = getattr(self.caregiver_locator_model_obj, 'first_name', None)
+                last_name = getattr(self.caregiver_locator_model_obj, 'last_name', None)
+
+                initial['first_name'] = first_name
+                initial['last_name'] = last_name
+
+                initial['initials'] = set_initials(first_name, last_name)
+
+                initial['gender'] = FEMALE
+
+            if previous_instance:
+                for key in self.base_fields.keys():
+                    initial[key] = previous_instance[0].get(key, None)
+
         kwargs['initial'] = initial
         super().__init__(*args, **kwargs)
 
