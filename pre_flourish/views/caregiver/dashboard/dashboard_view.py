@@ -2,6 +2,7 @@ from django.apps import apps as django_apps
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from edc_base.view_mixins import EdcBaseViewMixin
+from edc_constants.constants import OFF_STUDY
 from edc_dashboard.views import DashboardView as BaseDashboardView
 from edc_navbar import NavbarViewMixin
 from edc_subject_dashboard.view_mixins import SubjectDashboardViewMixin
@@ -127,21 +128,14 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         context = super().get_context_data(**kwargs)
         locator_obj = self.get_locator_info()
 
-        is_fl_eligible, msg = is_flourish_eligible(
-            self.subject_identifier)
-
         consent_version_obj = get_consent_version_obj(
             self.subject_consent.screening_identifier)
 
         is_latest_consent_version = get_is_latest_consent_version(consent_version_obj)
 
-        prior_screening = self.consent_wrapped.bhp_prior_screening_model_obj
-        
-        if not is_fl_eligible and msg:
-            self.get_offstudy_or_message(
-                self.caregiver_offstudy_cls, MATERNAL_OFF_STUDY_ACTION, self.subject_identifier, msg)
-        elif not prior_screening:
-            messages.add_message(self.request, messages.ERROR, msg)
+        is_fl_eligible = self.check_child_eligibility_or_message()
+
+        self.get_offstudy_or_message()
 
         context.update(
             is_flourish_eligible=is_fl_eligible,
@@ -199,6 +193,47 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
         """
         if self.subject_locator and not self.subject_locator.is_locator_updated:
             self.prompt_locator()
+
+    def require_offstudy(self):
+        """ Require caregiver offstudy if all related children enrolled offstudy.
+        """
+        child_subject_identifiers = self.infant_registered_subjects.values_list(
+            'subject_identifier', flat=True)
+        offstudy_sidx = self.child_offstudy_cls.objects.filter(
+            subject_identifier__in=child_subject_identifiers).values_list(
+                'subject_identifier', flat=True)
+        offstudy_diff = set(child_subject_identifiers) - set(offstudy_sidx)
+        return not bool(offstudy_diff)
+
+    def get_offstudy_or_message(self):
+        """ Trigger caregiver offstudy if offstudy visit completed or all
+            children enrolled with caregiver are offstudy.
+        """
+        msg = 'Please complete offstudy for participant'
+        subject_identifier = self.kwargs.get('subject_identifier')
+        visit_cls = django_apps.get_model(f'pre_flourish.{self.visit_attr}')
+        offstudy_visit_obj = visit_cls.objects.filter(
+            appointment__subject_identifier=subject_identifier,
+            study_status=OFF_STUDY).order_by('report_datetime').exists()
+        if offstudy_visit_obj or self.require_offstudy():
+            super().get_offstudy_or_message(
+                self.caregiver_offstudy_cls,
+                MATERNAL_OFF_STUDY_ACTION,
+                subject_identifier, msg)
+
+    def check_child_eligibility_or_message(self):
+        eligibility = []
+        prior_screening = self.consent_wrapped.bhp_prior_screening_model_obj
+
+        for subject in self.infant_registered_subjects:
+            is_fl_eligible, msg = is_flourish_eligible(
+                subject.subject_identifier)
+
+            if not prior_screening and is_fl_eligible:
+                msg = msg.replace('subject', f'child: {subject.subject_identifier}')
+                messages.add_message(self.request, messages.INFO, msg)
+            eligibility.append(is_fl_eligible)
+        return any(eligibility)
 
     def prompt_locator(self):
         message = 'Please update caregiver locator information.'

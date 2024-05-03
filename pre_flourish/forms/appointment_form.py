@@ -52,9 +52,9 @@ class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormVal
     def validate_enrolment_scheduled(self):
         pf_contact_exists = PreFlourishContact.objects.filter(
             subject_identifier=self.instance.subject_identifier).exists()
-        caregiver_sidx = caregiver_subject_identifier(self.instance.subject_identifier)
-        is_eligible, _ = is_flourish_eligible(caregiver_sidx)
-    
+
+        is_eligible, _ = is_flourish_eligible(self.instance.subject_identifier)
+
         if (is_eligible and not pf_contact_exists and
                 self.cleaned_data.get('appt_status') in [COMPLETE_APPT, INCOMPLETE_APPT]):
             raise forms.ValidationError(
