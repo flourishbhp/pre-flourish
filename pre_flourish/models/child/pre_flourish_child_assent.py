@@ -1,3 +1,4 @@
+from django.apps import apps as django_apps
 from django.db import models
 from django_crypto_fields.fields import IdentityField
 from edc_base.model_managers import HistoricalRecords
@@ -14,6 +15,7 @@ from edc_protocol.validators import datetime_not_before_study_start
 from edc_search.model_mixins import SearchSlugManager
 
 from flourish_caregiver.choices import CHILD_IDENTITY_TYPE
+
 
 class PreFlourishChildAssentManager(SearchSlugManager, models.Manager):
 
@@ -75,9 +77,17 @@ class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixi
             datetime_not_before_study_start,
             datetime_not_future])
 
+    version = models.CharField(
+        max_length=3)
+
     objects = PreFlourishChildAssentManager()
 
     history = HistoricalRecords()
+
+    def save(self, *args, **kwargs):
+        if not self.version:
+            self.version = self.latest_consent_version
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.subject_identifier}'
@@ -85,9 +95,42 @@ class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixi
     def natural_key(self):
         return self.subject_identifier
 
+    @property
+    def pre_flourish_child_consent_cls(self):
+        return django_apps.get_model(
+            'pre_flourish.preflourishcaregiverchildconsent')
+
+    @property
+    def screening_identifier(self):
+        try:
+            child_consent = self.pre_flourish_child_consent_cls.objects.get(
+                subject_identifier=self.subject_identifier)
+        except self.pre_flourish_child_consent_cls.DoesNotExist:
+            return None
+        else:
+            return child_consent.subject_consent.screening_identifier
+
+    @property
+    def latest_consent_version(self):
+        consent_version_cls = django_apps.get_model(
+            'pre_flourish.pfconsentversion')
+        version = None
+
+        try:
+            consent_version_obj = consent_version_cls.objects.get(
+                screening_identifier=self.screening_identifier)
+        except consent_version_cls.DoesNotExist:
+            version = '4'
+        else:
+            version = getattr(
+                consent_version_obj, 'child_version', consent_version_obj.version)
+        return version
+
     class Meta:
         app_label = 'pre_flourish'
         verbose_name = 'Child Assent for Participation'
         verbose_name_plural = 'Child Assent for Participation'
-        unique_together = (('first_name', 'last_name', 'identity'),
-                           ('first_name', 'dob', 'initials'))
+        unique_together = (
+            ('subject_identifier', 'version'),
+            ('first_name', 'last_name', 'identity', 'version'),
+            ('first_name', 'dob', 'initials', 'version'))

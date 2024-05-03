@@ -91,5 +91,6 @@ class PreFlourishSubjectConsentModelWrapper(CaregiverContactModelWrapperMixin,
             identity=caregiverchildconsent.identity,
             identity_type=caregiverchildconsent.identity_type,
             confirm_identity=caregiverchildconsent.confirm_identity,
-            dob=caregiverchildconsent.child_dob)
+            dob=caregiverchildconsent.child_dob,
+            version=caregiverchildconsent.version)
         return options
