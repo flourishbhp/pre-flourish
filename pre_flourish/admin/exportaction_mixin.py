@@ -126,9 +126,11 @@ class ExportActionMixin(AdminExportHelper):
     def study_status(self, subject_identifier=None):
         if not subject_identifier:
             return ''
-        caregiver_offstudy_cls = django_apps.get_model(
-            'pre_flourish.preflourishoffstudy')
-        is_offstudy = caregiver_offstudy_cls.objects.filter(
+        offstudy_model = 'pre_flourish.preflourishoffstudy'
+        if len(subject_identifier.split('-')) == 4:
+            offstudy_model = 'pre_flourish.preflourishchildoffstudy'
+        offstudy_model_cls = django_apps.get_model(offstudy_model)
+        is_offstudy = offstudy_model_cls.objects.filter(
             subject_identifier=subject_identifier).exists()
 
         return 'off_study' if is_offstudy else 'on_study'
