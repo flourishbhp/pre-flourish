@@ -38,5 +38,6 @@ class ChildConsentMixin:
                     'child_knows_status': admin.VERTICAL,
                     'identity_type': admin.VERTICAL,
                     'future_studies_contact': admin.VERTICAL}
+
     class Meta:
         abstract = True
