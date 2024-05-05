@@ -15,7 +15,7 @@ from edc_model_admin import ModelAdminBasicMixin, ModelAdminReadOnlyMixin
 from simple_history.admin import SimpleHistoryAdmin
 
 from flourish_caregiver.admin import ConsentMixin
-from .exportaction_mixin import ExportActionMixin
+from pre_flourish.admin.exportaction_mixin import ExportActionMixin
 from ..child import PreFlourishCaregiverChildConsentInline
 from ...admin_site import pre_flourish_admin
 from ...forms import PreFlourishConsentForm

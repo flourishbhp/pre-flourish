@@ -19,7 +19,7 @@ class PreFlourishContactAdmin(ContactAdminMixin, admin.ModelAdmin):
         url_name = request.GET.dict().get(
             self.next_querystring_attr).split(',')[0]
         options = self.get_next_options(request=request)
- 
+
         try:
             redirect_url = reverse(url_name, kwargs=options)
         except NoReverseMatch as e:

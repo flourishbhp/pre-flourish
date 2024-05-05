@@ -1,8 +1,6 @@
 from django.contrib import admin
-from edc_model_admin import audit_fieldset_tuple
 from edc_odk.admin import ODKActionMixin
 from edc_model_admin import TabularInlineMixin
-
 
 from ..admin_site import pre_flourish_admin
 from ..forms import PreflourishClinicianNotesForm, PreflourishClinicianNotesImageForm
@@ -28,8 +26,7 @@ class ClinicianNotesImageInline(TabularInlineMixin, admin.TabularInline):
 
 
 @admin.register(PreFlourishClinicianNotes, site=pre_flourish_admin)
-class ClinicianNotesAdmin(ODKActionMixin, CrfModelAdminMixin,
-                          admin.ModelAdmin):
+class ClinicianNotesAdmin(ODKActionMixin, CrfModelAdminMixin, admin.ModelAdmin):
 
     form = PreflourishClinicianNotesForm
 
