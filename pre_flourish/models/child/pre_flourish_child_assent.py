@@ -120,7 +120,7 @@ class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixi
             consent_version_obj = consent_version_cls.objects.get(
                 screening_identifier=self.screening_identifier)
         except consent_version_cls.DoesNotExist:
-            version = '4'
+            version = '1'
         else:
             version = getattr(
                 consent_version_obj, 'child_version', consent_version_obj.version)

@@ -7,7 +7,7 @@ from edc_appointment.form_validators import AppointmentFormValidator
 from edc_base.sites.forms import SiteModelFormMixin
 from edc_form_validators import FormValidatorMixin
 
-from ..helper_classes.utils import is_flourish_eligible, caregiver_subject_identifier
+from ..helper_classes.utils import is_flourish_eligible
 from ..models.appointment import Appointment
 from ..models import PreFlourishContact
 
@@ -50,10 +50,13 @@ class AppointmentForm(SiteModelFormMixin, FormValidatorMixin, AppointmentFormVal
         self.validate_enrolment_scheduled()
 
     def validate_enrolment_scheduled(self):
+        is_eligible = False
         pf_contact_exists = PreFlourishContact.objects.filter(
             subject_identifier=self.instance.subject_identifier).exists()
 
-        is_eligible, _ = is_flourish_eligible(self.instance.subject_identifier)
+        is_child_appt = len(self.instance.subject_identifier.split('-')) == 4
+        if is_child_appt:
+            is_eligible, _ = is_flourish_eligible(self.instance.subject_identifier)
 
         if (is_eligible and not pf_contact_exists and
                 self.cleaned_data.get('appt_status') in [COMPLETE_APPT, INCOMPLETE_APPT]):

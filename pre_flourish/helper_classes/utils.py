@@ -36,12 +36,15 @@ def matrix_pool_cls():
 
 
 pre_flourish_config = django_apps.get_app_config('pre_flourish')
+twin_triplet = {'twins': 2,
+                'triplets': 3}
 
 
 def get_or_create_caregiver_dataset(consent):
     defaults = {
         'protocol': 'BCPP',
         'screening_identifier': consent.screening_identifier,
+        'twin_triplet': twin_triplet.get(consent.multiple_births, None)
     }
     if 'B' in consent.subject_identifier:
         defaults.update({
@@ -71,7 +74,8 @@ def get_or_create_child_dataset(consent):
         'age_gt17_5': 1,
         'infant_offstudy_complete': 1,
         'infant_offstudy_reason': 'Completion of protocol',
-        'infant_vitalstatus_final': 'Alive'
+        'infant_vitalstatus_final': 'Alive',
+        'twin_triplet': consent.twin_triplet
     }
     ChildDataset.objects.update_or_create(
         defaults=defaults,
