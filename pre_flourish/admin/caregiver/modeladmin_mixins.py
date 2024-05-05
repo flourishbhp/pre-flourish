@@ -15,7 +15,7 @@ from edc_model_admin import (
 from edc_visit_tracking.modeladmin_mixins import (
     CrfModelAdminMixin as VisitTrackingCrfModelAdminMixin)
 
-from .exportaction_mixin import ExportActionMixin
+from ..exportaction_mixin import ExportActionMixin
 
 
 class ModelAdminMixin(ModelAdminNextUrlRedirectMixin,

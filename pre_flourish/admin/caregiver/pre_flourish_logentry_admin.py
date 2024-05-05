@@ -8,7 +8,7 @@ from edc_model_admin import audit_fieldset_tuple, ModelAdminNextUrlRedirectError
 from ...admin_site import pre_flourish_admin
 from ...forms import PreFlourishLogEntryForm
 from ...models import PreFlourishLogEntry
-from .exportaction_mixin import ExportActionMixin
+from pre_flourish.admin.exportaction_mixin import ExportActionMixin
 from .modeladmin_mixins import ModelAdminMixin
 
 

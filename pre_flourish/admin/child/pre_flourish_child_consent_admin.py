@@ -17,6 +17,7 @@ class PreFlourishCaregiverChildConsentInline(StackedInlineMixin,
                                              ChildConsentMixin,
                                              ConsentMixin,
                                              admin.StackedInline):
+
     caregiver_consent_cls = django_apps.get_model('pre_flourish.preflourishconsent')
 
     consent_cls = django_apps.get_model(
@@ -115,4 +116,27 @@ class PreFlourishCaregiverChildConsentInline(StackedInlineMixin,
 @admin.register(PreFlourishCaregiverChildConsent, site=pre_flourish_admin)
 class PreFlourishCaregiverChildConsentAdmin(ModelAdminMixin, ChildConsentMixin,
                                             admin.ModelAdmin):
-    pass
+
+    list_display = ('subject_identifier',
+                    'verified_by',
+                    'is_verified',
+                    'is_verified_datetime',
+                    'first_name',
+                    'last_name',
+                    'gender',
+                    'child_dob',
+                    'consent_datetime',
+                    'created',
+                    'modified',
+                    'user_created',
+                    'user_modified')
+
+    list_filter = ('is_verified',
+                   'gender',
+                   'child_remain_in_study',
+                   'child_knows_status',
+                   'child_preg_test',
+                   'identity_type')
+
+    search_fields = ['subject_identifier',
+                     'subject_consent__subject_identifier', ]

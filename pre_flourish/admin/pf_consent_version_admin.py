@@ -32,7 +32,7 @@ class PFConsentVersionAdmin(ModelAdminMixin, ModelAdminNextUrlRedirectMixin,
             consent = None
             if consents:
                 consent = consents.latest('consent_datetime')
-            if  consent:
+            if consent:
                 url_name = settings.DASHBOARD_URL_NAMES.get(
                     'pre_flourish_screening_listboard_url')
         return url_name, options

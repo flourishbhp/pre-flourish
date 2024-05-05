@@ -1,20 +1,18 @@
 import pytz
 from django.contrib import admin
-from django.http import HttpResponseRedirect
-from django.urls import NoReverseMatch, reverse
 from django.utils.safestring import mark_safe
 
 from edc_appointment.admin import AppointmentAdmin as BaseAppointmentAdmin
-from edc_model_admin import ModelAdminNextUrlRedirectError
 
 from .admin_redirect_mixin import AdminRedirectMixin
+from .exportaction_mixin import ExportActionMixin
 from ..admin_site import pre_flourish_admin
 from ..forms import AppointmentForm
 from ..models.appointment import Appointment
 
 
 @admin.register(Appointment, site=pre_flourish_admin)
-class AppointmentAdmin(AdminRedirectMixin, BaseAppointmentAdmin):
+class AppointmentAdmin(ExportActionMixin, AdminRedirectMixin, BaseAppointmentAdmin):
     form = AppointmentForm
     model = Appointment
 
@@ -68,3 +66,21 @@ class AppointmentAdmin(AdminRedirectMixin, BaseAppointmentAdmin):
 
             extra_context['additional_instructions'] = additional_instructions
         return extra_context
+
+    def update_variables(self, data={}):
+        """ Update study identifiers to desired variable name(s).
+        """
+        new_data_dict = {}
+        replace_idx = {'subject_identifier': 'childpid',
+                       'study_maternal_identifier': 'old_matpid',
+                       'study_child_identifier': 'old_childpid'}
+        if len(data.get('subject_identifier', '').split('-')) == 3:
+            replace_idx.update({'subject_identifier': 'matpid',
+                                'child_subject_identifier': 'childpid', })
+        for old_idx, new_idx in replace_idx.items():
+            try:
+                new_data_dict[new_idx] = data.pop(old_idx)
+            except KeyError:
+                continue
+        new_data_dict.update(data)
+        return new_data_dict

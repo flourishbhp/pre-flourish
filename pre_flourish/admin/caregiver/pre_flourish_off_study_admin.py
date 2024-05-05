@@ -13,7 +13,7 @@ from edc_model_admin import (
 from edc_model_admin import audit_fieldset_tuple
 from edc_subject_dashboard import ModelAdminSubjectDashboardMixin
 
-from .exportaction_mixin import ExportActionMixin
+from pre_flourish.admin.exportaction_mixin import ExportActionMixin
 from ...admin_site import pre_flourish_admin
 from ...forms import PreFlourishOffStudyForm
 from ...models import PreFlourishOffStudy
