@@ -17,7 +17,7 @@ from simple_history.admin import SimpleHistoryAdmin
 from edc_visit_tracking.modeladmin_mixins import (
     CrfModelAdminMixin as VisitTrackingCrfModelAdminMixin)
 
-from .exportaction_mixin import ExportActionMixin
+from ..exportaction_mixin import ExportActionMixin
 
 
 class ModelAdminMixin(ModelAdminNextUrlRedirectMixin,
@@ -28,6 +28,21 @@ class ModelAdminMixin(ModelAdminNextUrlRedirectMixin,
                       ModelAdminRedirectOnDeleteMixin,
                       ModelAdminSiteMixin,
                       ExportActionMixin):
+
+    def update_variables(self, data={}):
+        """ Update study identifiers to desired variable name(s).
+        """
+        new_data_dict = {}
+        replace_idx = {'subject_identifier': 'childpid',
+                       'study_maternal_identifier': 'old_matpid',
+                       'study_child_identifier': 'old_childpid'}
+        for old_idx, new_idx in replace_idx.items():
+            try:
+                new_data_dict[new_idx] = data.pop(old_idx)
+            except KeyError:
+                continue
+        new_data_dict.update(data)
+        return new_data_dict
 
     list_per_page = 10
     date_hierarchy = 'modified'
