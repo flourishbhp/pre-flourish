@@ -9,7 +9,7 @@ from edc_model_admin import (
     ModelAdminNextUrlRedirectError, ModelAdminReplaceLabelTextMixin)
 from simple_history.admin import SimpleHistoryAdmin
 
-from .exportaction_mixin import ExportActionMixin
+from pre_flourish.admin.exportaction_mixin import ExportActionMixin
 from ...admin_site import pre_flourish_admin
 from ...forms.caregiver import CaregiverChildScreeningConsentForm
 from ...models import CaregiverChildScreeningConsent

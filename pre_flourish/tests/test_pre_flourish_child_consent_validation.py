@@ -7,13 +7,13 @@ from datetime import datetime
 from django.core.exceptions import ValidationError
 from pre_flourish.form_validators.caregiver_child_consent_form_validator import PreFlourishCaregiverChildConsentFormValidator
 
+
 @tag('cc')
 class TestChildConsentForm(TestCase):
 
     def test_dob_invalid(self):
         caregiver_child_consent = {
-
-            'child_dob':datetime.now().date()
+            'child_dob': datetime.now().date()
         }
 
         form_validator = PreFlourishCaregiverChildConsentFormValidator(
@@ -23,8 +23,7 @@ class TestChildConsentForm(TestCase):
 
     def test_dob_valid(self):
         caregiver_child_consent = {
-
-            'child_dob':(get_utcnow() - relativedelta(years=7)).date(),
+            'child_dob': (get_utcnow() - relativedelta(years=7)).date(),
         }
 
         form_validator = PreFlourishCaregiverChildConsentFormValidator(

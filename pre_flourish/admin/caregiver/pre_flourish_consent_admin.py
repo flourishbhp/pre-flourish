@@ -15,7 +15,7 @@ from edc_model_admin import ModelAdminBasicMixin, ModelAdminReadOnlyMixin
 from simple_history.admin import SimpleHistoryAdmin
 
 from flourish_caregiver.admin import ConsentMixin
-from .exportaction_mixin import ExportActionMixin
+from pre_flourish.admin.exportaction_mixin import ExportActionMixin
 from ..child import PreFlourishCaregiverChildConsentInline
 from ...admin_site import pre_flourish_admin
 from ...forms import PreFlourishConsentForm
@@ -161,13 +161,12 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin, ConsentMixi
             subject_identifier = self.get_subject_identifier(screening_identifier)
             if subject_identifier:
                 initial_values = self.prepare_initial_values_based_on_subject(
-                    obj=obj, subject_identifier=subject_identifier)
+                    subject_identifier=subject_identifier)
                 form.previous_instance = initial_values
         return form
 
-    def prepare_initial_values_based_on_subject(self, obj, subject_identifier):
-        return [self.prepare_subject_consent(consent) for consent in
-                self.consents_filtered_by_subject(obj, subject_identifier)]
+    def prepare_initial_values_based_on_subject(self, subject_identifier):
+        return [self.prepare_subject_consent(subject_identifier)]
 
     def get_difference(self, model_objs, obj=None):
         cc_ids = obj.preflourishcaregiverchildconsent_set.values_list(
@@ -177,6 +176,39 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin, ConsentMixi
         child_version = getattr(consent_version_obj, 'child_version', None)
         return [x for x in model_objs if (
             x.subject_identifier, x.version) not in cc_ids or x.version != child_version]
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        child_dob = [instance.child_dob for instance in instances]
+        for instance in instances:
+            if child_dob.count(instance.child_dob) > 1:
+                instance.twin_triplet = True
+            instance.save()
+        formset.save_m2m()
+
+    def save_model(self, request, obj, form, change):
+        multiple_births = self.check_multiple_births(form.data)
+        obj.multiple_births = multiple_births
+        super().save_model(request, obj, form, change)
+
+    def check_multiple_births(self, data={}):
+        """ Use the child_dob to determine the child enrollment type.
+        """
+        multiple_births = None
+        child_dobs = []
+        child_count = data.get(
+            'preflourishcaregiverchildconsent_set-TOTAL_FORMS', 1)
+        for _count in range(int(child_count)):
+            child_dob = data.get(
+                f'preflourishcaregiverchildconsent_set-{_count}-child_dob')
+            child_dobs.append(child_dob)
+            if child_dobs.count(child_dob) == 2:
+                multiple_births = 'twins'
+            elif child_dobs.count(child_dob) == 3:
+                multiple_births = 'triplets'
+            elif len(child_dobs) > 1 and not multiple_births:
+                multiple_births = 'siblings'
+        return multiple_births
 
     def get_readonly_fields(self, request, obj=None):
         return (super().get_readonly_fields(request, obj=obj) +

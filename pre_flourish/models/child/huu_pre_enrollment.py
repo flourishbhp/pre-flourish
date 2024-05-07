@@ -115,8 +115,9 @@ class HuuPreEnrollment(CrfModelMixin):
     @property
     def child_assent(self):
         try:
-            return self.pre_flourish_child_assent_model_cls.objects.get(
-                subject_identifier=self.subject_identifier)
+            return self.pre_flourish_child_assent_model_cls.objects.filter(
+                subject_identifier=self.subject_identifier).latest(
+                    'consent_datetime')
         except self.pre_flourish_child_assent_model_cls.DoesNotExist:
             return None
 

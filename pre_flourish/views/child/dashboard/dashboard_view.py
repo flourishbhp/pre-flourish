@@ -133,16 +133,20 @@ class DashboardView(DashboardViewMixin, EdcBaseViewMixin, SubjectDashboardViewMi
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        is_fl_eligible, msg = is_flourish_eligible(self.caregiver_subject_identifier)
+        is_fl_eligible, msg = is_flourish_eligible(self.subject_identifier)
 
         if is_fl_eligible:
-            messages.error(self.request, msg)
-        else:
+            messages.info(self.request, msg)
+
+        if not is_fl_eligible and msg:
             self.get_offstudy_or_message(
-                self.child_offstudy_cls, CHILD_OFF_STUDY_ACTION, self.subject_identifier, msg)
+                self.child_offstudy_cls,
+                CHILD_OFF_STUDY_ACTION,
+                self.subject_identifier, msg)
 
         context.update(
             caregiver_child_consent=self.caregiver_child_consent,
+            is_fl_eligible=is_fl_eligible,
             schedule_names=[getattr(model, 'schedule_name') for model in
                             self.onschedule_models]
         )

@@ -1,3 +1,4 @@
+from cacheops import invalidate_obj
 from django.apps import apps as django_apps
 from django.db.models import Q
 from django.db.models.signals import post_save
@@ -15,6 +16,7 @@ from pre_flourish.helper_classes.utils import create_child_dummy_consent, \
     trigger_action_item
 from pre_flourish.models.child import HuuPreEnrollment, PFChildHIVRapidTestCounseling, \
     PreFlourishChildAssent, PreFlourishChildDummySubjectConsent
+from ...models.contact_proxy import PreFlourishContact
 
 
 class CaregiverConsentError(Exception):
@@ -102,6 +104,22 @@ def pf_child_hiv_rapid_test_counseling_post_save(sender, instance, raw, created,
             caregiver_child_consent = pre_flourish_caregiver_child_consent(instance)
             get_or_create_caregiver_dataset(caregiver_child_consent.subject_consent)
             get_or_create_child_dataset(caregiver_child_consent)
+
+
+@receiver(post_save, weak=False, sender=PreFlourishContact,
+          dispatch_uid='pre_flourish_contact_post_save')
+def pre_flourish_contact_post_save(sender, instance, raw, created, **kwargs):
+    participant_note_cls = django_apps.get_model('flourish_calendar.participantnote')
+
+    if not raw:
+        if getattr(instance, 'appt_date', None):
+            obj, _created = participant_note_cls.objects.update_or_create(
+                subject_identifier=instance.subject_identifier,
+                title='PF to Flourish Enrol',
+                defaults={'date': instance.appt_date,
+                          'description': 'Pre-flourish contact for flourish enrolment scheduling.',})
+            if not _created:
+                invalidate_obj(obj)
 
 
 def trigger_action_item(model_cls, action_name, subject_identifier,

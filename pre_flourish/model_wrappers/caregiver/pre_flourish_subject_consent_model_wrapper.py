@@ -28,7 +28,7 @@ class PreFlourishSubjectConsentModelWrapper(CaregiverContactModelWrapperMixin,
     model = 'pre_flourish.preflourishconsent'
     next_url_name = settings.DASHBOARD_URL_NAMES.get(
         'pre_flourish_screening_listboard_url')
-    next_url_attrs = ['screening_identifier', 'subject_identifier']
+    next_url_attrs = ['screening_identifier', ]
     querystring_attrs = ['screening_identifier', 'subject_identifier']
 
     @property
@@ -91,5 +91,6 @@ class PreFlourishSubjectConsentModelWrapper(CaregiverContactModelWrapperMixin,
             identity=caregiverchildconsent.identity,
             identity_type=caregiverchildconsent.identity_type,
             confirm_identity=caregiverchildconsent.confirm_identity,
-            dob=caregiverchildconsent.child_dob)
+            dob=caregiverchildconsent.child_dob,
+            version=caregiverchildconsent.version)
         return options

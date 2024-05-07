@@ -36,12 +36,15 @@ def matrix_pool_cls():
 
 
 pre_flourish_config = django_apps.get_app_config('pre_flourish')
+twin_triplet = {'twins': 2,
+                'triplets': 3}
 
 
 def get_or_create_caregiver_dataset(consent):
     defaults = {
         'protocol': 'BCPP',
         'screening_identifier': consent.screening_identifier,
+        'twin_triplet': twin_triplet.get(consent.multiple_births, None)
     }
     if 'B' in consent.subject_identifier:
         defaults.update({
@@ -71,7 +74,8 @@ def get_or_create_child_dataset(consent):
         'age_gt17_5': 1,
         'infant_offstudy_complete': 1,
         'infant_offstudy_reason': 'Completion of protocol',
-        'infant_vitalstatus_final': 'Alive'
+        'infant_vitalstatus_final': 'Alive',
+        'twin_triplet': consent.twin_triplet
     }
     ChildDataset.objects.update_or_create(
         defaults=defaults,
@@ -83,15 +87,16 @@ def pre_flourish_screening_obj(screening_identifier):
         return PreFlourishSubjectScreening.objects.get(
             screening_identifier=screening_identifier
         )
-    except PreFlourishCaregiverChildConsent.DoesNotExist:
+    except PreFlourishSubjectScreening.DoesNotExist:
         raise
 
 
 def pre_flourish_caregiver_child_consent(instance):
+    subject_identifier = instance if isinstance(instance, str) else instance.subject_identifier
     try:
-        return PreFlourishCaregiverChildConsent.objects.get(
-            subject_identifier=instance.subject_identifier
-        )
+        return PreFlourishCaregiverChildConsent.objects.filter(
+            subject_identifier=subject_identifier
+        ).latest('consent_datetime')
     except PreFlourishCaregiverChildConsent.DoesNotExist:
         raise
 
@@ -189,36 +194,52 @@ def latest_huu_pre_enrollment_objs(subject_identifier):
     latest_huu_pre_enrollment_objs = []
 
     for obj in pre_flourish_child_consent_model_objs(subject_identifier):
-        try:
-            huu_pre_enrollment_obj = huu_pre_enrollment_cls().objects.filter(
-                pre_flourish_visit__subject_identifier=obj.subject_identifier
-            ).latest('report_datetime')
-        except huu_pre_enrollment_cls().DoesNotExist:
-            pass
-        else:
-            latest_huu_pre_enrollment_objs.append(huu_pre_enrollment_obj)
+        huu_pre_enroll_obj = get_latest_huu_pre_enrollment_obj(obj.subject_identifier)
+        if huu_pre_enroll_obj:
+            latest_huu_pre_enrollment_objs.append(huu_pre_enroll_obj)
     return latest_huu_pre_enrollment_objs
 
 
-def valid_by_age(subject_identifier):
-    """Returns True if subject is valid by age.
+def get_latest_huu_pre_enrollment_obj(subject_identifier):
+    """ Returns the latest child HUU pre enrollment instance for a
+        specific child subject_identifier.
     """
-    for obj in pre_flourish_child_consent_model_objs(subject_identifier):
-        _age = age(obj.child_dob, get_utcnow())
-        _age = _age.years + (_age.months / 12)
-        if 7 <= _age <= 9.5:
-            return True
+    try:
+        huu_pre_enrollment_obj = huu_pre_enrollment_cls().objects.filter(
+                pre_flourish_visit__subject_identifier=subject_identifier
+            ).latest('report_datetime')
+    except huu_pre_enrollment_cls().DoesNotExist:
+        return None
+    else:
+        return huu_pre_enrollment_obj
+
+
+def valid_by_age(subject_identifier):
+    """ Returns True if child is valid by age i.e. age between 7 and 9.5 inclusive.
+        @param subject_identifier: child subject_identifier
+    """
+    consent_obj = pre_flourish_caregiver_child_consent(subject_identifier)
+
+    _age = age(consent_obj.child_dob, get_utcnow())
+    _age = _age.years + (_age.months / 12)
+    if 7 <= _age <= 9.5:
+        return True
 
 
 def child_is_hiv_pos(subject_identifier):
-    """ Check if child's hiv test result is Positive, for eligibility
+    """ Check if child's HIV test result is Positive, for eligibility
+        @param subject_identifier: child subject_identifier
+        @return: bool `True` if child is POS else `False`
     """
-    is_pos = any(
-        [obj.child_hiv_result == POS for obj in latest_huu_pre_enrollment_objs(subject_identifier)])
+    huu_pre_enroll_obj = get_latest_huu_pre_enrollment_obj(subject_identifier)
+    is_pos = getattr(huu_pre_enroll_obj, 'child_hiv_result', None) == POS
     return is_pos
 
+
 def is_flourish_eligible(subject_identifier):
-    """Returns True if subject is flourish eligible.
+    """ Returns True if child subject is flourish eligible.
+        @param subject_identifier: child subject_identifier
+        @return: eligibility, message set
     """
     eligibility_message = 'This subject is eligible for Flourish Enrolment.'
     match_helper = MatchHelper()
@@ -226,17 +247,20 @@ def is_flourish_eligible(subject_identifier):
         return False, 'Child is HIV Positive, please complete off study form.'
     if valid_by_age(subject_identifier):
         return True, eligibility_message
-    for obj in latest_huu_pre_enrollment_objs(subject_identifier):
+    obj = get_latest_huu_pre_enrollment_obj(subject_identifier)
+
+    if obj:
         bmi = obj.child_weight_kg / ((obj.child_height / 100) ** 2)
         bmi_group = match_helper.bmi_group(bmi)
         age_range = match_helper.age_range(obj.child_age)
         gender = 'male' if obj.gender == MALE else 'female'
         if bmi_group is None or age_range is None:
-            continue
+            pass
         if matrix_pool_cls().objects.filter(
                 pool='heu', bmi_group=bmi_group, age_group=age_range,
                 gender_group=gender, ).exists():
             return True, eligibility_message
+    return None, None
 
 
 def get_consent_version_obj(screening_identifier=None):
@@ -253,3 +277,10 @@ def get_is_latest_consent_version(consent_version_obj):
         return False
     return str(consent_version_obj.version) == str(
         pre_flourish_config.consent_version)
+
+
+def caregiver_subject_identifier(subject_identifier):
+    subject_identifier = subject_identifier.split('-')
+    subject_identifier.pop()
+    caregiver_subject_identifier = '-'.join(subject_identifier)
+    return caregiver_subject_identifier

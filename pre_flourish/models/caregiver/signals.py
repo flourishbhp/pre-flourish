@@ -12,6 +12,7 @@ from ..child.pre_flourish_child_assent import PreFlourishChildAssent
 
 pre_flourish_config = django_apps.get_app_config('pre_flourish')
 
+
 class PreFlourishSubjectScreeningError(Exception):
     pass
 

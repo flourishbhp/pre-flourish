@@ -32,12 +32,11 @@ app_name = 'pre_flourish'
 app_config = django_apps.get_app_config(app_name)
 
 urlpatterns = [
+    path('admin/', pre_flourish_admin.urls),
     path('accounts/', include('edc_base.auth.urls')),
     path('admin/', include('edc_base.auth.urls')),
 
     path('admin/', admin.site.urls),
-    path('admin/', pre_flourish_admin.urls),
-
     path('admin/', edc_identifier_admin.urls),
     path('admin/', edc_appointment_admin.urls),
     path('admin/', edc_action_item_admin.urls),
@@ -47,9 +46,6 @@ urlpatterns = [
 
     path('reports/', ReportsView.as_view(),
          name='pre_flourish_reports_url'),
-    path('admin/pre_flourish/',
-         RedirectView.as_view(url='admin/pre_flourish/'),
-         name='pre_flourish_models_url'),
 
     path('subject/', include('pre_flourish.dashboard_urls')),
     path('edc_action_item/', include('edc_action_item.urls')),
@@ -66,6 +62,6 @@ urlpatterns = [
          name='switch_sites_url'),
     path('download-csv/<str:patient_ids>/', download_pool_ids_view,
          name='download_pool_ids_url'),
-    path('home/', HomeView.as_view(), name='home_url'),
-    path('', HomeView.as_view(), name='home_url'),
+    path('home/', HomeView.as_view(), name='main_url'),
+    path('', RedirectView.as_view(url='admin/'), name='home_url'),
 ]
