@@ -120,28 +120,15 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin,
         null=True,
         editable=False)
 
-    @property
-    def registration_status(self):
-        return 'REGISTERED'
+    twin_triplet = models.BooleanField(
+        default=False,
+        editable=False)
 
     version = models.CharField(
         verbose_name='Consent version',
         max_length=10,
         help_text='See \'Consent Type\' for consent versions by period.',
         editable=False)
-
-    @property
-    def child_subject_identifier_postfix(self):
-        children_count = PreFlourishCaregiverChildConsent.objects.filter(
-            subject_identifier__istartswith=self.subject_consent.subject_identifier
-        ).count()
-
-        if not children_count:
-            child_identifier_postfix = 10
-        else:
-            child_identifier_postfix = f'{(children_count + 1) * 10}'
-
-        return child_identifier_postfix
 
     def save(self, *args, **kwargs):
         self.child_age_at_enrollment = age(self.child_dob, get_utcnow()).years
@@ -159,6 +146,55 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin,
             self.subject_identifier = f'{self.subject_identifier}'
 
         return super().save(*args, **kwargs)
+
+    @property
+    def registration_status(self):
+        return 'REGISTERED'
+
+    @property
+    def child_subject_identifier_postfix(self):
+        if self.twin_triplet:
+            twin_id = self.subject_consent.subject_identifier + '-'
+            multiple_births = self.subject_consent.multiple_births
+            if multiple_births == 'twins':
+                twin_id += '25'
+                if not self.check_child_identifier_exists(twin_id):
+                    child_identifier_postfix = '25'
+                else:
+                    child_identifier_postfix = '35'
+            elif multiple_births == 'triplets':
+                twin_id += '36'
+                if not self.check_child_identifier_exists(twin_id):
+                    child_identifier_postfix = '36'
+                else:
+                    twin_id = self.subject_consent.subject_identifier + '-46'
+                    if not self.check_child_identifier_exists(twin_id):
+                        child_identifier_postfix = '46'
+                    else:
+                        child_identifier_postfix = '56'
+        else:
+            child_identifier_postfix = self.child_identifier_postfix_by_count
+        return child_identifier_postfix
+
+    @property
+    def child_identifier_postfix_by_count(self):
+        model_cls = django_apps.get_model(self._meta.label_lower)
+        children_count = len(set(model_cls.objects.filter(
+            subject_consent__subject_identifier=self.subject_consent.subject_identifier
+        ).exclude(child_dob=self.child_dob, first_name=self.first_name).values_list(
+            'subject_identifier', flat=True)))
+
+        if not children_count:
+            child_identifier_postfix = 10
+        else:
+            child_identifier_postfix = f'{(children_count + 5) * 10}'
+
+        return child_identifier_postfix
+
+    def check_child_identifier_exists(self, subject_identifier):
+        model_cls = django_apps.get_model(self._meta.label_lower)
+        return model_cls.objects.filter(
+            subject_identifier=subject_identifier).exists()
 
     @property
     def child_consent_version(self):

@@ -5,6 +5,8 @@ from edc_base.utils import get_utcnow, get_uuid
 from edc_consent.site_consents import site_consents
 
 pre_flourish_config = django_apps.get_app_config('pre_flourish')
+
+
 class ConsentModelWrapperMixin:
     consent_model_wrapper_cls = None
 

@@ -2,6 +2,7 @@
 {% load edc_visit_schedule_extras %}
 {% load pre_flourish_dashboard_extras %}
 {% load edc_subject_dashboard_extras %}
+{% load flourish_follow_extras %}
 {% load static %}
 
 {% block extra-scripts %}
@@ -10,18 +11,21 @@
 {% endblock extra-scripts %}
 
 {% block other_special_buttons %}
-
-
+	{% if is_fl_eligible %}
+		{% caregiver_contact_log caregiver_child_consent %}
+	{% endif %}
 {% endblock other_special_buttons %}
 
 {% block schedule_button %}
-    <span class="pull-right"><span class="text test-muted">
-    <a href="{% url pre_flourish_child_dashboard_url subject_identifier=subject_identifier %}"
-       role="button" class="btn btn-sm btn-primary">
-        <i class="fa fa-reply fa-fw" aria-hidden="true"></i> <i
-            class="far fa-calendar fa-fw"></i> Schedule
-    </a>
-</span></span>
+    <span class="pull-right">
+		<span class="text test-muted">
+		    <a href="{% url pre_flourish_child_dashboard_url subject_identifier=subject_identifier %}"
+		       role="button" class="btn btn-sm btn-primary">
+		        <i class="fa fa-reply fa-fw" aria-hidden="true"></i> <i
+		            class="far fa-calendar fa-fw"></i> Schedule
+		    </a>
+		</span>
+	</span>
 {% endblock schedule_button %}
 
 

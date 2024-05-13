@@ -7,7 +7,6 @@ from model_mommy import mommy
 from ..form_validators import PreFlourishConsentFormValidator
 
 
-
 @tag('sc')
 class TestSubjectConsentForm(TestCase):
 
@@ -36,7 +35,6 @@ class TestSubjectConsentForm(TestCase):
             cleaned_data=self.consent_options)
         self.assertRaises(ValidationError, form_validator.validate)
         self.assertIn('dob', form_validator._errors)
-
 
     def test_recruit_source_OTHER_source_other_required(self):
         self.consent_options.update(
@@ -112,4 +110,3 @@ class TestSubjectConsentForm(TestCase):
                 cleaned_data=self.consent_options)
         except Exception:
             self.fail("Value should not fail")
-

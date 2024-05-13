@@ -23,8 +23,8 @@ class CurrentSiteManager(VisitModelManager, BaseCurrentSiteManager):
 
 
 class PreFlourishVisit(VisitModelMixin, CreatesMetadataModelMixin,
-                                ReferenceModelMixin, RequiresConsentFieldsModelMixin,
-                                CaretakerFieldsMixin, SiteModelMixin, BaseUuidModel):
+                       ReferenceModelMixin, RequiresConsentFieldsModelMixin,
+                       CaretakerFieldsMixin, SiteModelMixin, BaseUuidModel):
     """ Maternal visit form that links all antenatal/ postnatal follow-up forms
     """
 
@@ -98,7 +98,6 @@ class PreFlourishVisit(VisitModelMixin, CreatesMetadataModelMixin,
             metadata_rule_evaluator = self.metadata_rule_evaluator_cls(
                 visit=visit)
             metadata_rule_evaluator.evaluate_rules()
-
 
     class Meta(VisitModelMixin.Meta):
         app_label = 'pre_flourish'

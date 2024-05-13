@@ -22,6 +22,8 @@ from ...choices import IDENTITY_TYPE, RECRUIT_CLINIC, RECRUIT_SOURCE
 from ...subject_identifier import SubjectIdentifier
 
 pre_flourish_config = django_apps.get_app_config('pre_flourish')
+
+
 class SubjectConsentManager(SearchSlugManager, models.Manager):
 
     def get_by_natural_key(self, subject_identifier, version):
@@ -107,6 +109,11 @@ class PreFlourishConsent(
 
     is_eligible = models.BooleanField(
         default=False,
+        editable=False)
+
+    multiple_births = models.CharField(
+        max_length=8,
+        null=True,
         editable=False)
 
     objects = SubjectConsentManager()
