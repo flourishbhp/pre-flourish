@@ -11,6 +11,7 @@
     <th>Subject</th>
     <th>Age / Born</th>
     <th>Consented</th>
+    <th>Flourish enrolment</th>
     <!-- end results header -->
 
 {% endblock listboard_table_header %}
@@ -37,4 +38,16 @@
     </td>
     <td>{{ result.child_age }} Yrs</td>
     <td>{{ result.object.consent_datetime|date:"SHORT_DATETIME_FORMAT" }}</td>
+    <td>
+		{% if result.successful_contact %}
+			{% if result.is_flourish_consented %}
+				<i class="fa fa-check-circle" style="color: green;"></i>
+			{% else %}
+				<i class="far fa-calendar-alt" style="color: green; font-size: 15px;"></i>
+				{{ result.latest_caregiver_contact.appt_date }}
+			{% endif %}
+		{% else %}
+			<i class="fa fa-times-circle" style="color:red;"></i>
+		{% endif %}
+	</td>
 {% endblock listboard_table_columns %}

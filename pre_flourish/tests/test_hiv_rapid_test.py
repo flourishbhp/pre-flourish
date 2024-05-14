@@ -85,7 +85,6 @@ class TestHivRapidTestForm(TestCase):
             report_datetime=get_utcnow(),
         )
 
-
         self.assertEqual(CrfMetadata.objects.get(
             model='pre_flourish.pfhivrapidtestcounseling',
             subject_identifier=pre_flourish_visit.subject_identifier,

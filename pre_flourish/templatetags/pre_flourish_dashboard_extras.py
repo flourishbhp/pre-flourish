@@ -93,9 +93,12 @@ def log_entry_button(model_wrapper):
 @register.inclusion_tag('pre_flourish/buttons/assents_button.html')
 def assents_button(model_wrapper):
     title = ['Child Assent(s)']
+    assents = model_wrapper.wrapped_child_assents
+    unsaved = any(instance.id is None for instance in assents)
     return dict(
-        wrapped_assents=model_wrapper.wrapped_child_assents,
+        wrapped_assents=assents,
         child_assents_exist=model_wrapper.child_assents_exists,
+        unsaved=unsaved,
         title=' '.join(title), )
 
 

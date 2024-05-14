@@ -10,4 +10,3 @@ class PreFlourishChildAssentModelWrapper(ModelWrapper):
                          'identity', 'identity_type', 'confirm_identity',
                          'dob']
     next_url_attrs = ['screening_identifier', 'subject_identifier']
-    

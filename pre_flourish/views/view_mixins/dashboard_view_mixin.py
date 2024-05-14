@@ -37,14 +37,16 @@ class DashboardViewMixin(BaseDashboardViewMixin):
 
         pass
 
-    def get_offstudy_or_message(self, model_cls, action_item, subject_identifier, msg):
+    def get_offstudy_or_message(
+            self, model_cls, action_item, subject_identifier, msg, trigger=True):
         try:
             model_cls.objects.get(
                 subject_identifier=subject_identifier)
         except model_cls.DoesNotExist:
             self.action_cls_item_creator(
-                trigger=True,
+                trigger=trigger,
                 subject_identifier=subject_identifier,
                 action_cls=model_cls,
                 action_type=action_item)
-            return messages.add_message(self.request, messages.ERROR, msg)
+        if trigger:
+            messages.add_message(self.request, messages.ERROR, msg)

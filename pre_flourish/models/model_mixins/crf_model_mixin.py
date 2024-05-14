@@ -34,7 +34,7 @@ class CrfModelMixin(BaseCrfModelMixin, SubjectScheduleCrfModelMixin,
         return self.pre_flourish_visit.natural_key()
 
     def get_consent_version(self):
-        preg_subject_screening_cls = django_apps.get_model(
+        pf_subject_screening_cls = django_apps.get_model(
             'pre_flourish.preflourishsubjectscreening')
 
         consent_version_cls = django_apps.get_model(
@@ -46,19 +46,19 @@ class CrfModelMixin(BaseCrfModelMixin, SubjectScheduleCrfModelMixin,
             subject_identifier = self.subject_identifier[:-3]
 
         try:
-            subject_screening_obj = preg_subject_screening_cls.objects.get(
+            subject_screening_obj = pf_subject_screening_cls.objects.get(
                 subject_identifier=subject_identifier)
-        except preg_subject_screening_cls.DoesNotExist:
+        except pf_subject_screening_cls.DoesNotExist:
             raise ValidationError(
                 'Missing Subject Screening form. Please complete '
                 'it before proceeding.')
         else:
-            screening_identifiers = getattr(subject_screening_obj,
-                                            'screening_identifier', None)
+            screening_identifier = getattr(
+                subject_screening_obj, 'screening_identifier', None)
 
             try:
                 consent_version_obj = consent_version_cls.objects.get(
-                    screening_identifier=screening_identifiers)
+                    screening_identifier=screening_identifier)
             except consent_version_cls.DoesNotExist:
                 raise ValidationError(
                     'Missing Consent Version form. Please complete '

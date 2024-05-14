@@ -16,6 +16,7 @@ from .child import PreFlourishCaregiverChildConsentForm
 from .child import PreFlourishChildAssentForm
 from .child import PreFlourishChildDummySubjectConsentForm
 from .child import PreFlourishChildOffStudyForm
+from .contact_proxy_form import PreFlourishContactForm
 from .pf_consent_version_form import PFConsentVersionForm
 from .pf_data_action_item_form import PFDataActionItemForm
 from .pre_flourish_visit_form import PreFlourishVisitForm
