@@ -98,7 +98,7 @@ def pre_flourish_caregiver_child_consent(instance):
             subject_identifier=subject_identifier
         ).latest('consent_datetime')
     except PreFlourishCaregiverChildConsent.DoesNotExist:
-        raise
+        return None
 
 
 def trigger_action_item(model_cls, action_name, subject_identifier,
@@ -219,8 +219,9 @@ def valid_by_age(subject_identifier):
         @param subject_identifier: child subject_identifier
     """
     consent_obj = pre_flourish_caregiver_child_consent(subject_identifier)
+    child_dob = getattr(consent_obj, 'child_dob', get_utcnow())
 
-    _age = age(consent_obj.child_dob, get_utcnow())
+    _age = age(child_dob, get_utcnow())
     _age = _age.years + (_age.months / 12)
     if 7 <= _age <= 9.5:
         return True
