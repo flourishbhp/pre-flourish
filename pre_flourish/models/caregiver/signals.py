@@ -6,6 +6,7 @@ from edc_base import get_utcnow
 from edc_constants.constants import NO
 from edc_visit_schedule.site_visit_schedules import site_visit_schedules
 
+from pre_flourish.helper_classes.utils import update_worklist
 from .pre_flourish_consent import PreFlourishConsent
 from .pre_flourish_subject_screening import PreFlourishSubjectScreening
 from ..child.pre_flourish_child_assent import PreFlourishChildAssent
@@ -58,6 +59,7 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
             caregiver_screening.save()
 
             update_locator(consent=instance, screening=caregiver_screening)
+            update_worklist(caregiver_screening.study_maternal_identifier)
 
 
 @receiver(post_save, weak=False, sender=PreFlourishSubjectScreening,

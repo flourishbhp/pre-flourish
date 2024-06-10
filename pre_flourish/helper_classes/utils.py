@@ -285,3 +285,18 @@ def caregiver_subject_identifier(subject_identifier):
     subject_identifier.pop()
     caregiver_subject_identifier = '-'.join(subject_identifier)
     return caregiver_subject_identifier
+
+
+def update_worklist(study_maternal_identifier=None):
+    worklist_cls = django_apps.get_model(
+        'pre_flourish_follow.preflourishworklist')
+    try:
+        worklist = worklist_cls.objects.get(
+            study_maternal_identifier=study_maternal_identifier)
+    except worklist_cls.DoesNotExist:
+        pass
+    else:
+        worklist.consented = True
+        worklist.assigned = None
+        worklist.date_assigned = None
+        worklist.save()
