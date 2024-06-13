@@ -7,5 +7,3 @@ from .pre_flourish_child_assent import PreFlourishChildAssent
 from .pre_flourish_child_consent import PreFlourishCaregiverChildConsent
 from .pre_flourish_child_dummy_consent import PreFlourishChildDummySubjectConsent
 from .pre_flourish_child_off_study import PreFlourishChildOffStudy
-from .signals import child_assent_on_post_save, \
-    child_assent_on_post_save

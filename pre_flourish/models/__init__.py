@@ -9,7 +9,7 @@ from .caregiver import PreFlourishDeathReport
 from .caregiver import PreFlourishLogEntry
 from .caregiver import PreFlourishOffStudy
 from .caregiver import PreFlourishSubjectScreening
-from .child import child_assent_on_post_save, child_assent_on_post_save
+from .child.signals import child_assent_on_post_save
 from .child import ChildOffSchedule as PreFlourishChildOffSchedule
 from .child import HeuHuuMatch, MatrixPool
 from .child import HuuPreEnrollment
