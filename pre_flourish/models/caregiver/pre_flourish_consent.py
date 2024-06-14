@@ -135,7 +135,7 @@ class PreFlourishConsent(
                 consent_version_obj = consent_version_cls.objects.get(
                     screening_identifier=self.screening_identifier)
             except consent_version_cls.DoesNotExist:
-                self.version = str(pre_flourish_config.consent_version)
+                self.version = '1'
             else:
                 self.version = consent_version_obj.version
 
