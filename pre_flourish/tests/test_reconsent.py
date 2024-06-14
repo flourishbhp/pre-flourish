@@ -123,6 +123,7 @@ class Reconsent(TestCase):
             pf_caregiver_child_consent.version
         )
 
+    @tag('nc')
     def test_new_consent(self):
         """Test if new consent gets latest running consent version"""
         locator = mommy.make_recipe(
@@ -135,8 +136,9 @@ class Reconsent(TestCase):
 
         pre_flourish_subject_consent = mommy.make_recipe(
             'pre_flourish.preflourishconsent',
-            screening_identifier=caregiver_screening.screening_identifier,
-            version=str(pre_flourish_config.consent_version))
+            screening_identifier=caregiver_screening.screening_identifier, )
+
+        pre_flourish_subject_consent.save()
 
         self.assertEqual(
             PFConsentVersion.objects.filter(

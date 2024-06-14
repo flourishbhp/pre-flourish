@@ -1,6 +1,6 @@
 from django.apps import apps as django_apps
 from django.core.exceptions import ObjectDoesNotExist
-from edc_base.utils import get_utcnow, get_uuid
+from edc_base.utils import get_uuid
 
 from edc_consent.site_consents import site_consents
 
@@ -42,31 +42,22 @@ class ConsentModelWrapperMixin:
     def consent_version_cls(self):
         return django_apps.get_model('pre_flourish.pfconsentversion')
 
-    @property
-    def consent_version(self):
-        version = None
-
+    def get_consent_version(self, default_version):
         try:
             consent_version_obj = self.consent_version_cls.objects.get(
                 screening_identifier=self.screening_identifier)
         except self.consent_version_cls.DoesNotExist:
-            version = pre_flourish_config.consent_version
+            return default_version
         else:
-            version = consent_version_obj.version
-        return version
+            return consent_version_obj.version
+
+    @property
+    def consent_version(self):
+        return self.get_consent_version(pre_flourish_config.consent_version)
 
     @property
     def child_consent_version(self):
-        version = None
-        try:
-            consent_version_obj = self.consent_version_cls.objects.get(
-                screening_identifier=self.screening_identifier)
-        except self.consent_version_cls.DoesNotExist:
-            pass
-        else:
-            version = consent_version_obj.child_version
-
-        return version if version else self.consent_version
+        return self.get_consent_version(pre_flourish_config.child_consent_version)
 
     @property
     def consent_model_obj(self):

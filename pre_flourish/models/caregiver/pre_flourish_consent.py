@@ -32,12 +32,11 @@ class SubjectConsentManager(SearchSlugManager, models.Manager):
 
 
 class PreFlourishConsent(
-        ConsentModelMixin, SiteModelMixin,
-        UpdatesOrCreatesRegistrationModelMixin,
-        NonUniqueSubjectIdentifierModelMixin, IdentityFieldsMixin,
-        ReviewFieldsMixin, PersonalFieldsMixin, CitizenFieldsMixin,
-        VulnerabilityFieldsMixin, SearchSlugModelMixin, BaseUuidModel):
-
+    ConsentModelMixin, SiteModelMixin,
+    UpdatesOrCreatesRegistrationModelMixin,
+    NonUniqueSubjectIdentifierModelMixin, IdentityFieldsMixin,
+    ReviewFieldsMixin, PersonalFieldsMixin, CitizenFieldsMixin,
+    VulnerabilityFieldsMixin, SearchSlugModelMixin, BaseUuidModel):
     """ A model completed by the user on the mother's consent. """
 
     subject_screening_model = 'flourish_caregiver.subjectscreening'
@@ -130,12 +129,12 @@ class PreFlourishConsent(
         consent_version_cls = django_apps.get_model(
             'pre_flourish.pfconsentversion')
 
-        if not self.version:
+        if self.version == '1' or self.version == '':
             try:
                 consent_version_obj = consent_version_cls.objects.get(
                     screening_identifier=self.screening_identifier)
             except consent_version_cls.DoesNotExist:
-                self.version = '1'
+                self.version = pre_flourish_config.consent_version
             else:
                 self.version = consent_version_obj.version
 
