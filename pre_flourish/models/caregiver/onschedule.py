@@ -9,6 +9,7 @@ from django.apps import apps as django_apps
 
 pre_flourish_config = django_apps.get_app_config('pre_flourish')
 
+
 class OnScheduleModelMixin(BaseOnScheduleModelMixin, BaseUuidModel):
     """A model used by the system. Auto-completed by enrollment model.
     """
