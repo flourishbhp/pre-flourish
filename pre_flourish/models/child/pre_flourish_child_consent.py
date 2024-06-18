@@ -133,8 +133,8 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin,
     def save(self, *args, **kwargs):
         self.child_age_at_enrollment = age(self.child_dob, get_utcnow()).years
 
-        self.version = self.child_consent_version or str(
-            pre_flourish_config.child_consent_version)
+        if not self.version:
+            self.version = self.child_consent_version
 
         if not self.subject_identifier:
             self.subject_identifier = PFInfantIdentifier(
@@ -206,7 +206,9 @@ class PreFlourishCaregiverChildConsent(SiteModelMixin,
         except consent_version_cls.DoesNotExist:
             return None
         else:
-            return consent_version_obj.child_version
+            return consent_version_obj.child_version if (
+                consent_version_obj.child_version) else (
+                pre_flourish_config.child_consent_version)
 
     @property
     def child_dataset(self):
