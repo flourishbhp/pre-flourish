@@ -42,14 +42,14 @@ class ConsentModelWrapperMixin:
     def consent_version_cls(self):
         return django_apps.get_model('pre_flourish.pfconsentversion')
 
-    def get_consent_version(self, default_version):
+    def get_consent_version(self, default_version, child=None):
         try:
             consent_version_obj = self.consent_version_cls.objects.get(
                 screening_identifier=self.screening_identifier)
         except self.consent_version_cls.DoesNotExist:
             return default_version
         else:
-            return consent_version_obj.version
+            return consent_version_obj.version if not child else consent_version_obj.child_version
 
     @property
     def consent_version(self):
@@ -57,7 +57,8 @@ class ConsentModelWrapperMixin:
 
     @property
     def child_consent_version(self):
-        return self.get_consent_version(pre_flourish_config.child_consent_version)
+        return self.get_consent_version(pre_flourish_config.child_consent_version,
+                                        child=True)
 
     @property
     def consent_model_obj(self):

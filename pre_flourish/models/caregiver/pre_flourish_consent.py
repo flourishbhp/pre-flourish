@@ -129,12 +129,12 @@ class PreFlourishConsent(
         consent_version_cls = django_apps.get_model(
             'pre_flourish.pfconsentversion')
 
-        if self.version == '1' or self.version == '':
+        if not self.version:
             try:
                 consent_version_obj = consent_version_cls.objects.get(
                     screening_identifier=self.screening_identifier)
             except consent_version_cls.DoesNotExist:
-                self.version = pre_flourish_config.consent_version
+                self.version = str(pre_flourish_config.consent_version)
             else:
                 self.version = consent_version_obj.version
 

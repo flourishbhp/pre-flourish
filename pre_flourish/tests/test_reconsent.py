@@ -79,7 +79,7 @@ class Reconsent(TestCase):
         self.assertEqual(
             PFConsentVersion.objects.get(
                 screening_identifier=caregiver_screening.screening_identifier).version,
-            pre_flourish_subject_consent.version
+            str(pre_flourish_subject_consent.version)
         )
 
     @tag('ucvo')
@@ -136,7 +136,9 @@ class Reconsent(TestCase):
 
         pre_flourish_subject_consent = mommy.make_recipe(
             'pre_flourish.preflourishconsent',
-            screening_identifier=caregiver_screening.screening_identifier, )
+            screening_identifier=caregiver_screening.screening_identifier,
+            version=str(pre_flourish_config.consent_version)
+        )
 
         pre_flourish_subject_consent.save()
 
@@ -173,12 +175,14 @@ class Reconsent(TestCase):
         self.assertEqual(version_4.version, '4')
         self.assertEqual(child_version_4.version, '4')
 
+    @tag('rl')
     def test_reconsent_latest(self):
         consent_version_obj = PFConsentVersion.objects.get(
             screening_identifier=self.caregiver_screening.screening_identifier)
         consent_version_obj.version = '4.1'
         consent_version_obj.child_version = '4'
         consent_version_obj.save()
+
         version_4 = mommy.make_recipe(
             'pre_flourish.preflourishconsent',
             subject_identifier=self.pre_flourish_subject_consent.subject_identifier,

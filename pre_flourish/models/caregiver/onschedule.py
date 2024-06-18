@@ -50,8 +50,7 @@ class OnScheduleModelMixin(BaseOnScheduleModelMixin, BaseUuidModel):
         version = None
         try:
             consent_version_obj = self.consent_version_model.objects.get(
-                screening_identifier=self.screening_identifier,
-                version=str(pre_flourish_config.consent_version)
+                screening_identifier=self.screening_identifier
             )
         except self.consent_version_model.DoesNotExist:
             version = '1'
