@@ -141,9 +141,6 @@ class PreFlourishCaregiverChildConsentAdmin(ModelAdminMixin, ChildConsentMixin,
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            existing_objects = PreFlourishCaregiverChildConsent.objects.filter(~Q(id=obj.id))
-
-            if existing_objects.exists():  # if there are other objects
-                return [f.name for f in self.model._meta.fields]
+            return [f.name for f in self.model._meta.fields]
 
         return super().get_readonly_fields(request, obj)

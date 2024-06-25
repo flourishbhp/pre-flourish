@@ -213,10 +213,6 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin, ConsentMixi
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            existing_objects = PreFlourishConsent.objects.filter(~Q(id=obj.id))
-
-            if existing_objects.exists():
-                return [f.name for f in self.model._meta.fields if
-                        f.name not in audit_fields]
+            return [f.name for f in self.model._meta.fields]
         return (super().get_readonly_fields(request, obj=obj) +
                 audit_fields)
