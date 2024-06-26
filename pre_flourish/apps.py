@@ -14,11 +14,12 @@ class AppConfig(DjangoAppConfig):
     verbose_name = 'Pre Flourish'
     admin_site_name = 'pre_flourish_admin'
 
-    consent_version = 4
+    consent_version = 4.1
     child_consent_version = 4
 
     def ready(self):
-        pass
+        import pre_flourish.models.child.signals
+        import pre_flourish.models.caregiver.signals
 
 
 if settings.APP_NAME == 'pre_flourish':

@@ -28,7 +28,6 @@ class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixi
                              IdentityFieldsMixin, PersonalFieldsMixin, ReviewFieldsMixin,
                              VulnerabilityFieldsMixin, CitizenFieldsMixin,
                              VerificationFieldsMixin, BaseUuidModel):
-
     identity = IdentityField(
         verbose_name='Identity number',
         null=True,
@@ -51,7 +50,7 @@ class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixi
         verbose_name=('Are you willing to continue the study when you reach 18'
                       ' years of age?'),
         choices=YES_NO,
-        )
+    )
 
     hiv_testing = models.CharField(
         max_length=3,
@@ -68,7 +67,8 @@ class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixi
 
     specimen_consent = models.CharField(
         max_length=3,
-        verbose_name='Do you give us permission to use your blood samples for future studies?',
+        verbose_name='Do you give us permission to use your blood samples for future '
+                     'studies?',
         choices=YES_NO)
 
     consent_datetime = models.DateTimeField(
@@ -103,8 +103,8 @@ class PreFlourishChildAssent(SiteModelMixin, NonUniqueSubjectIdentifierFieldMixi
     @property
     def screening_identifier(self):
         try:
-            child_consent = self.pre_flourish_child_consent_cls.objects.get(
-                subject_identifier=self.subject_identifier)
+            child_consent = self.pre_flourish_child_consent_cls.objects.filter(
+                subject_identifier=self.subject_identifier).latest('consent_datetime')
         except self.pre_flourish_child_consent_cls.DoesNotExist:
             return None
         else:

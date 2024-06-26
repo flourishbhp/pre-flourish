@@ -2,7 +2,7 @@ from functools import partialmethod
 
 from django.apps import apps as django_apps
 from django.contrib import admin
-from django.db.models import OuterRef, Subquery
+from django.db.models import OuterRef, Q, Subquery
 from edc_model_admin import ModelAdminFormAutoNumberMixin, StackedInlineMixin
 
 from flourish_caregiver.admin import ConsentMixin
@@ -17,7 +17,6 @@ class PreFlourishCaregiverChildConsentInline(StackedInlineMixin,
                                              ChildConsentMixin,
                                              ConsentMixin,
                                              admin.StackedInline):
-
     caregiver_consent_cls = django_apps.get_model('pre_flourish.preflourishconsent')
 
     consent_cls = django_apps.get_model(
@@ -116,7 +115,6 @@ class PreFlourishCaregiverChildConsentInline(StackedInlineMixin,
 @admin.register(PreFlourishCaregiverChildConsent, site=pre_flourish_admin)
 class PreFlourishCaregiverChildConsentAdmin(ModelAdminMixin, ChildConsentMixin,
                                             admin.ModelAdmin):
-
     list_display = ('subject_identifier',
                     'verified_by',
                     'is_verified',
@@ -140,3 +138,9 @@ class PreFlourishCaregiverChildConsentAdmin(ModelAdminMixin, ChildConsentMixin,
 
     search_fields = ['subject_identifier',
                      'subject_consent__subject_identifier', ]
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return [f.name for f in self.model._meta.fields]
+
+        return super().get_readonly_fields(request, obj)

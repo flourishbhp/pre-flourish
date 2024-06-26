@@ -15,7 +15,10 @@ from pre_flourish.helper_classes.utils import create_child_dummy_consent, \
     trigger_action_item
 from pre_flourish.models.child import HuuPreEnrollment, PFChildHIVRapidTestCounseling, \
     PreFlourishChildAssent, PreFlourishChildDummySubjectConsent
+from ..child.pre_flourish_child_consent import PreFlourishCaregiverChildConsent
 from ...models.contact_proxy import PreFlourishContact
+
+pre_flourish_config = django_apps.get_app_config('pre_flourish')
 
 
 class CaregiverConsentError(Exception):
@@ -54,6 +57,34 @@ def pre_flourish_child_dummy_consent_on_post_save(sender, instance, raw, created
             schedule_name='pf_child_schedule1',
             base_appt_datetime=instance.consent_datetime
         )
+
+
+@receiver(post_save, weak=False, sender=PreFlourishCaregiverChildConsent,
+          dispatch_uid='pre_flourish_child_consent_on_post_save')
+def pre_flourish_child_consent_on_post_save(sender, instance, raw, created, **kwargs):
+    """Updates consent version object with child version
+    """
+    if not raw:
+        consent_version_obj = get_consent_version_obj(
+            instance.subject_consent.screening_identifier)
+
+        if not consent_version_obj.child_version:
+            consent_version_obj.child_version = instance.version
+            consent_version_obj.save()
+
+
+def get_consent_version_obj(screening_identifier):
+    consent_version_cls = django_apps.get_model(
+        'pre_flourish.pfconsentversion')
+
+    try:
+        return consent_version_cls.objects.get(
+            screening_identifier=screening_identifier,
+        )
+    except consent_version_cls.DoesNotExist:
+        raise ValueError(
+            f'Pre-flourish consent version object for screening identifier '
+            f'{screening_identifier} not found')
 
 
 @receiver(post_save, weak=False, sender=HuuPreEnrollment,
@@ -114,7 +145,8 @@ def pre_flourish_contact_post_save(sender, instance, raw, created, **kwargs):
                 subject_identifier=instance.subject_identifier,
                 title='PF to Flourish Enrol',
                 defaults={'date': instance.appt_date,
-                          'description': 'Pre-flourish contact for flourish enrolment scheduling.',})
+                          'description': 'Pre-flourish contact for flourish enrolment '
+                                         'scheduling.', })
             if not _created:
                 invalidate_obj(obj)
 

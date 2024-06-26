@@ -32,12 +32,11 @@ class SubjectConsentManager(SearchSlugManager, models.Manager):
 
 
 class PreFlourishConsent(
-        ConsentModelMixin, SiteModelMixin,
-        UpdatesOrCreatesRegistrationModelMixin,
-        NonUniqueSubjectIdentifierModelMixin, IdentityFieldsMixin,
-        ReviewFieldsMixin, PersonalFieldsMixin, CitizenFieldsMixin,
-        VulnerabilityFieldsMixin, SearchSlugModelMixin, BaseUuidModel):
-
+    ConsentModelMixin, SiteModelMixin,
+    UpdatesOrCreatesRegistrationModelMixin,
+    NonUniqueSubjectIdentifierModelMixin, IdentityFieldsMixin,
+    ReviewFieldsMixin, PersonalFieldsMixin, CitizenFieldsMixin,
+    VulnerabilityFieldsMixin, SearchSlugModelMixin, BaseUuidModel):
     """ A model completed by the user on the mother's consent. """
 
     subject_screening_model = 'flourish_caregiver.subjectscreening'
