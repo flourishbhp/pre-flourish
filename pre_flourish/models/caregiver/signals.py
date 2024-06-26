@@ -60,6 +60,7 @@ def pre_flourish_consent_on_post_save(sender, instance, raw, created, **kwargs):
 
             update_locator(consent=instance, screening=caregiver_screening)
             update_worklist(caregiver_screening.study_maternal_identifier)
+            create_consent_version(instance, instance.version)
 
 
 @receiver(post_save, weak=False, sender=PreFlourishSubjectScreening,
@@ -69,7 +70,6 @@ def pre_flourish_screening_on_post_save(sender, instance, raw, created, **kwargs
     """
     if not raw and instance.is_eligible:
         update_locator(consent=None, screening=instance)
-    create_consent_version(instance, pre_flourish_config.consent_version)
 
 
 @receiver(post_save, weak=False, sender=PreFlourishChildAssent,
@@ -127,7 +127,7 @@ def put_on_schedule(instance, subject_identifier,
                 onschedule_obj.save()
 
 
-def create_consent_version(instance, version):
+def create_consent_version(instance, version, child_version=None):
     consent_version_cls = django_apps.get_model(
         'pre_flourish.pfconsentversion')
 
@@ -138,7 +138,7 @@ def create_consent_version(instance, version):
         consent_version = consent_version_cls(
             screening_identifier=instance.screening_identifier,
             version=version,
-            child_version=pre_flourish_config.child_consent_version,
+            child_version=child_version,
             user_created=instance.user_modified or instance.user_created,
             created=get_utcnow())
         consent_version.save()

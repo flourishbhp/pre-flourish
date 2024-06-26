@@ -9,4 +9,3 @@ from .pre_flourish_log_entry import *
 from .pre_flourish_off_study import PreFlourishOffStudy
 from .pre_flourish_subject_screening import PreFlourishSubjectScreening
 from .hiv_rapid_test_counseling import PFHIVRapidTestCounseling
-from .signals import pre_flourish_consent_on_post_save

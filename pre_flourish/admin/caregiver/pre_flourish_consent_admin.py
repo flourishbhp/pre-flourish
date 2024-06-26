@@ -2,6 +2,7 @@ from collections import OrderedDict
 
 from django.apps import apps as django_apps
 from django.contrib import admin
+from django.db.models import Q
 from django.urls.base import reverse
 from django.urls.exceptions import NoReverseMatch
 from django_revision.modeladmin_mixin import ModelAdminRevisionMixin
@@ -211,5 +212,7 @@ class PreFlourishConsentAdmin(ModelAdminBasicMixin, ModelAdminMixin, ConsentMixi
         return multiple_births
 
     def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return [f.name for f in self.model._meta.fields]
         return (super().get_readonly_fields(request, obj=obj) +
                 audit_fields)
