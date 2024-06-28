@@ -86,11 +86,10 @@ class HuuPreEnrollment(CrfModelMixin):
         choices=YES_NO_UNKNOWN,
         max_length=8)
 
-    months_breastfeed = models.IntegerField(
+    months_breastfeed = models.PositiveIntegerField(
         verbose_name='Approximately how many months did this child breastfeed,'
                      ' including periods where the child was breast feeding '
                      'and taking formula and solid foods together?',
-        validators=[MaxValueValidator(30), MinValueValidator(1)],
         blank=True,
         null=True)
 
