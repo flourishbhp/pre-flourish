@@ -41,9 +41,11 @@ class CrfModelMixin(BaseCrfModelMixin, SubjectScheduleCrfModelMixin,
             'pre_flourish.pfconsentversion')
 
         subject_identifier = self.subject_identifier
+        consent_version_attr = 'version'
 
         if len(self.subject_identifier.split('-')) == 4:
             subject_identifier = self.subject_identifier[:-3]
+            consent_version_attr = 'child_version'
 
         try:
             subject_screening_obj = pf_subject_screening_cls.objects.get(
@@ -64,7 +66,7 @@ class CrfModelMixin(BaseCrfModelMixin, SubjectScheduleCrfModelMixin,
                     'Missing Consent Version form. Please complete '
                     'it before proceeding.')
             else:
-                return consent_version_obj.version
+                return getattr(consent_version_obj, consent_version_attr)
 
     def save(self, *args, **kwargs):
         self.consent_version = self.get_consent_version()
