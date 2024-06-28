@@ -14,6 +14,8 @@ class OnScheduleModelMixin(BaseOnScheduleModelMixin, BaseUuidModel):
     """A model used by the system. Auto-completed by enrollment model.
     """
 
+    consent_version_attr = 'version'
+
     subject_identifier = models.CharField(
         verbose_name="Subject Identifier",
         max_length=50)
@@ -55,7 +57,7 @@ class OnScheduleModelMixin(BaseOnScheduleModelMixin, BaseUuidModel):
         except self.consent_version_model.DoesNotExist:
             version = '1'
         else:
-            version = consent_version_obj.version
+            version = getattr(consent_version_obj,  self.consent_version_attr)
         return version
 
     @property
@@ -77,4 +79,19 @@ class OnSchedulePreFlourish(OnScheduleModelMixin):
 
 
 class OnScheduleChildPreFlourish(OnScheduleModelMixin):
-    pass
+
+    consent_version_attr = 'child_version'
+
+    @property
+    def subject_consent_model_cls(self):
+        return django_apps.get_model(
+            'pre_flourish', 'preflourishcaregiverchildconsent')
+
+    @property
+    def screening_identifier(self):
+        try:
+            return self.subject_consent_model_cls.objects.filter(
+                subject_identifier=self.subject_identifier,
+            ).latest('consent_datetime').subject_consent.screening_identifier
+        except self.subject_consent_model.DoesNotExist:
+            pass
