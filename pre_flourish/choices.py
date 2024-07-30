@@ -251,4 +251,5 @@ CHILD_CONSENT_VERSION = (
 CONSENT_VERSION = (
     ('1', 'Consent version 1'),
     ('4', 'Consent version 4'),
+    ('4.1', 'Consent version 4.1'),
 )

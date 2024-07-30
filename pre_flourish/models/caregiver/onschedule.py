@@ -1,17 +1,20 @@
+from django.apps import apps as django_apps
 from django.db import models
 from edc_base.model_managers import HistoricalRecords
 from edc_base.model_mixins import BaseUuidModel
 from edc_base.sites import CurrentSiteManager
 from edc_identifier.managers import SubjectIdentifierManager
-
-from edc_visit_schedule.model_mixins import OnScheduleModelMixin as BaseOnScheduleModelMixin
-from django.apps import apps as django_apps
+from edc_visit_schedule.model_mixins import \
+    OnScheduleModelMixin as BaseOnScheduleModelMixin
 
 pre_flourish_config = django_apps.get_app_config('pre_flourish')
+
 
 class OnScheduleModelMixin(BaseOnScheduleModelMixin, BaseUuidModel):
     """A model used by the system. Auto-completed by enrollment model.
     """
+
+    consent_version_attr = 'version'
 
     subject_identifier = models.CharField(
         verbose_name="Subject Identifier",
@@ -33,8 +36,38 @@ class OnScheduleModelMixin(BaseOnScheduleModelMixin, BaseUuidModel):
         pass
 
     def save(self, *args, **kwargs):
-        self.consent_version = str(pre_flourish_config.consent_version)
+        self.consent_version = self.get_version
         super().save(*args, **kwargs)
+
+    @property
+    def consent_version_model(self):
+        return django_apps.get_model('pre_flourish', 'PFConsentVersion')
+
+    @property
+    def subject_consent_model(self):
+        return django_apps.get_model('pre_flourish', 'PreFlourishConsent')
+
+    @property
+    def get_version(self):
+        version = None
+        try:
+            consent_version_obj = self.consent_version_model.objects.get(
+                screening_identifier=self.screening_identifier
+            )
+        except self.consent_version_model.DoesNotExist:
+            version = '1'
+        else:
+            version = getattr(consent_version_obj,  self.consent_version_attr)
+        return version
+
+    @property
+    def screening_identifier(self):
+        try:
+            return self.subject_consent_model.objects.filter(
+                subject_identifier=self.subject_identifier,
+            ).latest('consent_datetime').screening_identifier
+        except self.subject_consent_model.DoesNotExist:
+            pass
 
     class Meta:
         unique_together = ('subject_identifier', 'schedule_name')
@@ -42,10 +75,23 @@ class OnScheduleModelMixin(BaseOnScheduleModelMixin, BaseUuidModel):
 
 
 class OnSchedulePreFlourish(OnScheduleModelMixin):
-
     pass
 
 
 class OnScheduleChildPreFlourish(OnScheduleModelMixin):
 
-    pass
+    consent_version_attr = 'child_version'
+
+    @property
+    def subject_consent_model_cls(self):
+        return django_apps.get_model(
+            'pre_flourish', 'preflourishcaregiverchildconsent')
+
+    @property
+    def screening_identifier(self):
+        try:
+            return self.subject_consent_model_cls.objects.filter(
+                subject_identifier=self.subject_identifier,
+            ).latest('consent_datetime').subject_consent.screening_identifier
+        except self.subject_consent_model.DoesNotExist:
+            pass
