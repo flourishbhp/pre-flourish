@@ -2,9 +2,7 @@ from collections import defaultdict
 
 import django_tables2 as tables
 from django.apps import apps as django_apps
-from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.urls import reverse
 from django.utils.html import format_html
 from django_tables2 import SingleTableView
@@ -22,8 +20,8 @@ class MatrixPoolTable(tables.Table):
 
     def render_subject_identifiers(self, value):
         download_link = reverse('pre_flourish:download_pool_ids_url', args=[value])
-        button_html = f'<a href="{download_link}" class="btn btn-primary">Download ' \
-                      f'CSV</a>'
+        button_html = (f'<a href="{download_link}" class="btn btn-primary">Download '
+                       f'CSV</a>')
         return format_html(button_html)
 
     class Meta:
@@ -45,12 +43,11 @@ class ReportsView(ExportMixin, EdcBaseViewMixin, NavbarViewMixin,
     export_formats = ('csv', 'xls')  # Specify the export formats you want to support
     pre_flourish_caregiver_child_consent_model = \
         'pre_flourish.preflourishcaregiverchildconsent'
-    screening_prior_participants_model = \
-        'flourish_caregiver.screeningpriorbhpparticipants'
+    caregiver_child_consent = 'flourish_caregiver.caregiverchildconsent'
 
     @property
-    def screening_prior_participants_model_cls(self):
-        return django_apps.get_model(self.screening_prior_participants_model)
+    def caregiver_child_consent_model_cls(self):
+        return django_apps.get_model(self.caregiver_child_consent)
 
     @property
     def pre_flourish_caregiver_child_consent_model_cls(self):
@@ -65,12 +62,10 @@ class ReportsView(ExportMixin, EdcBaseViewMixin, NavbarViewMixin,
 
     @property
     def get_enrolled_to_flourish(self):
-        enrolled_screening_ids = self.screening_prior_participants_model_cls.objects \
-            .exclude(subject_identifier='').values_list('screening_identifier', flat=True)
-        enrolled_pf_participants = self.pre_flourish_caregiver_child_consent_model_cls \
-            .objects.filter(
-            subject_consent__screening_identifier__in=enrolled_screening_ids
-        ).values_list('subject_identifier', flat=True)
+        enrolled_pf_participants = self.caregiver_child_consent_model_cls.objects.filter(
+            study_child_identifier__icontains='P').values_list(
+                'study_child_identifier', flat=True)
+
         huupool_generation = HUUPoolGeneration(
             subject_identifiers=enrolled_pf_participants)
         return huupool_generation.breakdown_participants
@@ -79,7 +74,9 @@ class ReportsView(ExportMixin, EdcBaseViewMixin, NavbarViewMixin,
         context = super().get_context_data(**kwargs)
         enrolled_to_flourish = {}
         if self.get_enrolled_to_flourish:
-            enrolled_to_flourish = self.get_enrolled_to_flourish
+            enrolled_to_flourish = self.convert_to_regular_dict(
+                self.get_enrolled_to_flourish)
+
         heu_pool_dict = self.convert_to_regular_dict(self.heu_pool)
         heu_pool = self.convert_to_regular_dict(self.heu_pool)
         huu_pool = self.convert_to_regular_dict(self.huu_pool)
@@ -87,7 +84,7 @@ class ReportsView(ExportMixin, EdcBaseViewMixin, NavbarViewMixin,
         context.update(
             heu_pool=heu_pool,
             huu_pool=huu_pool,
-            enrolled_to_flourish=enrolled_to_flourish,
+            flourish_enrol_matrix=enrolled_to_flourish,
             heu_pool_dict=heu_pool_dict,
         )
         return context
