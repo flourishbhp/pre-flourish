@@ -13,7 +13,7 @@ register = template.Library()
 @register.filter
 def get_item(dictionary, key):
     if dictionary is not None:
-        return dictionary.get(key)
+        return dictionary.get(key, None)
 
 
 @register.inclusion_tag('pre_flourish/buttons/consent_button.html')
@@ -276,7 +276,7 @@ def enrolled_to_flourish(data):
     return dict(
         title=title,
         data=data,
-        none_match=True,
+        active_match=True,
         age_groups=['0, 9.5', '9.5, 14', '14, 17', '17, 21']
     )
 

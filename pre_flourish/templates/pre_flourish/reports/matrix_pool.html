@@ -34,14 +34,14 @@
                     <td>
                         {{ key }}
                     </td>
-                    {% if data|get_item:key|get_item:"(0, 9.4)" %}
+                    {% if active_match %}
                         <td>
-                            {{ data|get_item:key|get_item:"(0, 9.4)"|get_item:"male" }}
+                            {{ data|get_item:key|get_item:"(0, 9.5)"|get_item:"male" }}
                         </td>
                         <td>
-                            {{ data|get_item:key|get_item:'(0, 9.4)'|get_item:'female' }}
+                            {{ data|get_item:key|get_item:'(0, 9.5)'|get_item:'female' }}
                         </td>
-                    {% endif %}
+              		{% endif %}
                     <td>
                         {{ data|get_item:key|get_item:"(9.5, 14)"|get_item:"male" }}
                     </td>
