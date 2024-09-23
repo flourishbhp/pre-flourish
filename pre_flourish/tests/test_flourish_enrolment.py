@@ -34,16 +34,23 @@ class TestFlourishEnrolment(TestCase):
             'pre_flourish.preflourishsubjectscreening',
             study_maternal_identifier=self.study_maternal_identifier)
 
+        mommy.make_recipe(
+            'pre_flourish.pfconsentversion',
+            screening_identifier=self.caregiver_screening.screening_identifier,
+            version='1',
+            child_version='1'
+        )
+
         self.pre_flourish_subject_consent = mommy.make_recipe(
             'pre_flourish.preflourishconsent',
-            screening_identifier=self.caregiver_screening.screening_identifier)
-
-        self.pre_flourish_subject_consent.save()
+            screening_identifier=self.caregiver_screening.screening_identifier,
+            **self.options)
 
         self.pf_caregiver_child_consent = mommy.make_recipe(
             'pre_flourish.preflourishcaregiverchildconsent',
             subject_consent=self.pre_flourish_subject_consent,
-            child_dob=get_utcnow() - relativedelta(years=11, months=5),
+            child_dob=(get_utcnow() - relativedelta(years=11, months=5)).date(),
+            **self.options
         )
 
         self.pf_child_assent = mommy.make_recipe(
@@ -56,54 +63,24 @@ class TestFlourishEnrolment(TestCase):
             last_name=self.pf_caregiver_child_consent.last_name,
             gender=self.pf_caregiver_child_consent.gender,
             dob=self.pf_caregiver_child_consent.child_dob,
+            **self.options,
         )
 
     @tag('sdes')
     def test_creates_caregiver_registered_subject(self):
-        caregiver_screening = mommy.make_recipe(
-            'pre_flourish.preflourishsubjectscreening', )
-
-        pre_flourish_subject_consent = mommy.make_recipe(
-            'pre_flourish.preflourishconsent',
-            screening_identifier=caregiver_screening.screening_identifier)
-
         self.assertEqual(PreFlourishRegisteredSubject.objects.filter(
-            subject_identifier=pre_flourish_subject_consent.subject_identifier
+            subject_identifier=self.pre_flourish_subject_consent.subject_identifier
         ).count(), 1)
         self.assertEqual(RegisteredSubject.objects.filter(
-            subject_identifier=pre_flourish_subject_consent.subject_identifier
+            subject_identifier=self.pre_flourish_subject_consent.subject_identifier
         ).count(), 0)
 
     def test_create_child_registered_subject(self):
-        caregiver_screening = mommy.make_recipe(
-            'pre_flourish.preflourishsubjectscreening', )
-
-        pre_flourish_subject_consent = mommy.make_recipe(
-            'pre_flourish.preflourishconsent',
-            screening_identifier=caregiver_screening.screening_identifier)
-
-        pre_flourish_subject_consent.save()
-
-        pf_caregiver_child_consent = mommy.make_recipe(
-            'pre_flourish.preflourishcaregiverchildconsent',
-            subject_consent=pre_flourish_subject_consent,
-        )
-        mommy.make_recipe(
-            'pre_flourish.preflourishchildassent',
-            subject_identifier=pf_caregiver_child_consent.subject_identifier,
-            identity=pf_caregiver_child_consent.identity,
-            confirm_identity=pf_caregiver_child_consent.identity,
-            identity_type=pf_caregiver_child_consent.identity_type,
-            first_name=pf_caregiver_child_consent.first_name,
-            last_name=pf_caregiver_child_consent.last_name,
-            gender=pf_caregiver_child_consent.gender,
-            dob=pf_caregiver_child_consent.child_dob,
-        )
         self.assertEqual(PreFlourishRegisteredSubject.objects.filter(
-            subject_identifier=pf_caregiver_child_consent.subject_identifier
+            subject_identifier=self.pf_caregiver_child_consent.subject_identifier
         ).count(), 1)
         self.assertEqual(RegisteredSubject.objects.filter(
-            subject_identifier=pf_caregiver_child_consent.subject_identifier
+            subject_identifier=self.pf_caregiver_child_consent.subject_identifier
         ).count(), 0)
 
     @tag('dset')
@@ -194,15 +171,17 @@ class TestFlourishEnrolment(TestCase):
             'flourish_caregiver.caregiverchildconsent',
             subject_consent=subject_consent,
             study_child_identifier=self.pf_child_assent.subject_identifier,
-            child_dob=self.pf_child_assent.dob, )
+            child_dob=self.pf_child_assent.dob,
+            **self.options)
 
         mommy.make_recipe(
             'flourish_caregiver.caregiverpreviouslyenrolled',
             subject_identifier=subject_consent.subject_identifier)
 
-        schedules = SubjectScheduleHistory.objects.filter(schedule_name__startswith='c_',
-                                                          subject_identifier=subject_consent.subject_identifier)
-        self.assertNotEquals(0, schedules.count())
+        schedules = SubjectScheduleHistory.objects.filter(
+            schedule_name='c_enrol1_schedule1',
+            subject_identifier=subject_consent.subject_identifier)
+        self.assertEquals(1, schedules.count())
 
     def test_registered_subject(self):
         registered_subject = PreFlourishRegisteredSubject.objects.get(

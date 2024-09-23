@@ -16,20 +16,33 @@ class TestVisitScheduleSetup(TestCase):
     def setUp(self):
         import_holidays()
 
+        self.options = {
+            'consent_datetime': get_utcnow(),
+            'version': '1'}
+
         self.caregiver_screening = mommy.make_recipe(
             'pre_flourish.preflourishsubjectscreening', )
+
+        mommy.make_recipe(
+            'pre_flourish.pfconsentversion',
+            screening_identifier=self.caregiver_screening.screening_identifier,
+            version='1',
+            child_version='1'
+        )
 
     @tag('ssaa')
     def test_caregiver_onschedule_invalid(self):
         subject_consent = mommy.make_recipe(
             'pre_flourish.preflourishconsent',
-            screening_identifier=self.caregiver_screening.screening_identifier)
+            screening_identifier=self.caregiver_screening.screening_identifier,
+            **self.options)
 
         caregiver_child_consent = mommy.make_recipe(
             'pre_flourish.preflourishcaregiverchildconsent',
             subject_consent=subject_consent,
-            child_dob=get_utcnow() - relativedelta(years=15),
-            gender=FEMALE
+            child_dob=(get_utcnow() - relativedelta(years=15)).date(),
+            gender=FEMALE,
+            **self.options
         )
 
         mommy.make_recipe(
@@ -42,6 +55,7 @@ class TestVisitScheduleSetup(TestCase):
             last_name=caregiver_child_consent.last_name,
             gender=caregiver_child_consent.gender,
             dob=caregiver_child_consent.child_dob,
+            **self.options
         )
 
         self.assertEqual(OnSchedulePreFlourish.objects.filter(
@@ -55,14 +69,16 @@ class TestVisitScheduleSetup(TestCase):
         subject_consent = mommy.make_recipe(
             'pre_flourish.preflourishconsent',
             screening_identifier=self.caregiver_screening.screening_identifier,
+            **self.options
         )
 
         caregiver_child_consent = mommy.make_recipe(
             'pre_flourish.preflourishcaregiverchildconsent',
             subject_consent=subject_consent,
+            **self.options
         )
 
-        child_assent = mommy.make_recipe(
+        mommy.make_recipe(
             'pre_flourish.preflourishchildassent',
             subject_identifier=caregiver_child_consent.subject_identifier,
             identity=caregiver_child_consent.identity,
@@ -72,6 +88,7 @@ class TestVisitScheduleSetup(TestCase):
             last_name=caregiver_child_consent.last_name,
             gender=caregiver_child_consent.gender,
             dob=caregiver_child_consent.child_dob,
+            **self.options
         )
 
         self.assertEqual(OnScheduleChildPreFlourish.objects.filter(
@@ -81,11 +98,14 @@ class TestVisitScheduleSetup(TestCase):
 
         subject_consent = mommy.make_recipe(
             'pre_flourish.preflourishconsent',
-            screening_identifier=self.caregiver_screening.screening_identifier)
+            screening_identifier=self.caregiver_screening.screening_identifier,
+            **self.options)
 
         caregiver_child_consent = mommy.make_recipe(
             'pre_flourish.preflourishcaregiverchildconsent',
             subject_consent=subject_consent,
+            child_dob=(get_utcnow() - relativedelta(years=15)).date(),
+            **self.options
         )
 
         child_assent = mommy.make_recipe(
@@ -98,6 +118,7 @@ class TestVisitScheduleSetup(TestCase):
             last_name=caregiver_child_consent.last_name,
             gender=caregiver_child_consent.gender,
             dob=caregiver_child_consent.child_dob,
+            **self.options
         )
 
         appointment = Appointment.objects.get(
@@ -107,11 +128,13 @@ class TestVisitScheduleSetup(TestCase):
         pre_flourish_visit = mommy.make_recipe(
             'pre_flourish.preflourishvisit',
             appointment=appointment,
+            report_datetime=get_utcnow()
         )
+
         mommy.make_recipe(
             'pre_flourish.huupreenrollment',
             child_hiv_result=POS,
-            report_datetime=get_utcnow() + relativedelta(minutes=30),
+            report_datetime=get_utcnow(),
             pre_flourish_visit=pre_flourish_visit, )
 
         child_off_study_cls = django_apps.get_model(
@@ -123,7 +146,7 @@ class TestVisitScheduleSetup(TestCase):
 
         try:
             action_item_model_cls.objects.get(
-                pre_flourish_visit__subject_identifier=caregiver_child_consent.subject_identifier,
+                subject_identifier=caregiver_child_consent.subject_identifier,
                 action_type__name=child_off_study_cls.action_name,
                 status=NEW)
         except action_item_model_cls.DoesNotExist:

@@ -17,6 +17,10 @@ class TestHivRapidTestForm(TestCase):
         self.subject_identifier = '12345678'
         self.study_maternal_identifier = '89721'
 
+        self.options = {
+            'consent_datetime': get_utcnow(),
+            'version': '1'}
+
         self.locator = mommy.make_recipe(
             'pre_flourish.caregiverlocator',
             study_maternal_identifier=self.study_maternal_identifier, )
@@ -25,15 +29,24 @@ class TestHivRapidTestForm(TestCase):
             'pre_flourish.preflourishsubjectscreening',
             study_maternal_identifier=self.study_maternal_identifier)
 
+        mommy.make_recipe(
+            'pre_flourish.pfconsentversion',
+            screening_identifier=self.caregiver_screening.screening_identifier,
+            version='1',
+            child_version='1'
+        )
+
         self.subject_consent = mommy.make_recipe(
             'pre_flourish.preflourishconsent',
             screening_identifier=self.caregiver_screening.screening_identifier,
+            **self.options
         )
 
         self.pf_caregiver_child_consent = mommy.make_recipe(
             'pre_flourish.preflourishcaregiverchildconsent',
             subject_consent=self.subject_consent,
-            child_dob=get_utcnow() - relativedelta(years=11, months=5),
+            child_dob=(get_utcnow() - relativedelta(years=11, months=5)).date(),
+            **self.options
         )
 
         self.pf_child_assent = mommy.make_recipe(
@@ -46,6 +59,7 @@ class TestHivRapidTestForm(TestCase):
             last_name=self.pf_caregiver_child_consent.last_name,
             gender=self.pf_caregiver_child_consent.gender,
             dob=self.pf_caregiver_child_consent.child_dob,
+            **self.options
         )
 
         self.appointment = Appointment.objects.get(
