@@ -14,6 +14,35 @@ from pre_flourish.models import PreFlourishRegisteredSubject
 from pre_flourish.models.appointment import Appointment
 
 
+def create_caregiver_cohort_schedules():
+    cohorts = ['a', 'b', 'c']
+    for cohort in cohorts:
+        _count = 1
+        while _count <= 3:
+            mommy.make_recipe(
+                'flourish_caregiver.cohortschedules',
+                schedule_name=f'{cohort}_fu{_count}_schedule1',
+                schedule_type='followup',
+                cohort_name=f'cohort_{cohort}',
+                onschedule_model=f'flourish_caregiver.onschedulecohort{cohort}fu',
+                child_count=_count
+            )
+            _count += 1
+
+
+def create_child_cohort_schedules():
+    cohorts = ['a', 'b', 'c']
+    for cohort in cohorts:
+        mommy.make_recipe(
+            'flourish_caregiver.cohortschedules',
+            schedule_name=f'child_{cohort}_fu_schedule1',
+            schedule_type='followup',
+            cohort_name=f'cohort_{cohort}',
+            onschedule_model=f'flourish_child.onschedulechildcohort{cohort}fu',
+            child_count=None
+        )
+
+
 @tag('enrol')
 class TestFlourishEnrolment(TestCase):
     databases = '__all__'
@@ -25,6 +54,10 @@ class TestFlourishEnrolment(TestCase):
         self.options = {
             'consent_datetime': get_utcnow(),
             'version': '1'}
+
+        create_caregiver_cohort_schedules()
+
+        create_child_cohort_schedules()
 
         self.locator = mommy.make_recipe(
             'pre_flourish.caregiverlocator',
@@ -103,7 +136,9 @@ class TestFlourishEnrolment(TestCase):
             pre_flourish_visit=visit,
             child_test_date=get_utcnow().date(),
             child_hiv_result=NEG,
-            report_datetime=get_utcnow(), )
+            report_datetime=get_utcnow(),
+            child_weight_kg=34.0,
+            child_height=141.0, )
 
         self.assertEqual(MaternalDataset.objects.filter(
             study_maternal_identifier=self.study_maternal_identifier).count(), 1)
@@ -153,7 +188,9 @@ class TestFlourishEnrolment(TestCase):
             pre_flourish_visit=visit,
             child_test_date=get_utcnow().date(),
             child_hiv_result=NEG,
-            report_datetime=get_utcnow(), )
+            report_datetime=get_utcnow(),
+            child_weight_kg=34.0,
+            child_height=141.0, )
 
         prior_screening = mommy.make_recipe(
             'flourish_caregiver.screeningpriorbhpparticipants',
@@ -167,7 +204,7 @@ class TestFlourishEnrolment(TestCase):
             biological_caregiver=YES,
             **self.options)
 
-        mommy.make_recipe(
+        child_consent = mommy.make_recipe(
             'flourish_caregiver.caregiverchildconsent',
             subject_consent=subject_consent,
             study_child_identifier=self.pf_child_assent.subject_identifier,
@@ -178,10 +215,23 @@ class TestFlourishEnrolment(TestCase):
             'flourish_caregiver.caregiverpreviouslyenrolled',
             subject_identifier=subject_consent.subject_identifier)
 
-        schedules = SubjectScheduleHistory.objects.filter(
+        # Check caregiver is not put on enrolment schedule.
+        enrol_schedule = SubjectScheduleHistory.objects.filter(
             schedule_name='c_enrol1_schedule1',
             subject_identifier=subject_consent.subject_identifier)
-        self.assertEquals(1, schedules.count())
+        self.assertEquals(0, enrol_schedule.count())
+
+        # Check caregiver enroled on FU schedule.
+        fu_schedule = SubjectScheduleHistory.objects.filter(
+            schedule_name='c_fu1_schedule1',
+            subject_identifier=subject_consent.subject_identifier)
+        self.assertEquals(1, fu_schedule.count())
+
+        # Check child enroled on FU schedule
+        child_enrol_schedule = SubjectScheduleHistory.objects.filter(
+            schedule_name='child_c_fu_schedule1',
+            subject_identifier=child_consent.subject_identifier)
+        self.assertEquals(1, child_enrol_schedule.count())
 
     def test_registered_subject(self):
         registered_subject = PreFlourishRegisteredSubject.objects.get(

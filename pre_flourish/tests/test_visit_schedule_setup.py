@@ -1,7 +1,7 @@
 from dateutil.relativedelta import relativedelta
 from django.test import TestCase, tag
 from ..models.appointment import Appointment
-from edc_constants.constants import FEMALE, NO, NEW, NEG, POS
+from edc_constants.constants import FEMALE, NEW, POS
 from edc_facility.import_holidays import import_holidays
 from model_mommy import mommy
 from ..models import OnSchedulePreFlourish, OnScheduleChildPreFlourish
