@@ -36,11 +36,9 @@ if settings.APP_NAME == 'pre_flourish':
     from edc_visit_tracking.apps import AppConfig as BaseEdcVisitTrackingAppConfig
     from edc_metadata.apps import AppConfig as BaseEdcMetadataAppConfig
 
-
     class EdcBaseAppConfig(BaseEdcBaseAppConfig):
         project_name = 'Pre-Flourish'
         institution = 'Botswana-Harvard AIDS Institute'
-
 
     class EdcAppointmentAppConfig(BaseEdcAppointmentAppConfig):
         configurations = [
@@ -48,7 +46,6 @@ if settings.APP_NAME == 'pre_flourish':
                 model='pre_flourish.appointment',
                 related_visit_model='pre_flourish.preflourishvisit',
                 appt_type='clinic')]
-
 
     class EdcTimepointAppConfig(BaseEdcTimepointAppConfig):
         timepoints = TimepointCollection(
@@ -65,12 +62,10 @@ if settings.APP_NAME == 'pre_flourish':
                     closed_status=COMPLETE_APPT),
             ])
 
-
     class EdcVisitTrackingAppConfig(BaseEdcVisitTrackingAppConfig):
         visit_models = {
             'pre_flourish': (
                 'pre_flourish_visit', 'pre_flourish.preflourishvisit'), }
-
 
     class EdcFacilityAppConfig(BaseEdcFacilityAppConfig):
         country = 'botswana'
@@ -79,7 +74,6 @@ if settings.APP_NAME == 'pre_flourish':
                                  slots=[100, 100, 100, 100, 100, 100, 100]),
             '5-day clinic': dict(days=[MO, TU, WE, TH, FR],
                                  slots=[100, 100, 100, 100, 100])}
-
 
     class EdcProtocolAppConfig(BaseEdcProtocolAppConfig):
         protocol = 'BHP035'
@@ -90,7 +84,6 @@ if settings.APP_NAME == 'pre_flourish':
             2020, 9, 16, 0, 0, 0, tzinfo=gettz('UTC'))
         study_close_datetime = datetime(
             2023, 12, 31, 23, 59, 59, tzinfo=gettz('UTC'))
-
 
     class EdcMetadataAppConfig(BaseEdcMetadataAppConfig):
         reason_field = {

@@ -5,7 +5,7 @@ from edc_visit_tracking.constants import SCHEDULED
 from faker import Faker
 from model_mommy.recipe import Recipe, seq
 
-from flourish_caregiver.models import CaregiverLocator, MaternalDataset
+from flourish_caregiver.models import CaregiverLocator, MaternalDataset, CohortSchedules
 from flourish_child.models import ChildAssent
 from .models import CyhuuPreEnrollment, HuuPreEnrollment, PFChildHIVRapidTestCounseling, \
     PFConsentVersion, PreFlourishCaregiverChildConsent, PreFlourishChildAssent, \
@@ -116,3 +116,7 @@ pfchildhivrapidtestcounseling = Recipe(
 
 pfconsentversion = Recipe(
     PFConsentVersion)
+
+
+cohortschedules = Recipe(
+    CohortSchedules)
