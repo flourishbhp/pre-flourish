@@ -1,7 +1,11 @@
+from collections import OrderedDict
+
 from django.conf import settings
 from django.contrib import admin
 from django.shortcuts import reverse
 from django_revision.modeladmin_mixin import ModelAdminRevisionMixin
+from edc_consent.actions import (
+    flag_as_verified_against_paper, unflag_as_verified_against_paper)
 from edc_model_admin import (
     ModelAdminFormAutoNumberMixin, ModelAdminInstitutionMixin,
     ModelAdminNextUrlRedirectMixin,
@@ -127,3 +131,28 @@ class PreFlourishChildAssentAdmin(
                    'identity_type')
 
     search_fields = ('subject_identifier', 'dob',)
+
+    def get_actions(self, request):
+        super_actions = super().get_actions(request)
+
+        if ('pre_flourish.change_preflourishconsent'
+                in request.user.get_group_permissions()):
+            consent_actions = [
+                flag_as_verified_against_paper,
+                unflag_as_verified_against_paper]
+
+            # Add actions from this ModelAdmin.
+            actions = (self.get_action(action) for action in consent_actions)
+            # get_action might have returned None, so filter any of those out.
+            actions = filter(None, actions)
+
+            actions = self._filter_actions_by_permissions(request, actions)
+            # Convert the actions into an OrderedDict keyed by name.
+            actions = OrderedDict(
+                (name, (func, name, desc))
+                for func, name, desc in actions
+            )
+
+            super_actions.update(actions)
+
+        return super_actions

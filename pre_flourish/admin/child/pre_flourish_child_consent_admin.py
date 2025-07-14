@@ -1,8 +1,11 @@
+from collections import OrderedDict
 from functools import partialmethod
 
 from django.apps import apps as django_apps
 from django.contrib import admin
-from django.db.models import OuterRef, Q, Subquery
+from django.db.models import OuterRef, Subquery
+from edc_consent.actions import (
+    flag_as_verified_against_paper, unflag_as_verified_against_paper)
 from edc_model_admin import ModelAdminFormAutoNumberMixin, StackedInlineMixin
 
 from flourish_caregiver.admin import ConsentMixin
@@ -138,6 +141,31 @@ class PreFlourishCaregiverChildConsentAdmin(ModelAdminMixin, ChildConsentMixin,
 
     search_fields = ['subject_identifier',
                      'subject_consent__subject_identifier', ]
+
+    def get_actions(self, request):
+        super_actions = super().get_actions(request)
+
+        if ('pre_flourish.change_preflourishconsent'
+                in request.user.get_group_permissions()):
+            consent_actions = [
+                flag_as_verified_against_paper,
+                unflag_as_verified_against_paper]
+
+            # Add actions from this ModelAdmin.
+            actions = (self.get_action(action) for action in consent_actions)
+            # get_action might have returned None, so filter any of those out.
+            actions = filter(None, actions)
+
+            actions = self._filter_actions_by_permissions(request, actions)
+            # Convert the actions into an OrderedDict keyed by name.
+            actions = OrderedDict(
+                (name, (func, name, desc))
+                for func, name, desc in actions
+            )
+
+            super_actions.update(actions)
+
+        return super_actions
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
